@@ -1,33 +1,37 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
-namespace Assets.Scripts
+public class Map
 {
-    public class Map:IEnumerable
+    public static int SizeY = 100;
+
+    public static int SizeX = 100;
+
+    public static Cell[,] WorldMap =  new Cell[SizeY, SizeX];
+
+    public IEnumerator GetEnumerator()
     {
-        public static int SizeX = 100;
-
-        public static int SizeY = 100;
-
-        private static float CellSizeX = 2.56f;
-
-        private static float CellSizeY = 2.56f;
-
-        public Cell[,] map { get; set; }
-        public IEnumerator GetEnumerator()
+        if (WorldMap != null)
         {
-            if (map != null)
+            for (int x = 0; x < SizeX; x++)
             {
-                for (int i = 0; i < SizeX; i++)
+                for (int y = 0; y < SizeY; y++)
                 {
-                    for (int j = 0; j < SizeY; j++)
-                    {
-                        yield return map[i, j];
-                    }
+                    yield return WorldMap[y, x];
                 }
+            }
+        }
+    }
+    
+
+    public static void CreateMap()
+    {
+        for (int x = 0; x < SizeX; x++)
+        {
+            for (int y = 0; y < SizeY; y++)
+            {
+                WorldMap[y, x] = new Cell(y, x, CellEnum.GetCellType(Random.Range(0,5)));
             }
         }
     }
