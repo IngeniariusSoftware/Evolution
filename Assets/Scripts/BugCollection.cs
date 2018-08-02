@@ -12,18 +12,18 @@ namespace Assets.Scripts
     {
         public BugCollection()
         {
-            Bugs = new List<Bug>();
+            Bugs = new List<Beetle>();
         }
 
         /// <summary>
         /// Конструктор выполняющий полное копирование прилетевших значений
         /// </summary>
         /// <param name="inBugs"></param>
-        public BugCollection(IList<Bug> inBugs)
+        public BugCollection(IList<Beetle> inBugs)
         {
             Bugs = inBugs.Select(x=>x).ToList();
         }
-        public IList<Bug> Bugs { get; set; }
+        public IList<Beetle> Bugs { get; set; }
         /// <summary>
         /// Создает новое поколение жуков
         /// </summary>
