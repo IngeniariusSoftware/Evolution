@@ -8,13 +8,13 @@ namespace Assets.Scripts
 {
     public class Map:IEnumerable
     {
-        public int SizeX = 100;
+        public static int SizeX = 100;
 
-        public int SizeY = 100;
+        public static int SizeY = 100;
 
-        private float CellSizeX = 2.56f;
+        private static float CellSizeX = 2.56f;
 
-        private float CellSizeY = 2.56f;
+        private static float CellSizeY = 2.56f;
 
         public Cell[,] map { get; set; }
         public IEnumerator GetEnumerator()
