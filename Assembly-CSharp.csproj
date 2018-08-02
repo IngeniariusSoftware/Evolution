@@ -56,6 +56,7 @@
     <Compile Include="Assets\Scripts\BugCollection.cs" />
     <Compile Include="Assets\Scripts\CameraManageScript.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
+    <Compile Include="Assets\Scripts\CellEnum.cs" />
     <Compile Include="Assets\Scripts\Data.cs" />
     <Compile Include="Assets\Scripts\Generation.cs" />
     <Compile Include="Assets\Scripts\Genom.cs" />
