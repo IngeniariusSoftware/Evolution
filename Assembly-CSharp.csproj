@@ -61,11 +61,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\BugScript.cs" />
+    <Compile Include="Assets\Scripts\Bug.cs" />
     <Compile Include="Assets\Scripts\CameraManageScript.cs" />
-    <Compile Include="Assets\Scripts\CellScript.cs" />
-    <Compile Include="Assets\Scripts\DataScript.cs" />
-    <Compile Include="Assets\Scripts\GenerationScript.cs" />
+    <Compile Include="Assets\Scripts\Cell.cs" />
+    <Compile Include="Assets\Scripts\Data.cs" />
+    <Compile Include="Assets\Scripts\Generation.cs" />
+    <Compile Include="Assets\Scripts\Map.cs" />
     <Compile Include="Assets\Scripts\MapScript.cs" />
     <Compile Include="Assets\Scripts\RenderingScript.cs" />
     <Reference Include="UnityEditor.StandardEvents">

@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class GenerationScript 
+
+public class Cell
 {
 
 
+	
 }
