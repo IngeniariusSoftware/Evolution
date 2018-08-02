@@ -1,13 +1,27 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using  System;
+using UnityEngine;
+using UnityEngine.Experimental.UIElements;
+
 using Slider = UnityEngine.UI.Slider;
 
 public class CameraManageScript : MonoBehaviour
 {
-    public Slider slider; 
+    public Slider slider;
+
+    private static float _currentMousePositionX;
+
+    private static float _currentMousePositionY;
 
     public void ChangeCameraSize()
     {
         Camera.main.orthographicSize = 100 - slider.value;
+    }
+
+    void Start()
+    {
+        _currentMousePositionX = Input.mousePosition.x;
+        _currentMousePositionY = Input.mousePosition.y;
     }
 
     void Update()
@@ -16,7 +30,33 @@ public class CameraManageScript : MonoBehaviour
         if (axis != 0)
         {
             ChangeSliderValue(axis * 20);
-        } 
+        }
+
+        if (Input.GetMouseButton(2))
+        {
+            float deltaX = (_currentMousePositionX - Input.mousePosition.x) * 0.05f;
+            float deltaY = (_currentMousePositionY - Input.mousePosition.y) * 0.05f;
+
+            if (Map.SizeX / 2.0 * RenderingScript.CellSizeX > Math.Abs(Camera.main.transform.position.x + deltaX))
+            {
+                Camera.main.transform.position = new Vector3(
+                    Camera.main.transform.position.x + deltaX,
+                    Camera.main.transform.position.y,
+                    Camera.main.transform.position.z);
+            }
+
+            if (Map.SizeY / 2.0 * RenderingScript.CellSizeY > Math.Abs(Camera.main.transform.position.y + deltaY))
+            {
+                Camera.main.transform.position = new Vector3(
+                    Camera.main.transform.position.x,
+                    Camera.main.transform.position.y + deltaY,
+                    Camera.main.transform.position.z);
+
+            }
+        }
+
+        _currentMousePositionX = Input.mousePosition.x;
+        _currentMousePositionY = Input.mousePosition.y;
     }
 
     public void ChangeSliderValue(float axis)
