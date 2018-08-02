@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 public class MapScript : MonoBehaviour
 {
-    public int SizeX = 100;
+    public int SizeX = 1;
 
-    public int SizeY = 100;
+    public int SizeY = 1;
 
     private float CellSizeX = 2.56f;
 

@@ -52,7 +52,7 @@ public class RenderingScript : MonoBehaviour
     /// </summary> 
     //public void FrameUpdate(// Передается карта)
     //{
-        
+
     //}
 
     /// <summary>
@@ -60,14 +60,14 @@ public class RenderingScript : MonoBehaviour
     /// </summary>
     public void CreateCells(int sizeX, int sizeY)
     {
-        for (int y = 0; y < sizeY; y++)
+        /* Генерируем пустые клетки на экране
+        в центре экрана точка отсчета, поэтому
+        начинаем генерировать со смещением */
+        for (int y = -sizeY / 2; y < sizeY / 2; y++)
         {
-            for (int x = 0; x < sizeX; x++)
+            for (int x = -sizeX / 2; x < sizeX / 2; x++)
             {
-                /* Генерируем пустые клетки на экране
-                в центре экрана точка отсчета, поэтому
-                начинаем генерировать со смещением */
-                Instantiate(Empty, new Vector3(x: (x - sizeX / 2) * CellSizeX, y: (y - sizeY / 2) * CellSizeY ), new Quaternion(0, 0, 0, 0));
+                Instantiate(Empty, new Vector3(x: x * CellSizeX, y: y * CellSizeY), new Quaternion(0, 0, 0, 0));
             }
         }
     }
