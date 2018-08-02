@@ -10,13 +10,10 @@ public class Data
 {
     public void StartBugSelection()
     {
-        foreach (var bug in Bugs)
-        {
-            bug.StartAction();
-        }
+        BugsCollection.StartExecution();
     }
 
-    public IList<Bug> Bugs { get; set; }
+    public BugCollection BugsCollection;
 
     public Map Map { get; set; }
 
