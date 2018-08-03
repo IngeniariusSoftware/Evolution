@@ -24,13 +24,24 @@ namespace Assets.Scripts
             Bugs = inBugs.Select(x=>x).ToList();
         }
         public IList<Beetle> Bugs { get; set; }
+
         /// <summary>
         /// Создает новое поколение жуков
         /// </summary>
         public void CreateNewGeneration()
         {
-
+           
         }
+
+        /// <summary>
+        /// Сортировка жуков по хп, для дальнейшего отбора
+        /// </summary>
+        private void SortBugs()
+        {
+            Bugs = Bugs.OrderBy(x => x.Health).ToList();
+            //Bugs= Array.Sort(Bugs.ToArray());
+        }
+
         /// <summary>
         /// Начать действие над коллекцией жуков
         /// </summary>
