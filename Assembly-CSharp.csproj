@@ -68,11 +68,11 @@
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\CellEnum.cs" />
     <Compile Include="Assets\Scripts\Control.cs" />
+    <Compile Include="Assets\Scripts\Coordinates.cs" />
     <Compile Include="Assets\Scripts\Data.cs" />
     <Compile Include="Assets\Scripts\Generation.cs" />
     <Compile Include="Assets\Scripts\Genome.cs" />
     <Compile Include="Assets\Scripts\Map.cs" />
-    <Compile Include="Assets\Scripts\Coordinates.cs" />
     <Compile Include="Assets\Scripts\RenderingScript.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>D:/Projects/Evolution/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

@@ -29,7 +29,7 @@ public class RenderingScript : MonoBehaviour
     /// <summary>
     ///     Массив префабов всех объектов
     /// </summary>
-    private static Transform[,] MapObjects = new Transform[Map.SizeY, Map.SizeX];
+    private static Transform[,] MapObjects = new Transform[Map.Size.Y, Map.Size.X];
 
     void Awake()
     {
@@ -47,9 +47,9 @@ public class RenderingScript : MonoBehaviour
         /* Генерируем пустые клетки на экране
         в центре экрана точка отсчета, поэтому
         начинаем генерировать со смещением */
-        for (int y = -Map.SizeY / 2; y < Math.Ceiling(Map.SizeY / 2.0); y++)
+        for (int y = -Map.Size.Y / 2; y < Math.Ceiling(Map.Size.Y / 2.0); y++)
         {
-            for (int x = -Map.SizeX / 2; x < Math.Ceiling(Map.SizeX / 2.0); x++)
+            for (int x = -Map.Size.X / 2; x < Math.Ceiling(Map.Size.X / 2.0); x++)
             {
                 Instantiate(Objects[(int)CellEnum.TypeOfCell.Empty], new Vector3(x * CellSizeX, y * CellSizeY), new Quaternion(0, 0, 0, 0));
             }
@@ -61,15 +61,15 @@ public class RenderingScript : MonoBehaviour
     /// </summary>
     public static void InitializeObjects()
     {
-        for (int x = 0; x < Map.SizeX; x++)
+        for (int x = 0; x < Map.Size.X; x++)
         {
-            for (int y = 0; y < Map.SizeY; y++)
+            for (int y = 0; y < Map.Size.Y; y++)
             {
                 if (Map.WorldMap[y, x].CellType != CellEnum.TypeOfCell.Empty)
                 {
                     MapObjects[y, x] = Instantiate(
                         Objects[(int)Map.WorldMap[y, x].CellType],
-                        new Vector3((x - Map.SizeX / 2) * CellSizeX, (y - Map.SizeY / 2) * CellSizeY),
+                        new Vector3((x - Map.Size.X / 2) * CellSizeX, (y - Map.Size.Y / 2) * CellSizeY),
                         new Quaternion(0, 0, 0, 0));
                 }
             }
@@ -81,8 +81,8 @@ public class RenderingScript : MonoBehaviour
     /// </summary>
     public static void UpdateObjects(Cell cell)
     {
-        MapObjects[cell.Y, cell.X].transform.position = new Vector3(
-            (cell.Y - Map.SizeY / 2) * CellSizeY,
-            (cell.X - Map.SizeX / 2) * CellSizeX);
+        MapObjects[cell.Coordinate.Y, cell.Coordinate.X].transform.position = new Vector3(
+            (cell.Coordinate.Y - Map.Size.Y / 2) * CellSizeY,
+            (cell.Coordinate.X - Map.Size.X / 2) * CellSizeX);
     }
 }

@@ -6,9 +6,7 @@ using UnityEngine;
 
 public class Bug : IComparable<Bug>
 {
-    public int X { get; set; }
-
-    public int Y { get; set; }
+    public Coordinates Coordinate { get; set; }
 
     public int Health { get; set; }
 
@@ -30,10 +28,10 @@ public class Bug : IComparable<Bug>
         return (CurrentGenePosition + shift) % 64;
     }
 
-    public Bug(int x, int y, Genome gene, int health = 50, int generationNumber = 0)
+    public Bug(Coordinates coordinate, Genome gene, int health = 50, int generationNumber = 0)
     {
-        X = x;
-        Y = y;
+        Coordinate.Y = coordinate.Y;
+        Coordinate.X = coordinate.X;
         Gene = gene;
         Health = health;
         GenerationNumber = generationNumber;

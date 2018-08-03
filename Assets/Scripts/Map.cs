@@ -4,19 +4,17 @@ using Random = UnityEngine.Random;
 
 public class Map
 {
-    public static int SizeY = 100;
+    public static Coordinates Size = new Coordinates(100, 100);
 
-    public static int SizeX = 100;
-
-    public static Cell[,] WorldMap =  new Cell[SizeY, SizeX];
+    public static Cell[,] WorldMap =  new Cell[Size.Y, Size.X];
 
     public IEnumerator GetEnumerator()
     {
         if (WorldMap != null)
         {
-            for (int x = 0; x < SizeX; x++)
+            for (int x = 0; x < Size.X; x++)
             {
-                for (int y = 0; y < SizeY; y++)
+                for (int y = 0; y < Size.Y; y++)
                 {
                     yield return WorldMap[y, x];
                 }
@@ -27,11 +25,11 @@ public class Map
 
     public static void CreateMap()
     {
-        for (int x = 0; x < SizeX; x++)
+        for (int x = 0; x < Size.X; x++)
         {
-            for (int y = 0; y < SizeY; y++)
+            for (int y = 0; y < Size.Y; y++)
             {
-                WorldMap[y, x] = new Cell(y, x, CellEnum.GetCellType(Random.Range(0,5)));
+                WorldMap[y, x] = new Cell(new Coordinates(y, x), CellEnum.GetCellType(Random.Range(0,5)));
             }
         }
     }
