@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts
 {
-    public class Genom : IEnumerable,ICloneable
+    public class Genome : IEnumerable,ICloneable
     {
-        public List<int> genom { get; set; }
+        public List<int> genome { get; set; }
 
         public IEnumerator GetEnumerator()
         {
-            foreach (var gen in genom) yield return gen;
+            foreach (var gene in genome) yield return gene;
         }
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace Assets.Scripts
         /// <returns></returns>
         public object Clone()
         {
-            return new List<int>(genom);
+            return new List<int>(genome);
         }
         /// <summary>
         /// Клонирование генома в виде List<int>, чтобы не выполнялось клонирование по ссылке 
@@ -27,7 +27,7 @@ namespace Assets.Scripts
         /// <returns></returns>
         public List<int> Clone(bool flag)
         {
-            return new List<int>(genom); 
+            return new List<int>(genome); 
         }
     }
 }
