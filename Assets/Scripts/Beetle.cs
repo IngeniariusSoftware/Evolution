@@ -18,5 +18,14 @@ public class Beetle
     public void StartAction()
     {
     }
+
+    public Beetle(int x, int y, Genom gen, int health = 50, int generation = 0)
+    {
+        X = x;
+        Y = y;
+        Gen = gen;
+        Health = health;
+        Generation = generation;
+    }
 }
 

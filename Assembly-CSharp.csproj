@@ -52,16 +52,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Bug.cs" />
+    <Compile Include="Assets\Scripts\Beetle.cs" />
     <Compile Include="Assets\Scripts\BugCollection.cs" />
     <Compile Include="Assets\Scripts\CameraManageScript.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\CellEnum.cs" />
+    <Compile Include="Assets\Scripts\Control.cs" />
     <Compile Include="Assets\Scripts\Data.cs" />
     <Compile Include="Assets\Scripts\Generation.cs" />
     <Compile Include="Assets\Scripts\Genom.cs" />
     <Compile Include="Assets\Scripts\Map.cs" />
-    <Compile Include="Assets\Scripts\MapScript.cs" />
     <Compile Include="Assets\Scripts\RenderingScript.cs" />
     <Reference Include="UnityEngine.UI">
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
