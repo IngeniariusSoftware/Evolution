@@ -17,4 +17,9 @@
         Y = y;
         X = x;
     }
+
+    public static Coordinates operator +(Coordinates coordinate1, Coordinates coordinate2)
+    {
+        return new Coordinates(coordinate1.Y + coordinate2.Y, coordinate1.X + coordinate2.X);
+    }
 }
