@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 
-public class Beetle
+public class Beetle:IComparable<Beetle>
 {
     public int X { get; set; }
 
@@ -26,6 +27,25 @@ public class Beetle
         Gen = gen;
         Health = health;
         Generation = generation;
+    }
+    /// <summary>
+    /// Сортировка жуков для формирования генома
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public int CompareTo(Beetle other)
+    {
+        if (this.Health>other.Health)
+        {
+            return -1;
+        }
+
+        if (this.Health == other.Health)
+        {
+            return 0;
+        }
+
+        return 1;
     }
 }
 
