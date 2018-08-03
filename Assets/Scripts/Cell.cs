@@ -1,7 +1,5 @@
 ﻿using System;
-
 using Assets.Scripts;
-
 using UnityEngine;
 
 public class Cell
@@ -10,16 +8,16 @@ public class Cell
 
     public int X { get; set; }
 
-    public Beetle Bug { get; set; }
+    public Bug LinkedBug { get; set; }
 
     public CellEnum.TypeOfCell CellType;
 
-    public Cell(int y, int x, CellEnum.TypeOfCell cellType, Beetle bug = null)
+    public Cell(int y, int x, CellEnum.TypeOfCell cellType, Bug bug = null)
     {
         Y = y;
         X = x;
         CellType = cellType;
-        Bug = bug;
+        LinkedBug = bug;
         //if (cellType == CellEnum.TypeOfCell.Bug && bug == null)
         //{
         //    throw new Exception("Мы по ходу жука потеряли");

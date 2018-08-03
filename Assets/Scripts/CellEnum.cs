@@ -2,7 +2,7 @@
 {
     public enum TypeOfCell
     {
-        Empty = 0,
+        Empty,
 
         Food,
 
