@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Assets.Scripts;
-using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Bug : IComparable<Bug>
 {
@@ -40,7 +35,7 @@ public class Bug : IComparable<Bug>
 
     public int GenerationNumber { get; set; }
 
-    public Genome Gene{ get; set; }
+    public Genome Gene { get; set; }
 
     private int _currentGenePosition;
 
@@ -61,7 +56,14 @@ public class Bug : IComparable<Bug>
 
     public void StartAction()
     {
-
+        int countSteps = 0;
+        bool isEnd = false;
+        Health--;
+        while (countSteps < 16 && !isEnd)
+        {
+            isEnd = DoCommand(bug: this);
+            countSteps++;
+        }
     }
 
     public int NextGenePosition(int shift)
@@ -69,14 +71,39 @@ public class Bug : IComparable<Bug>
         return (CurrentGenePosition + shift) % 64;
     }
 
-    public Bug(Coordinates coordinate, Genome gene, int generationNumber = 0)
+    //public Bug(Coordinates coordinate, Genome gene, int generationNumber = 0)
+    //{
+    //    Coordinate = coordinate;
+    //    Gene = gene;
+    //    Health = Data.StartBugHealth;
+    //    GenerationNumber = generationNumber;
+    //    CurrentGenePosition = 0;
+    //    Direction = Data.Rnd.Next(0, 8);
+    //}
+
+    public Bug(Genome genome = null)
     {
-        Coordinate = coordinate;
-        Gene = gene;
+        Coordinates destination;
+        do
+        {
+            destination = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
+        }
+        while (Map.WorldMap[destination.Y, destination.X].CellType != CellEnum.TypeOfCell.Empty);
+
+        Coordinate = destination;
+        Map.WorldMap[destination.Y, destination.X].CellType = CellEnum.TypeOfCell.Bug;
+        if (genome == null)
+        {
+        Gene = new Genome();
+        }
+        else
+        {
+            Gene = genome;
+        }
         Health = Data.StartBugHealth;
-        GenerationNumber = generationNumber;
+        GenerationNumber = 0;
         CurrentGenePosition = 0;
-        Direction = Random.Range(0, 8);
+        Direction = Data.Rnd.Next(0, 8);
     }
 
     /// <summary>
@@ -103,15 +130,17 @@ public class Bug : IComparable<Bug>
 
     public delegate bool BugCommand(Bug bug);
 
-    public static BugCommand[] MasBugCommands = {Move, CheckCell, Take, Rotate, Multiply, Push, CheckHealth, Attack, Share};
+    public static BugCommand[] MasBugCommands =
+        { Move };
+    // Команды  , CheckCell, Take, Rotate, Multiply, Push, CheckHealth, Attack, Share
 
     public static bool DoCommand(Bug bug)
     {
         BugDestination = Coordinates.CoordinateShift[((bug.Direction + bug.Gene.genome[bug.NextGenePosition(1)]) % 8)]
-                      + bug.Coordinate;
+                         + bug.Coordinate;
         if (MasBugCommands.Length > bug.Gene.genome[bug.CurrentGenePosition])
         {
-            return MasBugCommands[bug.CurrentGenePosition].Invoke(bug);
+            return MasBugCommands[bug.Gene.genome[bug.CurrentGenePosition]].Invoke(bug);
         }
         else
         {
@@ -125,22 +154,27 @@ public class Bug : IComparable<Bug>
         {
             case CellEnum.TypeOfCell.Empty:
                 {
-                    bug.Coordinate = BugDestination; // Куча событий +
+                    Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
+                    bug.Coordinate = BugDestination;
+                    Map.WorldMap[BugDestination.Y, BugDestination.X].CellType = CellEnum.TypeOfCell.Bug;
                     break;
                 }
             case CellEnum.TypeOfCell.Food:
                 {
-                    bug.Coordinate = BugDestination;  // Куча событий +
+                    Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
+                    bug.Coordinate = BugDestination;
+                    Map.WorldMap[BugDestination.Y, BugDestination.X].CellType = CellEnum.TypeOfCell.Bug;
                     bug.Health += Data.FoodValue;
                     break;
                 }
             case CellEnum.TypeOfCell.Poison:
                 {
-                    bug.Health = 0;  // Куча событий +
+                    bug.Health = 0; 
                     break;
                 }
         }
 
+        bug.CurrentGenePosition += (int)Map.WorldMap[BugDestination.Y, BugDestination.X].CellType + 1;
         return true;
     }
 
