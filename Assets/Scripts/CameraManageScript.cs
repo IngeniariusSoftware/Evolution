@@ -1,7 +1,5 @@
-﻿using UnityEditor;
-using  System;
+﻿using  System;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
 
 using Slider = UnityEngine.UI.Slider;
 
