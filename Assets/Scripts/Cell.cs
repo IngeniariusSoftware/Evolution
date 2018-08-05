@@ -1,15 +1,11 @@
-﻿using System;
-using Assets.Scripts;
-using UnityEngine;
-
-public class Cell
+﻿public class Cell
 {
     public Coordinates Coordinate { get; set; }
-    
+
 
     public Bug LinkedBug { get; set; }
 
-    private CellEnum.TypeOfCell _cellType = CellEnum.TypeOfCell.Empty;
+    private CellEnum.TypeOfCell _cellType;
 
     public CellEnum.TypeOfCell CellType
     {
@@ -24,12 +20,12 @@ public class Cell
             {
                 case CellEnum.TypeOfCell.Food:
                     {
-                        Data.CurrentCoutFood--;
+                        Data.CurrentCountFood--;
                         break;
                     }
                 case CellEnum.TypeOfCell.Poison:
                     {
-                        Data.CurrentCoutPoison--;
+                        Data.CurrentCountPoison--;
                         break;
                     }
             }
@@ -38,17 +34,23 @@ public class Cell
             {
                 case CellEnum.TypeOfCell.Food:
                     {
-                        Data.CurrentCoutFood++;
+                        Data.CurrentCountFood++;
                         break;
                     }
                 case CellEnum.TypeOfCell.Poison:
                     {
-                        Data.CurrentCoutPoison++;
+                        Data.CurrentCountPoison++;
+                        break;
+                    }
+                case CellEnum.TypeOfCell.Wall:
+                    {
+                        Data.CurrentCountWall++;
                         break;
                     }
             }
 
             _cellType = value;
+            RenderingScript.UpdateTypeCell(this);
         }
     }
 
@@ -56,11 +58,11 @@ public class Cell
     public Cell(Coordinates coordinate, CellEnum.TypeOfCell cellType, Bug bug = null)
     {
         Coordinate = coordinate;
-        CellType = cellType;
         LinkedBug = bug;
         //if (cellType == CellEnum.TypeOfCell.Bug && bug == null)
         //{
         //    throw new Exception("Мы по ходу жука потеряли");
         //}
+        CellType = cellType;
     }
 }
