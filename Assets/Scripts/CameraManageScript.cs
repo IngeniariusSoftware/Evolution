@@ -37,7 +37,7 @@ public class CameraManageScript : MonoBehaviour
             float deltaX = (_currentMousePositionX - Input.mousePosition.x) * 0.05f;
             float deltaY = (_currentMousePositionY - Input.mousePosition.y) * 0.05f;
 
-            if (Map.SizeX / 2.0 * RenderingScript.CellSizeX > Math.Abs(Camera.main.transform.position.x + deltaX))
+            if (Data.MapSize.X / 2.0 * Data.CellSizeX > Math.Abs(Camera.main.transform.position.x + deltaX))
             {
                 Camera.main.transform.position = new Vector3(
                     Camera.main.transform.position.x + deltaX,
@@ -45,7 +45,7 @@ public class CameraManageScript : MonoBehaviour
                     Camera.main.transform.position.z);
             }
 
-            if (Map.SizeY / 2.0 * RenderingScript.CellSizeY > Math.Abs(Camera.main.transform.position.y + deltaY))
+            if (Data.MapSize.Y / 2.0 * Data.CellSizeY > Math.Abs(Camera.main.transform.position.y + deltaY))
             {
                 Camera.main.transform.position = new Vector3(
                     Camera.main.transform.position.x,

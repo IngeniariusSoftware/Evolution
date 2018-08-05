@@ -11,15 +11,7 @@ public class RenderingScript : MonoBehaviour
     // Не совсем красивое решение, так как можно считывать размеры картинки
     // и формировать размеры клетки, но у нас единый стандарт, так что без разницы
 
-    /// <summary>
-    ///     Размер клеток по абсциссе
-    /// </summary>
-    public static readonly float CellSizeX = 2.56f;
 
-    /// <summary>
-    ///     Размер клеток по ординате
-    /// </summary>
-    public static readonly float CellSizeY = 2.56f;
 
     /// <summary>
     ///     Лист префабов
@@ -29,7 +21,7 @@ public class RenderingScript : MonoBehaviour
     /// <summary>
     ///     Массив префабов всех объектов
     /// </summary>
-    private static Transform[,] MapObjects = new Transform[Map.Size.Y, Map.Size.X];
+    private static Transform[,] MapObjects = new Transform[Data.MapSize.Y, Data.MapSize.X];
 
     void Awake()
     {
@@ -42,36 +34,33 @@ public class RenderingScript : MonoBehaviour
     /// <summary>
     ///     Сгенировать карту из пустых клеток
     /// </summary>
-    public static void CreateCells()
-    {
-        /* Генерируем пустые клетки на экране
-        в центре экрана точка отсчета, поэтому
-        начинаем генерировать со смещением */
-        for (int y = -Map.Size.Y / 2; y < Math.Ceiling(Map.Size.Y / 2.0); y++)
-        {
-            for (int x = -Map.Size.X / 2; x < Math.Ceiling(Map.Size.X / 2.0); x++)
-            {
-                Instantiate(Objects[(int)CellEnum.TypeOfCell.Empty], new Vector3(x * CellSizeX, y * CellSizeY), new Quaternion(0, 0, 0, 0));
-            }
-        }
-    }
+    //public static void CreateCells()
+    //{
+    //    /* Генерируем пустые клетки на экране
+    //    в центре экрана точка отсчета, поэтому
+    //    начинаем генерировать со смещением */
+    //    for (int y = -Data.MapSize.Y / 2; y < Math.Ceiling(Data.MapSize.Y / 2.0); y++)
+    //    {
+    //        for (int x = -Data.MapSize.X / 2; x < Math.Ceiling(Data.MapSize.X / 2.0); x++)
+    //        {
+    //            Instantiate(Objects[(int)CellEnum.TypeOfCell.Empty], new Vector3(x * Data.CellSizeX, y * Data.CellSizeY), new Quaternion(0, 0, 0, 0));
+    //        }
+    //    }
+    //}
 
     /// <summary>
     ///     Сгенировать все объекты на карте
     /// </summary>
     public static void InitializeObjects()
     {
-        for (int x = 0; x < Map.Size.X; x++)
+        for (int x = 0; x < Data.MapSize.X; x++)
         {
-            for (int y = 0; y < Map.Size.Y; y++)
+            for (int y = 0; y < Data.MapSize.Y; y++)
             {
-                if (Map.WorldMap[y, x].CellType != CellEnum.TypeOfCell.Empty)
-                {
                     MapObjects[y, x] = Instantiate(
                         Objects[(int)Map.WorldMap[y, x].CellType],
-                        new Vector3((x - Map.Size.X / 2) * CellSizeX, (y - Map.Size.Y / 2) * CellSizeY),
+                        new Vector3((x - Data.MapSize.X / 2) * Data.CellSizeX, (y - Data.MapSize.Y / 2) * Data.CellSizeY),
                         new Quaternion(0, 0, 0, 0));
-                }
             }
         }
     }
@@ -82,7 +71,7 @@ public class RenderingScript : MonoBehaviour
     public static void UpdateObjects(Cell cell)
     {
         MapObjects[cell.Coordinate.Y, cell.Coordinate.X].transform.position = new Vector3(
-            (cell.Coordinate.Y - Map.Size.Y / 2) * CellSizeY,
-            (cell.Coordinate.X - Map.Size.X / 2) * CellSizeX);
+            (cell.Coordinate.Y - Data.MapSize.Y / 2) * Data.CellSizeY,
+            (cell.Coordinate.X - Data.MapSize.X / 2) * Data.CellSizeX);
     }
 }
