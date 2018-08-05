@@ -1,4 +1,6 @@
-﻿public class Coordinates
+﻿using UnityEngine;
+
+public class Coordinates
 {
     public int Y { get; set; }
 
@@ -16,6 +18,11 @@
     {
         Y = y;
         X = x;
+    }
+
+    public static Coordinates RandomCoordinates(int rangeY, int rangeX)
+    {
+        return new Coordinates(Random.Range(0, rangeY), Random.Range(0, rangeX));
     }
 
     public static Coordinates operator +(Coordinates coordinate1, Coordinates coordinate2)
