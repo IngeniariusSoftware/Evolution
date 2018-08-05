@@ -1,10 +1,4 @@
-﻿using System;
-
-using Boo.Lang;
-
-using UnityEditor;
-
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RenderingScript : MonoBehaviour
 {
@@ -12,22 +6,27 @@ public class RenderingScript : MonoBehaviour
     // и формировать размеры клетки, но у нас единый стандарт, так что без разницы
 
 
-
     /// <summary>
-    ///     Лист префабов
+    ///     Объект
     /// </summary>
-    public static Transform[]Objects = new Transform[5];
+    public static Sprite[] Sprites = new Sprite[5];
 
     /// <summary>
-    ///     Массив префабов всех объектов
+    ///     Объект
+    /// </summary>
+    public static Transform Object;
+
+    /// <summary>
+    ///     Массив всех объектов Unity на карте
     /// </summary>
     private static Transform[,] MapObjects = new Transform[Data.MapSize.Y, Data.MapSize.X];
 
     void Awake()
     {
+        Object = Resources.Load<GameObject>("Empty").transform;
         for (int i = 0; i < 5; i++)
         {
-            Objects[i] = Resources.Load<GameObject>("Prefabs/" + CellEnum.GetCellType(i).ToString().Replace("TypeOfCell.", "")).transform;
+            Sprites[i] = Resources.Load<Sprite>("Sprites/" + CellEnum.GetCellType(i).ToString().Replace("TypeOfCell.", ""));
         }
     }
 
@@ -57,10 +56,11 @@ public class RenderingScript : MonoBehaviour
         {
             for (int y = 0; y < Data.MapSize.Y; y++)
             {
-                    MapObjects[y, x] = Instantiate(
-                        Objects[(int)Map.WorldMap[y, x].CellType],
-                        new Vector3((x - Data.MapSize.X / 2) * Data.CellSizeX, (y - Data.MapSize.Y / 2) * Data.CellSizeY),
-                        new Quaternion(0, 0, 0, 0));
+                MapObjects[y, x] = Instantiate(
+                    Object,
+                    new Vector3((x - Data.MapSize.X / 2) * Data.CellSizeX, (y - Data.MapSize.Y / 2) * Data.CellSizeY),
+                    new Quaternion(0, 0, 0, 0));
+
             }
         }
     }
@@ -73,5 +73,11 @@ public class RenderingScript : MonoBehaviour
         MapObjects[cell.Coordinate.Y, cell.Coordinate.X].transform.position = new Vector3(
             (cell.Coordinate.Y - Data.MapSize.Y / 2) * Data.CellSizeY,
             (cell.Coordinate.X - Data.MapSize.X / 2) * Data.CellSizeX);
+    }
+
+    public static void UpdateTypeCell(Cell cell)
+    {
+        MapObjects[cell.Coordinate.Y, cell.Coordinate.X].GetComponent<SpriteRenderer>().sprite =
+            Sprites[(int)cell.CellType];
     }
 }
