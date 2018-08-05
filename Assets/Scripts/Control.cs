@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
+using Assets.Scripts;
+
 using UnityEngine;
 
 public class Control : MonoBehaviour
 {
-    private void Start()
+    void Start()
     {
-        RenderingScript.CreateCells();
+       // RenderingScript.CreateCells();
         Map.CreateMap();
         RenderingScript.InitializeObjects();
     }
