@@ -31,11 +31,11 @@
                 }
             case 3:
                 {
-                    return TypeOfCell.Bug;
+                    return TypeOfCell.Wall;
                 }
             case 4:
                 {
-                    return TypeOfCell.Wall;
+                    return TypeOfCell.Bug;
                 }
         }
 
