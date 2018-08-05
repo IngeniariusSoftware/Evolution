@@ -48,7 +48,7 @@ public class Bug : IComparable<Bug>
 
         set
         {
-            _currentGenePosition = value % 64;
+            _currentGenePosition = value % Data.LengthGenome;
         }
     }
 
@@ -68,7 +68,7 @@ public class Bug : IComparable<Bug>
 
     public int NextGenePosition(int shift)
     {
-        return (CurrentGenePosition + shift) % 64;
+        return (CurrentGenePosition + shift) % Data.LengthGenome;
     }
 
     //public Bug(Coordinates coordinate, Genome gene, int generationNumber = 0)
@@ -131,8 +131,8 @@ public class Bug : IComparable<Bug>
     public delegate bool BugCommand(Bug bug);
 
     public static BugCommand[] MasBugCommands =
-        { Move };
-    // Команды  , CheckCell, Take, Rotate, Multiply, Push, CheckHealth, Attack, Share
+        { Move, Rotate, CheckCell, Take, CheckHealth};
+    // Команды  Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Attack, Share
 
     public static bool DoCommand(Bug bug)
     {
@@ -209,6 +209,7 @@ public class Bug : IComparable<Bug>
                 }
         }
 
+        bug.CurrentGenePosition += (int)Map.WorldMap[BugDestination.Y, BugDestination.X].CellType + 1;
         return true;
     }
 
