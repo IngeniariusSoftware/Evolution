@@ -25,7 +25,7 @@ public static class Data
     /// <summary>
     ///     Максимальное количество жизней жука
     /// </summary>
-    public static readonly int MaxBugHealth = 128;
+    public static readonly int MaxBugHealth = 256;
 
     /// <summary>
     ///     Количество жизней, которое есть у жука при создании мира
@@ -33,9 +33,19 @@ public static class Data
     public static readonly int StartBugHealth = 50;
 
     /// <summary>
-    ///     Количество жизней, которое получаает жук, если съест еду
+    ///     Количество жизней, необходимое на размножение жука
     /// </summary>
-    public static readonly int FoodValue = 10;
+    public static readonly int MuptiplyCost = 30;
+
+    /// <summary>
+    ///     Количество жизней, которое получаает жук, если съест минеральную ягоду
+    /// </summary>
+    public static readonly int MineralBerryValue = 30;
+
+    /// <summary>
+    ///     Количество жизней, которое получаает жук, если съест обычную ягоду
+    /// </summary>
+    public static readonly int BerryValue = 10;
 
     /// <summary>
     ///     Количество клеток по x и y   
@@ -43,14 +53,19 @@ public static class Data
     public static readonly Coordinates MapSize = new Coordinates(35, 60);
 
     /// <summary>
-    ///     Процент еды на карте
+    ///     Процент обычных ягод на карте
     /// </summary>
-    public static readonly float PercentFood = 0.1f;
+    public static readonly float PercentBerry = 0.04f;
 
     /// <summary>
     ///      Процент яда на карте
     /// </summary>
-    public static readonly float PercentPoison = 0.1f;
+    public static readonly float PercentPoison = 0.04f;
+
+    /// <summary>
+    ///      Процент минералов на карте
+    /// </summary>
+    public static readonly float PercentMineral = 0.02f;
 
     /// <summary>
     ///      Процент яда на карте
@@ -58,24 +73,14 @@ public static class Data
     public static readonly float PercentWall = 0.05f;
 
     /// <summary>
-    ///     Текущее количество еды на карте
+    ///     Максимально возможное количество минералов на карте
     /// </summary>
-    public static int CurrentCountFood = 0;
+    public static readonly int MaxCountMineral = (int)(MapSize.X * MapSize.Y * PercentMineral);
 
     /// <summary>
-    ///    Текущее количество яда на карте
+    ///     Максимально возможное количество обычных ягод на карте
     /// </summary>
-    public static int CurrentCountPoison = 0;
-
-    /// <summary>
-    ///    Текущее количество яда на карте
-    /// </summary>
-    public static int CurrentCountWall = 0;
-
-    /// <summary>
-    ///     Максимально возможное количество еды на карте
-    /// </summary>
-    public static readonly int MaxCountFood = (int)(MapSize.X * MapSize.Y * PercentFood);
+    public static readonly int MaxCountBerry = (int)(MapSize.X * MapSize.Y * PercentBerry);
 
     /// <summary>
     ///     Максимально возможное количество яда на карте
@@ -83,7 +88,7 @@ public static class Data
     public static readonly int MaxCountPoison = (int)(MapSize.X * MapSize.Y * PercentPoison);
 
     /// <summary>
-    ///     Максимально возможное количество яда на карте
+    ///     Максимально возможное количество стен на карте
     /// </summary>
     public static readonly int MaxCountWall = (int)(MapSize.X * MapSize.Y * PercentWall);
 
@@ -97,12 +102,27 @@ public static class Data
     /// </summary>
     public static readonly float CellSizeY = 2.56f;
 
-    #endregion
+    /// <summary>
+    ///     Текущее количество минералов на карте
+    /// </summary>
+    public static int CurrentCountMineral = 0;
 
-    public static void StartBugSelection()
-    {
-        BugsCollection.StartExecution();
-    }
+    /// <summary>
+    ///     Текущее количество обычных ягод на карте
+    /// </summary>
+    public static int CurrentCountBerry = 0;
+
+    /// <summary>
+    ///    Текущее количество яда на карте
+    /// </summary>
+    public static int CurrentCountPoison = 0;
+
+    /// <summary>
+    ///    Текущее количество стен на карте
+    /// </summary>
+    public static int CurrentCountWall = 0;
+
+    #endregion
 
     public static BugCollection BugsCollection;
 }
