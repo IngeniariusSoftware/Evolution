@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 public class Bug : IComparable<Bug>
 {
@@ -94,16 +95,18 @@ public class Bug : IComparable<Bug>
         Map.WorldMap[destination.Y, destination.X].CellType = CellEnum.TypeOfCell.Bug;
         if (genome == null)
         {
-        Gene = new Genome();
+            Gene = new Genome();
         }
         else
         {
             Gene = genome;
         }
+
         Health = Data.StartBugHealth;
         GenerationNumber = 0;
         CurrentGenePosition = 0;
         Direction = Data.Rnd.Next(0, 8);
+        Map.WorldMap[destination.Y, destination.X].LinkedBug = this;
     }
 
     /// <summary>
@@ -130,8 +133,7 @@ public class Bug : IComparable<Bug>
 
     public delegate bool BugCommand(Bug bug);
 
-    public static BugCommand[] MasBugCommands =
-        { Move, Rotate, CheckCell, Take, CheckHealth};
+    public static BugCommand[] MasBugCommands = { Move, Rotate, CheckCell, Take, CheckHealth, Share, };
     // Команды  Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Attack, Share
 
     public static bool DoCommand(Bug bug)
@@ -169,7 +171,7 @@ public class Bug : IComparable<Bug>
                 }
             case CellEnum.TypeOfCell.Poison:
                 {
-                    bug.Health = 0; 
+                    bug.Health = 0;
                     break;
                 }
         }

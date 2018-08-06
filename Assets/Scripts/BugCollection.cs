@@ -52,6 +52,7 @@ public class BugCollection
         foreach (var bug in deadBugs)
         {
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
+            Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
             Bugs.Remove(bug);
         }
     }
@@ -68,6 +69,7 @@ public class BugCollection
         foreach (var bug in Bugs)
         {
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
+            Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
         }
 
         Count = bugs.Count;
