@@ -4,11 +4,15 @@
     {
         Empty,
 
-        Food,
+        Berry,
 
         Poison,
 
         Wall,
+
+        Mineral,
+
+        MineralBerry,
 
         Bug
     }
@@ -21,19 +25,33 @@
                 {
                     return TypeOfCell.Empty;
                 }
+
             case 1:
                 {
-                    return TypeOfCell.Food;
+                    return TypeOfCell.Berry;
                 }
+
             case 2:
                 {
                     return TypeOfCell.Poison;
                 }
+
             case 3:
                 {
                     return TypeOfCell.Wall;
                 }
+
             case 4:
+                {
+                    return TypeOfCell.Mineral;
+                }
+
+            case 5:
+                {
+                    return TypeOfCell.MineralBerry;
+                }
+
+            case 6:
                 {
                     return TypeOfCell.Bug;
                 }
