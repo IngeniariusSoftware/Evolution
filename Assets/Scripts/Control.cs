@@ -1,14 +1,15 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class Control : MonoBehaviour
 {
     public static BugCollection bugs = new BugCollection();
 
+    public static List<Bug> childs = new List<Bug>();
+
     void Start()
     {
-        // RenderingScript.CreateCells();
-        
         RenderingScript.InitializeObjects();
         Map.CreateMap();
         bugs = new BugCollection(Data.BugCount);
@@ -17,6 +18,7 @@ public class Control : MonoBehaviour
     void Update()
     {
         bugs.StartExecution();
+        bugs.AddBug(childs);
         Map.RefreshMap();
         if (bugs.Count == 10)
         {
