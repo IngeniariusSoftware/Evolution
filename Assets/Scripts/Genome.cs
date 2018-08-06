@@ -1,4 +1,6 @@
-﻿public class Genome
+﻿using System;
+
+public class Genome
 {
     public int[] genome = new int[Data.LengthGenome];
 
