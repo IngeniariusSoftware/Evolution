@@ -4,31 +4,17 @@ public static class Map
 {
     public static Cell[,] WorldMap = new Cell[Data.MapSize.Y, Data.MapSize.X];
 
-    //public IEnumerator GetEnumerator()
-    //{
-    //    if (WorldMap != null)
-    //    {
-    //        for (int x = 0; x < Data.MapSize.X; x++)
-    //        {
-    //            for (int y = 0; y < Data.MapSize.Y; y++)
-    //            {
-    //                yield return WorldMap[y, x];
-    //            }
-    //        }
-    //    }
-    //}
-
     /// <summary>
     /// Поддержание уровня еды, яда на карте
     /// </summary>
     public static void RefreshMap()
     {
-        while (Data.CurrentCountFood < Data.MaxCountFood)
+        while (Data.CurrentCountBerry < Data.MaxCountBerry)
         {
             Coordinates randomPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
             if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
             {
-                Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Food;
+                Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Berry;
             }
         }
 
@@ -38,6 +24,15 @@ public static class Map
             if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
             {
                 Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Poison;
+            }
+        }
+
+        while (Data.CurrentCountMineral < Data.MaxCountMineral)
+        {
+            Coordinates randomPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
+            if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
+            {
+                Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Mineral;
             }
         }
     }
