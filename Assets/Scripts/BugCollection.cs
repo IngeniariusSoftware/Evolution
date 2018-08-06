@@ -8,6 +8,17 @@ public class BugCollection
 {
     public int Count;
 
+    public void AddBug(List<Bug> bugs)
+    {
+        foreach (Bug bug in bugs)
+        {
+            Bugs.Add(bug);
+            Count++;
+        }
+
+        bugs.Clear();
+    }
+
     public List<Bug> Bugs { get; set; }
 
     public BugCollection()
