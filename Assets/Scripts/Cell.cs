@@ -18,9 +18,9 @@
         {
             switch (_cellType)
             {
-                case CellEnum.TypeOfCell.Food:
+                case CellEnum.TypeOfCell.Berry:
                     {
-                        Data.CurrentCountFood--;
+                        Data.CurrentCountBerry--;
                         break;
                     }
                 case CellEnum.TypeOfCell.Poison:
@@ -28,13 +28,23 @@
                         Data.CurrentCountPoison--;
                         break;
                     }
+                case CellEnum.TypeOfCell.Wall:
+                    {
+                        Data.CurrentCountWall--;
+                        break;
+                    }
+                case CellEnum.TypeOfCell.Mineral:
+                    {
+                        Data.CurrentCountMineral--;
+                        break;
+                    }
             }
 
             switch (value)
             {
-                case CellEnum.TypeOfCell.Food:
+                case CellEnum.TypeOfCell.Berry:
                     {
-                        Data.CurrentCountFood++;
+                        Data.CurrentCountBerry++;
                         break;
                     }
                 case CellEnum.TypeOfCell.Poison:
@@ -45,6 +55,11 @@
                 case CellEnum.TypeOfCell.Wall:
                     {
                         Data.CurrentCountWall++;
+                        break;
+                    }
+                case CellEnum.TypeOfCell.Mineral:
+                    {
+                        Data.CurrentCountMineral++;
                         break;
                     }
             }
