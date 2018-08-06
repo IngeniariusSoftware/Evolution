@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+
+using UnityEngine;
 
 public class RenderingScript : MonoBehaviour
 {
@@ -9,7 +11,7 @@ public class RenderingScript : MonoBehaviour
     /// <summary>
     ///     Объект
     /// </summary>
-    public static Sprite[] Sprites = new Sprite[5];
+    public static List<Sprite> Sprites = new List<Sprite>();
 
     /// <summary>
     ///     Объект
@@ -24,9 +26,10 @@ public class RenderingScript : MonoBehaviour
     void Awake()
     {
         Object = Resources.Load<GameObject>("Empty").transform;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 7; i++)
         {
-            Sprites[i] = Resources.Load<Sprite>("Sprites/" + CellEnum.GetCellType(i).ToString().Replace("TypeOfCell.", ""));
+            Sprites.Add(
+                Resources.Load<Sprite>("Sprites/" + CellEnum.GetCellType(i).ToString().Replace("TypeOfCell.", "")));
         }
     }
 
