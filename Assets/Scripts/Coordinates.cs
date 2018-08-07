@@ -12,6 +12,12 @@
                                                           new Coordinates(0, -1), new Coordinates(-1, -1)
                                                       };
 
+    public Coordinates()
+    {
+        Y = 0;
+        X = 0;
+    }
+
     public Coordinates(int y, int x)
     {
         Y = y;
