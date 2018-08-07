@@ -7,9 +7,9 @@ public class CameraManageScript : MonoBehaviour
 {
     public Slider slider;
 
-    private static float _currentMousePositionX;
+    public static Vector2 MousePosition;
 
-    private static float _currentMousePositionY;
+    public static Vector3 CameraPosition;
 
     public void ChangeCameraSize()
     {
@@ -18,8 +18,8 @@ public class CameraManageScript : MonoBehaviour
 
     void Start()
     {
-        _currentMousePositionX = Input.mousePosition.x;
-        _currentMousePositionY = Input.mousePosition.y;
+        MousePosition = Input.mousePosition;
+        CameraPosition = Camera.main.transform.position;
     }
 
     void Update()
@@ -32,29 +32,21 @@ public class CameraManageScript : MonoBehaviour
 
         if (Input.GetMouseButton(2))
         {
-            float deltaX = (_currentMousePositionX - Input.mousePosition.x) * 0.05f;
-            float deltaY = (_currentMousePositionY - Input.mousePosition.y) * 0.05f;
-
-            if (Data.MapSize.X / 2.0 * Data.CellSizeX > Math.Abs(Camera.main.transform.position.x + deltaX))
+            Vector2 delta = (MousePosition - (Vector2)Input.mousePosition) * 0.1f;
+            if (Data.MapSize.Y / 2.0 * Data.CellSizeY > Math.Abs(delta.y + CameraPosition.y))
             {
-                Camera.main.transform.position = new Vector3(
-                    Camera.main.transform.position.x + deltaX,
-                    Camera.main.transform.position.y,
-                    Camera.main.transform.position.z);
+                CameraPosition.y += delta.y;
             }
 
-            if (Data.MapSize.Y / 2.0 * Data.CellSizeY > Math.Abs(Camera.main.transform.position.y + deltaY))
+            if (Data.MapSize.X / 2.0 * Data.CellSizeX > Math.Abs(delta.x + CameraPosition.x))
             {
-                Camera.main.transform.position = new Vector3(
-                    Camera.main.transform.position.x,
-                    Camera.main.transform.position.y + deltaY,
-                    Camera.main.transform.position.z);
-
+                CameraPosition.x += delta.x;
             }
+
+            Camera.main.transform.position = new Vector3(CameraPosition.x, CameraPosition.y, Camera.main.transform.position.z);
         }
 
-        _currentMousePositionX = Input.mousePosition.x;
-        _currentMousePositionY = Input.mousePosition.y;
+        MousePosition = Input.mousePosition;
     }
 
     public void ChangeSliderValue(float axis)
