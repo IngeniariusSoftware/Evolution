@@ -35,6 +35,15 @@ public static class Map
                 Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Mineral;
             }
         }
+
+        while (Data.CurrentCountWall < Data.MaxCountWall)
+        {
+            Coordinates randomPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
+            if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
+            {
+                Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Wall;
+            }
+        }
     }
 
 
