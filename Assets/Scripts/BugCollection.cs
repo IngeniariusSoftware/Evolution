@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 /// <summary>
 /// Класс, в котором хранится коллекция жуков
@@ -42,17 +43,11 @@ public class BugCollection
     /// </summary>
     public void StartExecution()
     {
-        List<Bug> deadBugs = new List<Bug>();
         foreach (var bug in Bugs)
         {
-
             if (bug.Health == 0)
             {
-                if (Count > 10)
-                {
-                    deadBugs.Add(bug);
-                    Count--;
-                }
+                Control.DeadBugs.Add(bug);
             }
             else
             {
@@ -60,41 +55,69 @@ public class BugCollection
             }
         }
 
-        foreach (var bug in deadBugs)
+        foreach (Bug bug in Control.DeadBugs)
         {
+            Bugs.Remove(bug);
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
-            Bugs.Remove(bug);
+            Count--;
+            if (Control.BestBugs.Count < Data.BugCount)
+            {
+                Control.BestBugs.Add(bug);
+            }
+            else
+            {
+                if (Control.BestBugs.Exists(x => x.LifeTime < bug.LifeTime))
+                {
+                    Control.BestBugs.Add(bug);
+                    Control.BestBugs.Remove(Control.BestBugs[0]);
+                    SortBugs();
+                }
+            }
         }
+
+        Control.DeadBugs.Clear();
     }
 
     public void NewGeneration()
     {
-        
-        List<Bug> bugs = new List<Bug>();
-        for (int i = 0; i < Count * 10; i++)
-        {
-            bugs.Add(new Bug(new Genome(Bugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0,2)))));
-        }
-
         foreach (var bug in Bugs)
         {
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
+            if (Control.BestBugs.Count < Data.BugCount)
+            {
+                Control.BestBugs.Add(bug);
+            }
+            else
+            {
+                if (Control.BestBugs.Exists(x => x.LifeTime < bug.LifeTime))
+                {
+                    Control.BestBugs.Add(bug);
+                    Control.BestBugs.Remove(Control.BestBugs[0]);
+                    SortBugs();
+                }
+            }
+        }
+
+        List<Bug> bugs = new List<Bug>();
+        for (int i = 0; i < Data.BugCount * 10; i++)
+        {
+            bugs.Add(new Bug(new Genome(Control.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
         }
 
         Count = bugs.Count;
         Bugs = bugs;
     }
 
-    ///// <summary>
-    ///// Сортировка жуков по значению здоровья для дальнейшего отбора
-    ///// </summary>
-    //private void SortBugs()
-    //{
-    //    Bugs = Bugs.OrderBy(x => x.Health).ToList();
-    //    //Bugs= Array.Sort(Bugs.ToArray());
-    //}
+    /// <summary>
+    /// Сортировка жуков по значению прожитого времени для дальнейшего отбора
+    /// </summary>
+    private void SortBugs()
+    {
+        Control.BestBugs = Control.BestBugs.OrderBy(x => x.LifeTime).ToList();
+        //Bugs= Array.Sort(Bugs.ToArray());
+    }
 
 
     ///// <summary>
