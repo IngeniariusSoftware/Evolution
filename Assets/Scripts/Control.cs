@@ -8,6 +8,10 @@ public class Control : MonoBehaviour
 
     public static List<Bug> childs = new List<Bug>();
 
+    public static List<Bug> BestBugs = new List<Bug>();
+
+    public static List<Bug> DeadBugs = new List<Bug>();
+
     void Start()
     {
         RenderingScript.InitializeObjects();
@@ -20,11 +24,11 @@ public class Control : MonoBehaviour
         bugs.StartExecution();
         bugs.AddBug(childs);
         Map.RefreshMap();
-        if (bugs.Count == 10)
+        if (bugs.Count <= Data.BugCount / 10)
         {
             bugs.NewGeneration();
         }
 
-        Thread.Sleep(50);
+        //Thread.Sleep(50);
     }
 }
