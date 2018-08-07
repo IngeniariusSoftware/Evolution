@@ -47,7 +47,7 @@ public class BugCollection
         {
             if (bug.Health == 0)
             {
-                Control.DeadBugs.Add(bug);
+                ControlScript.DeadBugs.Add(bug);
             }
             else
             {
@@ -55,28 +55,28 @@ public class BugCollection
             }
         }
 
-        foreach (Bug bug in Control.DeadBugs)
+        foreach (Bug bug in ControlScript.DeadBugs)
         {
             Bugs.Remove(bug);
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
             Count--;
-            if (Control.BestBugs.Count < Data.BugCount)
+            if (ControlScript.BestBugs.Count < Data.BugCount)
             {
-                Control.BestBugs.Add(bug);
+                ControlScript.BestBugs.Add(bug);
             }
             else
             {
-                if (Control.BestBugs.Exists(x => x.LifeTime < bug.LifeTime))
+                if (ControlScript.BestBugs.Exists(x => x.LifeTime < bug.LifeTime))
                 {
-                    Control.BestBugs.Add(bug);
-                    Control.BestBugs.Remove(Control.BestBugs[0]);
+                    ControlScript.BestBugs.Add(bug);
+                    ControlScript.BestBugs.Remove(ControlScript.BestBugs[0]);
                     SortBugs();
                 }
             }
         }
 
-        Control.DeadBugs.Clear();
+        ControlScript.DeadBugs.Clear();
     }
 
     public void NewGeneration()
@@ -85,16 +85,16 @@ public class BugCollection
         {
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
             Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
-            if (Control.BestBugs.Count < Data.BugCount)
+            if (ControlScript.BestBugs.Count < Data.BugCount)
             {
-                Control.BestBugs.Add(bug);
+                ControlScript.BestBugs.Add(bug);
             }
             else
             {
-                if (Control.BestBugs.Exists(x => x.LifeTime < bug.LifeTime))
+                if (ControlScript.BestBugs.Exists(x => x.LifeTime < bug.LifeTime))
                 {
-                    Control.BestBugs.Add(bug);
-                    Control.BestBugs.Remove(Control.BestBugs[0]);
+                    ControlScript.BestBugs.Add(bug);
+                    ControlScript.BestBugs.Remove(ControlScript.BestBugs[0]);
                     SortBugs();
                 }
             }
@@ -103,7 +103,7 @@ public class BugCollection
         List<Bug> bugs = new List<Bug>();
         for (int i = 0; i < Data.BugCount * 10; i++)
         {
-            bugs.Add(new Bug(new Genome(Control.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
+            bugs.Add(new Bug(new Genome(ControlScript.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
         }
 
         Count = bugs.Count;
@@ -115,7 +115,7 @@ public class BugCollection
     /// </summary>
     private void SortBugs()
     {
-        Control.BestBugs = Control.BestBugs.OrderBy(x => x.LifeTime).ToList();
+        ControlScript.BestBugs = ControlScript.BestBugs.OrderBy(x => x.LifeTime).ToList();
         //Bugs= Array.Sort(Bugs.ToArray());
     }
 

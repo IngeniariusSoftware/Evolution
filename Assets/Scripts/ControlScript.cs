@@ -2,7 +2,7 @@
 using System.Threading;
 using UnityEngine;
 
-public class Control : MonoBehaviour
+public class ControlScript : MonoBehaviour
 {
     public static BugCollection bugs = new BugCollection();
 

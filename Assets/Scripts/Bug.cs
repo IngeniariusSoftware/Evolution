@@ -109,7 +109,7 @@ public class Bug
 
     public delegate bool BugCommand(Bug bug);
 
-    //TODO Команды  Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Attack, Share, Photosynthesis , IsFriend Вспомогательная команда, поэтому не вносится
+    //TODO Команды  Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Attack, Share, Photosynthesize , IsFriend Вспомогательная команда, поэтому не вносится
     public static BugCommand[] MasBugCommands = { Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Attack, Share};
 
     public static bool DoCommand(Bug bug)
@@ -268,7 +268,7 @@ public class Bug
                 Bug childBug = new Bug(
                     genome: new Genome(bug.Gene.GenomeMutate(Data.Rnd.Next(0, 2))),
                     coordinate: birthCoordinate);
-                Control.childs.Add(childBug);
+                ControlScript.childs.Add(childBug);
                 isBorn = true;
                 childBug.Health = bug.Health / 2;
             }
@@ -381,7 +381,7 @@ public class Bug
         return false;
     }
 
-    private static bool Photosynthesis(Bug bug)
+    private static bool Photosynthesize(Bug bug)
     {
         bug.CurrentGenePosition += (int)DestinationCell.CellType + 1;
         Bug neighbourBug = DestinationCell.LinkedBug;
