@@ -7,6 +7,8 @@ public class Bug
 {
     public Coordinates Coordinate { get; set; }
 
+    public int LifeTime { get; set; }
+
     private int _health;
 
     public int Health
@@ -24,14 +26,7 @@ public class Bug
             }
             else
             {
-                if (value < 0)
-                {
-                    _health = 0;
-                }
-                else
-                {
-                    _health = Data.MaxBugHealth;
-                }
+                _health = 0;
             }
         }
     }
@@ -62,10 +57,16 @@ public class Bug
         int countSteps = 0;
         bool isEnd = false;
         Health--;
-        while (countSteps < 16 && !isEnd)
+        LifeTime++;
+        while (countSteps < Data.MaxSteps && !isEnd)
         {
             isEnd = DoCommand(bug: this);
             countSteps++;
+        }
+
+        if (countSteps == Data.MaxSteps && !isEnd)
+        {
+            Health = 0;
         }
     }
 
@@ -98,6 +99,7 @@ public class Bug
 
         Health = Data.StartBugHealth;
         GenerationNumber = 0;
+        LifeTime = 0;
         CurrentGenePosition = 0;
         Direction = Data.Rnd.Next(0, 8);
         Map.WorldMap[coordinate.Y, coordinate.X].LinkedBug = this;
@@ -108,12 +110,13 @@ public class Bug
     public delegate bool BugCommand(Bug bug);
 
     //TODO Команды  Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Attack, Share, Photosynthesis , IsFriend Вспомогательная команда, поэтому не вносится
-    public static BugCommand[] MasBugCommands = { Move, Rotate, CheckCell, Take, CheckHealth, Share, Push, Attack, Multiply};
+    public static BugCommand[] MasBugCommands = { Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Attack, Share};
 
     public static bool DoCommand(Bug bug)
     {
-        Coordinates destination = Coordinates.CoordinateShift[((bug.Direction + bug.Gene.genome[bug.NextGenePosition(1)]) % 8)]
-                         + bug.Coordinate;
+        Coordinates destination =
+            Coordinates.CoordinateShift[((bug.Direction + bug.Gene.genome[bug.NextGenePosition(1)]) % 8)]
+            + bug.Coordinate;
         DestinationCell = Map.WorldMap[destination.Y, destination.X];
         if (MasBugCommands.Length > bug.Gene.genome[bug.CurrentGenePosition])
         {
@@ -342,19 +345,8 @@ public class Bug
 
                     if (DestinationCell.LinkedBug != null)
                     {
-                        if (DestinationCell.LinkedBug.Health >= bug.Health * 2)
-                        {
-                            DestinationCell.LinkedBug.Health += bug.Health;
-                            bug.Health = 0;
-                        }
-                        else
-                        {
-                            if (DestinationCell.LinkedBug.Health * 2 <= bug.Health)
-                            {
-                                bug.Health += DestinationCell.LinkedBug.Health;
-                                DestinationCell.LinkedBug.Health = 0;
-                            }
-                        }
+                            DestinationCell.LinkedBug.Health -= 5;
+                            bug.Health += 5;
                     }
 
                     break;
@@ -382,8 +374,8 @@ public class Bug
         if (neighbourBug != null && neighbourBug.IsFriendBug(bug))
         {
             bug.CurrentGenePosition++;
-            neighbourBug.Health += (int)(bug.Health * 0.4);
-            bug.Health = (int)(bug.Health * 0.6);
+            neighbourBug.Health += 5;
+            bug.Health -= 5;
         }
 
         return false;
@@ -391,10 +383,20 @@ public class Bug
 
     private static bool Photosynthesis(Bug bug)
     {
-        bug.Health += 2;
-        bug.CurrentGenePosition++;
+        bug.CurrentGenePosition += (int)DestinationCell.CellType + 1;
+        Bug neighbourBug = DestinationCell.LinkedBug;
+        if (neighbourBug != null && neighbourBug.IsFriendBug(bug))
+        {
+            bug.CurrentGenePosition++;
+        }
+
+        if (DestinationCell.CellType == CellEnum.TypeOfCell.Mineral)
+        {
+            bug.Health += 5;
+        }
+
         return true;
-    } //TODO Подумать
+    } 
 
     private static bool GenomJump(Bug bug)
     {
