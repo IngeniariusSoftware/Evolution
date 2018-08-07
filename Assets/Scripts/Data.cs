@@ -8,6 +8,12 @@ public static class Data
     #region Переменные
 
     /// <summary>
+    ///     Начальное количество жуков
+    /// </summary>
+    public static readonly int MaxSteps = 25;
+
+
+    /// <summary>
     ///     Переменная для генерации случайный значений
     /// </summary>
     public static readonly Random Rnd = new Random();
@@ -15,7 +21,7 @@ public static class Data
     /// <summary>
     ///     Начальное количество жуков
     /// </summary>
-    public static readonly int BugCount = 100;
+    public static readonly int BugCount = 50;
 
     /// <summary>
     ///     Количество команд в геноме
@@ -50,27 +56,27 @@ public static class Data
     /// <summary>
     ///     Количество клеток по x и y   
     /// </summary>
-    public static readonly Coordinates MapSize = new Coordinates(35, 60);
+    public static readonly Coordinates MapSize = new Coordinates(70, 120);
 
     /// <summary>
     ///     Процент обычных ягод на карте
     /// </summary>
-    public static readonly float PercentBerry = 0.04f;
+    public static readonly float PercentBerry = 0.06f;
 
     /// <summary>
     ///      Процент яда на карте
     /// </summary>
-    public static readonly float PercentPoison = 0.04f;
+    public static readonly float PercentPoison = 0.06f;
 
     /// <summary>
     ///      Процент минералов на карте
     /// </summary>
-    public static readonly float PercentMineral = 0.02f;
+    public static readonly float PercentMineral = 0.04f;
 
     /// <summary>
     ///      Процент яда на карте
     /// </summary>
-    public static readonly float PercentWall = 0.05f;
+    public static readonly float PercentWall = 0.08f;
 
     /// <summary>
     ///     Максимально возможное количество минералов на карте
