@@ -19,7 +19,7 @@ public class ControlScript : MonoBehaviour
         bugs = new BugCollection(Data.BugCount);
     }
 
-    void Update()
+    public static void NextTurn()
     {
         bugs.StartExecution();
         bugs.AddBug(childs);
@@ -28,7 +28,15 @@ public class ControlScript : MonoBehaviour
         {
             bugs.NewGeneration();
         }
+    }
 
-        //Thread.Sleep(50);
+    void Update()
+    {
+        RenderingScript.UpdateObjects();
+        if (Data.CurrentStepsRendering > Data.MaxStepsRendering)
+        {
+            Data.CurrentStepsRendering = 0;
+            NextTurn();
+        }
     }
 }
