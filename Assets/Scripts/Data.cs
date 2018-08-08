@@ -10,8 +10,17 @@ public static class Data
     /// <summary>
     ///     Начальное количество жуков
     /// </summary>
-    public static readonly int MaxSteps = 25;
+    public static int CurrentStepsRendering = 0;
 
+    /// <summary>
+    ///     Начальное количество жуков
+    /// </summary>
+    public static readonly int MaxStepsRendering = 24;
+
+    /// <summary>
+    ///     Начальное количество жуков
+    /// </summary>
+    public static readonly int MaxStepsBug = 25;
 
     /// <summary>
     ///     Переменная для генерации случайный значений
@@ -21,7 +30,7 @@ public static class Data
     /// <summary>
     ///     Начальное количество жуков
     /// </summary>
-    public static readonly int BugCount = 50;
+    public static readonly int BugCount = 100;
 
     /// <summary>
     ///     Количество команд в геноме
