@@ -58,8 +58,8 @@ public class BugCollection
         foreach (Bug bug in ControlScript.DeadBugs)
         {
             Bugs.Remove(bug);
-            Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
-            Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
+            Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+            Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
             Count--;
             if (ControlScript.BestBugs.Count < Data.BugCount)
             {
@@ -83,8 +83,8 @@ public class BugCollection
     {
         foreach (var bug in Bugs)
         {
-            Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
-            Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
+            Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+            Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
             if (ControlScript.BestBugs.Count < Data.BugCount)
             {
                 ControlScript.BestBugs.Add(bug);

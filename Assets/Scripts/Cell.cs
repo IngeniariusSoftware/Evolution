@@ -2,7 +2,6 @@
 {
     public Coordinates Coordinate { get; set; }
 
-
     public Bug LinkedBug { get; set; }
 
     private CellEnum.TypeOfCell _cellType;
