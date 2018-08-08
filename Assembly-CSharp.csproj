@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\Genome.cs" />
     <Compile Include="Assets\Scripts\Map.cs" />
     <Compile Include="Assets\Scripts\RenderingScript.cs" />
+    <Compile Include="Assets\Scripts\TimeManageScript.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>D:/Projects/Evolution/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

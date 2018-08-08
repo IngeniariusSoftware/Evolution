@@ -1,6 +1,5 @@
 ﻿using  System;
 using UnityEngine;
-
 using Slider = UnityEngine.UI.Slider;
 
 public class CameraManageScript : MonoBehaviour

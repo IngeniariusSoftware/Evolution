@@ -19,22 +19,22 @@
             {
                 case CellEnum.TypeOfCell.Berry:
                     {
-                        Data.CurrentCountBerry--;
+                        Data.CurrentCountObjects[(int)_cellType]--;
                         break;
                     }
                 case CellEnum.TypeOfCell.Poison:
                     {
-                        Data.CurrentCountPoison--;
+                        Data.CurrentCountObjects[(int)_cellType]--;
                         break;
                     }
                 case CellEnum.TypeOfCell.Wall:
                     {
-                        Data.CurrentCountWall--;
+                        Data.CurrentCountObjects[(int)_cellType]--;
                         break;
                     }
                 case CellEnum.TypeOfCell.Mineral:
                     {
-                        Data.CurrentCountMineral--;
+                        Data.CurrentCountObjects[(int)_cellType]--;
                         break;
                     }
             }
@@ -43,22 +43,22 @@
             {
                 case CellEnum.TypeOfCell.Berry:
                     {
-                        Data.CurrentCountBerry++;
+                        Data.CurrentCountObjects[(int)value]++;
                         break;
                     }
                 case CellEnum.TypeOfCell.Poison:
                     {
-                        Data.CurrentCountPoison++;
+                        Data.CurrentCountObjects[(int)value]++;
                         break;
                     }
                 case CellEnum.TypeOfCell.Wall:
                     {
-                        Data.CurrentCountWall++;
+                        Data.CurrentCountObjects[(int)value]++;
                         break;
                     }
                 case CellEnum.TypeOfCell.Mineral:
                     {
-                        Data.CurrentCountMineral++;
+                        Data.CurrentCountObjects[(int)value]++;
                         break;
                     }
             }

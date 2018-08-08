@@ -116,7 +116,6 @@ public class RenderingScript : MonoBehaviour
                                 new Quaternion(0, 0, 0, 0)));
                         RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
                             Sprites[(int)CellEnum.TypeOfCell.Bug];
-                        Color colorObject = RenderingObjects.Last().GetComponent<SpriteRenderer>().color = Capacity;
                     }
 
                 }
