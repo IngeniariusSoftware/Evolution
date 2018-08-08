@@ -118,26 +118,5 @@ public class BugCollection
         ControlScript.BestBugs = ControlScript.BestBugs.OrderBy(x => x.LifeTime).ToList();
         //Bugs= Array.Sort(Bugs.ToArray());
     }
-
-
-    ///// <summary>
-    ///// Конструктор выполняющий полное копирование прилетевших значений
-    ///// </summary>
-    ///// <param name="inBugs"></param>
-    //public BugCollection(IList<Bug> inBugs)
-    //{
-    //    Bugs = inBugs.Select(x => x).ToList();
-    //}
-
-    ///// <summary>
-    ///// Создает новое поколение жуков
-    ///// </summary>
-    //public void CreateNewGeneration()
-    //{
-    //}
-
-
-
-
 }
 
