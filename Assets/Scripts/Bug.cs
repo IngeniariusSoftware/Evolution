@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-
 using UnityEngine;
 
 public class Bug
 {
-    public Coordinates Coordinate { get; set; }
+    public Coordinates LastPosition { get; set; }
+
+    public Coordinates CurrentPosition { get; set; }
 
     public int LifeTime { get; set; }
 
@@ -54,17 +55,18 @@ public class Bug
 
     public void StartAction()
     {
+        LastPosition = CurrentPosition;   
         int countSteps = 0;
         bool isEnd = false;
         Health--;
         LifeTime++;
-        while (countSteps < Data.MaxSteps && !isEnd)
+        while (countSteps < Data.MaxStepsBug && !isEnd)
         {
             isEnd = DoCommand(bug: this);
             countSteps++;
         }
 
-        if (countSteps == Data.MaxSteps && !isEnd)
+        if (countSteps == Data.MaxStepsBug && !isEnd)
         {
             Health = 0;
         }
@@ -75,19 +77,19 @@ public class Bug
         return (CurrentGenePosition + shift) % Data.LengthGenome;
     }
 
-    public Bug(Genome genome = null, Coordinates coordinate = null)
+    public Bug(Genome genome = null, Coordinates currentPosition = null)
     {
-        if (coordinate == null)
+        if (currentPosition == null)
         {
             do
             {
-                coordinate = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
+                currentPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
             }
-            while (Map.WorldMap[coordinate.Y, coordinate.X].CellType != CellEnum.TypeOfCell.Empty);
+            while (Map.WorldMap[currentPosition.Y, currentPosition.X].CellType != CellEnum.TypeOfCell.Empty);
         }
 
-        Coordinate = coordinate;
-        Map.WorldMap[coordinate.Y, coordinate.X].CellType = CellEnum.TypeOfCell.Bug;
+        CurrentPosition = currentPosition;
+        Map.WorldMap[currentPosition.Y, currentPosition.X].CellType = CellEnum.TypeOfCell.Bug;
         if (genome == null)
         {
             Gene = new Genome();
@@ -102,7 +104,7 @@ public class Bug
         LifeTime = 0;
         CurrentGenePosition = 0;
         Direction = Data.Rnd.Next(0, 8);
-        Map.WorldMap[coordinate.Y, coordinate.X].LinkedBug = this;
+        Map.WorldMap[currentPosition.Y, currentPosition.X].LinkedBug = this;
     }
     
     private static Cell DestinationCell;
@@ -116,7 +118,7 @@ public class Bug
     {
         Coordinates destination =
             Coordinates.CoordinateShift[((bug.Direction + bug.Gene.genome[bug.NextGenePosition(1)]) % 8)]
-            + bug.Coordinate;
+            + bug.CurrentPosition;
         DestinationCell = Map.WorldMap[destination.Y, destination.X];
         if (MasBugCommands.Length > bug.Gene.genome[bug.CurrentGenePosition])
         {
@@ -141,9 +143,9 @@ public class Bug
         {
             case CellEnum.TypeOfCell.Empty:
                 {
-                    Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
-                    Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
-                    bug.Coordinate = DestinationCell.Coordinate;
+                    Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                    Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                    bug.CurrentPosition = DestinationCell.Coordinate;
                     DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
                     DestinationCell.LinkedBug = bug;
                     break;
@@ -151,9 +153,9 @@ public class Bug
 
             case CellEnum.TypeOfCell.Berry:
                 {
-                    Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
-                    Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
-                    bug.Coordinate = DestinationCell.Coordinate;
+                    Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                    Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                    bug.CurrentPosition = DestinationCell.Coordinate;
                     DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
                     DestinationCell.LinkedBug = bug;
                     bug.Health += Data.BerryValue;
@@ -162,9 +164,9 @@ public class Bug
 
             case CellEnum.TypeOfCell.MineralBerry:
                 {
-                    Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].LinkedBug = null;
-                    Map.WorldMap[bug.Coordinate.Y, bug.Coordinate.X].CellType = CellEnum.TypeOfCell.Empty;
-                    bug.Coordinate = DestinationCell.Coordinate;
+                    Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                    Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                    bug.CurrentPosition = DestinationCell.Coordinate;
                     DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
                     DestinationCell.LinkedBug = bug;
                     bug.Health += Data.MineralBerryValue;
@@ -262,12 +264,12 @@ public class Bug
         bool isBorn = false;
         for (int i = 0; i < 8 && !isBorn; i++)
         {
-            Coordinates birthCoordinate = bug.Coordinate + Coordinates.CoordinateShift[i];
+            Coordinates birthCoordinate = bug.CurrentPosition + Coordinates.CoordinateShift[i];
             if (Map.WorldMap[birthCoordinate.Y, birthCoordinate.X].CellType == CellEnum.TypeOfCell.Empty)
             {
                 Bug childBug = new Bug(
                     genome: new Genome(bug.Gene.GenomeMutate(Data.Rnd.Next(0, 2))),
-                    coordinate: birthCoordinate);
+                    currentPosition: birthCoordinate);
                 ControlScript.childs.Add(childBug);
                 isBorn = true;
                 childBug.Health = bug.Health / 2;
@@ -298,7 +300,7 @@ public class Bug
                 if (pushDestinationCell.CellType == CellEnum.TypeOfCell.Bug)
                 {
                     pushDestinationCell.LinkedBug = DestinationCell.LinkedBug;
-                    pushDestinationCell.LinkedBug.Coordinate = pushDestination;
+                    pushDestinationCell.LinkedBug.CurrentPosition = pushDestination;
                     DestinationCell.LinkedBug = null;
                 }
 
