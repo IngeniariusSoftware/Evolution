@@ -12,39 +12,15 @@ public static class Map
     /// </summary>
     public static void RefreshMap()
     {
-        while (Data.CurrentCountBerry < Data.MaxCountBerry)
+        for (int i = 0; i < Data.MaxCountObjects.Length; i++)
         {
-            Coordinates randomPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
-            if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
+            while (Data.CurrentCountObjects[i] < Data.MaxCountObjects[i])
             {
-                Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Berry;
-            }
-        }
-
-        while (Data.CurrentCountPoison < Data.MaxCountPoison)
-        {
-            Coordinates randomPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
-            if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
-            {
-                Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Poison;
-            }
-        }
-
-        while (Data.CurrentCountMineral < Data.MaxCountMineral)
-        {
-            Coordinates randomPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
-            if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
-            {
-                Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Mineral;
-            }
-        }
-
-        while (Data.CurrentCountWall < Data.MaxCountWall)
-        {
-            Coordinates randomPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
-            if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
-            {
-                Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.TypeOfCell.Wall;
+                Coordinates randomPosition = Coordinates.RandomCoordinates(Data.MapSize.Y, Data.MapSize.X);
+                if (Map.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
+                {
+                    Map.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.GetCellType(i);
+                }
             }
         }
     }
