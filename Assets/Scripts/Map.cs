@@ -2,10 +2,13 @@ using System.Threading;
 
 public static class Map
 {
+    /// <summary>
+    /// Карта мира, состоящая из клеток
+    /// </summary>
     public static Cell[,] WorldMap = new Cell[Data.MapSize.Y, Data.MapSize.X];
 
     /// <summary>
-    /// Поддержание уровня еды, яда на карте
+    /// Поддержание уровня еды, яда, стен и минералов на карте
     /// </summary>
     public static void RefreshMap()
     {
@@ -46,7 +49,9 @@ public static class Map
         }
     }
 
-
+    /// <summary>
+    /// Заполнение клеток карты каким-либо типом клетки, генерация стен
+    /// </summary>
     public static void CreateMap()
     {
         for (int x = 0; x < Data.MapSize.X; x++)

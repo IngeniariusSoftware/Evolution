@@ -1,24 +1,19 @@
 ﻿using System;
 
 /// <summary>
-/// Главный класс из которого берутся данные
+/// Класс, предназначенный для хранения основных данных
 /// </summary>
 public static class Data
 {
     #region Переменные
 
     /// <summary>
-    ///     Начальное количество жуков
-    /// </summary>
-    public static int CurrentStepsRendering = 0;
-
-    /// <summary>
-    ///     Начальное количество жуков
+    ///     Максимальный шаг отрисовки (Влияет на плавность отрисовки хода)
     /// </summary>
     public static readonly int MaxStepsRendering = 24;
 
     /// <summary>
-    ///     Начальное количество жуков
+    ///     Максимальное количество команд, которое может выполнить жук за один ход
     /// </summary>
     public static readonly int MaxStepsBug = 25;
 
@@ -28,42 +23,42 @@ public static class Data
     public static readonly Random Rnd = new Random();
 
     /// <summary>
-    ///     Начальное количество жуков
+    ///     Начальное количество жуков на карте
     /// </summary>
     public static readonly int BugCount = 100;
 
     /// <summary>
-    ///     Количество команд в геноме
+    ///     Количество ячеек в геноме жука
     /// </summary>
     public static readonly int LengthGenome = 64;
 
     /// <summary>
-    ///     Максимальное количество жизней жука
+    ///     Максимальное количество жизней у жука
     /// </summary>
     public static readonly int MaxBugHealth = 256;
 
     /// <summary>
-    ///     Количество жизней, которое есть у жука при создании мира
+    ///     Количество жизней, с которым появляется жук
     /// </summary>
     public static readonly int StartBugHealth = 50;
 
     /// <summary>
-    ///     Количество жизней, необходимое на размножение жука
+    ///     Количество жизней, на которое уменьшается жизнь жука-родителя при генерации нового жука
     /// </summary>
     public static readonly int MuptiplyCost = 30;
 
     /// <summary>
-    ///     Количество жизней, которое получаает жук, если съест минеральную ягоду
+    ///     Количество жизней, которое получаает жук, съедая минеральную ягоду
     /// </summary>
     public static readonly int MineralBerryValue = 30;
 
     /// <summary>
-    ///     Количество жизней, которое получаает жук, если съест обычную ягоду
+    ///     Количество жизней, которое получаает жук, съедая обычную ягоду
     /// </summary>
     public static readonly int BerryValue = 10;
 
     /// <summary>
-    ///     Количество клеток по x и y   
+    ///     Размер карты по y и по x (количество клеток)   
     /// </summary>
     public static readonly Coordinates MapSize = new Coordinates(70, 120);
 
@@ -83,7 +78,7 @@ public static class Data
     public static readonly float PercentMineral = 0.04f;
 
     /// <summary>
-    ///      Процент яда на карте
+    ///      Процент стен на карте
     /// </summary>
     public static readonly float PercentWall = 0.08f;
 
@@ -137,7 +132,10 @@ public static class Data
     /// </summary>
     public static int CurrentCountWall = 0;
 
-    #endregion
+    /// <summary>
+    ///     Текущий шаг отрисовки
+    /// </summary>
+    public static int CurrentStepsRendering = 0;
 
-    public static BugCollection BugsCollection;
+    #endregion
 }

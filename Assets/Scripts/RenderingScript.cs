@@ -1,35 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-
 using UnityEngine;
 
+/// <summary>
+/// Скрипт для отрисовки всех объектов карты
+/// </summary>
 public class RenderingScript : MonoBehaviour
 {
     public static Color Capacity = new Color(1, 1, 1, 0);
 
     /// <summary>
-    ///     Лист всех клеток
+    ///     Лист всех клеток на отрисовку
     /// </summary>
     public static List<Cell> RendredCells = new List<Cell>();
 
     /// <summary>
-    ///     Лист всех клеток
+    ///     Лист жуков, которых необходимо отрисовать
     /// </summary>
     public static List<Bug> RendredCellsBug = new List<Bug>();
 
     /// <summary>
-    ///     Лист всех изображений сущностей
+    ///     Лист жуков-объектов для отрисовки на карте
     /// </summary>
     public static List<GameObject> RenderingBugs = new List<GameObject>();
 
     /// <summary>
-    ///     Лист всех изображений сущностей
+    ///     Лист все объектов для отрисовка на карте
     /// </summary>
     public static List<GameObject> RenderingObjects = new List<GameObject>();
 
     /// <summary>
-    ///     Лист всех изображений сущностей
+    ///     Лист всех используемых изображений
     /// </summary>
     public static List<Sprite> Sprites = new List<Sprite>();
 
@@ -43,6 +45,9 @@ public class RenderingScript : MonoBehaviour
     /// </summary>
     private static Transform[,] MapObjects = new Transform[Data.MapSize.Y, Data.MapSize.X];
 
+    /// <summary>
+    ///     Инициализация стандартного объекта карты, загрузка всех необходимых изображений
+    /// </summary>
     void Awake()
     {
         Object = Resources.Load<GameObject>("Empty");
@@ -72,7 +77,7 @@ public class RenderingScript : MonoBehaviour
     }
 
     /// <summary>
-    ///     Обновить положения объекта на карте
+    ///     Сгенировать объекты для отрисовки, каждый шаг обновлять их положение и прозрачность
     /// </summary>
     public static void UpdateObjects()
     {
@@ -95,7 +100,8 @@ public class RenderingScript : MonoBehaviour
                                 new Quaternion(0, 0, 0, 0)));
                         RenderingBugs.Last().GetComponent<SpriteRenderer>().sprite =
                             Sprites[(int)CellEnum.TypeOfCell.Bug];
-                      MapObjects[rendredCell.LinkedBug.LastPosition.Y, rendredCell.LinkedBug.LastPosition.X].GetComponent<SpriteRenderer>().sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
+                        MapObjects[rendredCell.LinkedBug.LastPosition.Y, rendredCell.LinkedBug.LastPosition.X]
+                            .GetComponent<SpriteRenderer>().sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
                         RendredCellsBug.Add(rendredCell.LinkedBug);
                     }
                     else
@@ -144,7 +150,8 @@ public class RenderingScript : MonoBehaviour
                         RendredCellsBug[i].LastPosition.X,
                         RendredCellsBug[i].LastPosition.Y);
                     RenderingBugs[i].transform.position +=
-                        (Vector3)((currentPosition - lastPosition) * Data.CellSizeX / Data.MaxStepsRendering); // Размер клетки только по х, опасно
+                        (Vector3)((currentPosition - lastPosition) * Data.CellSizeX
+                                  / Data.MaxStepsRendering); // Размер клетки только по х, опасно
                 }
 
                 foreach (GameObject renderingObject in RenderingObjects)
@@ -182,9 +189,13 @@ public class RenderingScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///     Занести объект в лист для дальнейшей отрисовки
+    /// </summary>
+    /// <param name="cell"> Клетка, в которой изменилось значение, и её необходимо отрисовать </param>
     public static void UpdateTypeCell(Cell cell)
     {
-        if (!RendredCells.Contains(cell)) //TODO Разобраться с этим
+        if (!RendredCells.Contains(cell)) 
         {
             RendredCells.Add(cell);
         }
@@ -192,10 +203,5 @@ public class RenderingScript : MonoBehaviour
         {
             RendredCells[RendredCells.IndexOf(cell)] = cell;
         }
-
-        //Color g =  MapObjects[cell.Coordinate.Y, cell.Coordinate.X].GetComponent<SpriteRenderer>().color;
-        // g.a = 0;
-        // MapObjects[cell.Coordinate.Y, cell.Coordinate.X].GetComponent<SpriteRenderer>().color = g;
-        // // MapObjects[cell.CurrentPosition.Y, cell.CurrentPosition.X].
     }
 }

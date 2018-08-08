@@ -73,10 +73,6 @@
     {
         Coordinate = coordinate;
         LinkedBug = bug;
-        //if (cellType == CellEnum.TypeOfCell.Bug && bug == null)
-        //{
-        //    throw new Exception("Мы по ходу жука потеряли");
-        //}
         CellType = cellType;
     }
 }
