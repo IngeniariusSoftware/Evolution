@@ -36,6 +36,7 @@ public class ControlScript : MonoBehaviour
         if (Data.CurrentStepsRendering > Data.MaxStepsRendering)
         {
             Data.CurrentStepsRendering = 0;
+            Data.MaxStepsRendering = TimeManageScript.TimeSpeed;
             NextTurn();
         }
     }
