@@ -15,59 +15,20 @@
 
         set
         {
-            switch (_cellType)
+            if (_cellType != CellEnum.TypeOfCell.Empty && _cellType != CellEnum.TypeOfCell.Bug)
             {
-                case CellEnum.TypeOfCell.Berry:
-                    {
-                        Data.CurrentCountObjects[(int)_cellType]--;
-                        break;
-                    }
-                case CellEnum.TypeOfCell.Poison:
-                    {
-                        Data.CurrentCountObjects[(int)_cellType]--;
-                        break;
-                    }
-                case CellEnum.TypeOfCell.Wall:
-                    {
-                        Data.CurrentCountObjects[(int)_cellType]--;
-                        break;
-                    }
-                case CellEnum.TypeOfCell.Mineral:
-                    {
-                        Data.CurrentCountObjects[(int)_cellType]--;
-                        break;
-                    }
+                Data.CurrentCountObjects[(int)_cellType]--;
             }
 
-            switch (value)
+            if (value != CellEnum.TypeOfCell.Empty && value != CellEnum.TypeOfCell.Bug)
             {
-                case CellEnum.TypeOfCell.Berry:
-                    {
-                        Data.CurrentCountObjects[(int)value]++;
-                        break;
-                    }
-                case CellEnum.TypeOfCell.Poison:
-                    {
-                        Data.CurrentCountObjects[(int)value]++;
-                        break;
-                    }
-                case CellEnum.TypeOfCell.Wall:
-                    {
-                        Data.CurrentCountObjects[(int)value]++;
-                        break;
-                    }
-                case CellEnum.TypeOfCell.Mineral:
-                    {
-                        Data.CurrentCountObjects[(int)value]++;
-                        break;
-                    }
+                Data.CurrentCountObjects[(int)value]++;
             }
 
             _cellType = value;
             RenderingScript.UpdateTypeCell(this);
         }
     }
-
 
     public Cell(Coordinates coordinate, CellEnum.TypeOfCell cellType, Bug bug = null)
     {
