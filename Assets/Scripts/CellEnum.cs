@@ -14,6 +14,8 @@
 
         MineralBerry,
 
+        Bamboo,
+
         Bug
     }
 
@@ -52,6 +54,11 @@
                 }
 
             case 6:
+                {
+                    return TypeOfCell.Bamboo;
+                }
+
+            case 7:
                 {
                     return TypeOfCell.Bug;
                 }
