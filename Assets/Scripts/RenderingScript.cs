@@ -51,7 +51,7 @@ public class RenderingScript : MonoBehaviour
     void Awake()
     {
         Object = Resources.Load<GameObject>("Empty");
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < Data.MaxCountObjects.Length; i++)
         {
             Sprites.Add(
                 Resources.Load<Sprite>("Sprites/" + CellEnum.GetCellType(i).ToString().Replace("TypeOfCell.", "")));
@@ -161,27 +161,7 @@ public class RenderingScript : MonoBehaviour
             else
             {
 
-                foreach (Cell rendredCell in RendredCells)
-                {
-                    MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X].GetComponent<SpriteRenderer>().sprite
-                        = Sprites[(int)rendredCell.CellType];
-                }
-
-
-                foreach (var renderingBug in RenderingBugs)
-                {
-                    Destroy(renderingBug);
-                }
-
-                foreach (var renderingObject in RenderingObjects)
-                {
-                    Destroy(renderingObject);
-                }
-
-                RenderingObjects.Clear();
-                RendredCells.Clear();
-                RenderingBugs.Clear();
-                RendredCellsBug.Clear();
+                ResetRendering();
             }
 
             Data.CurrentStepsRendering++;
@@ -202,5 +182,29 @@ public class RenderingScript : MonoBehaviour
         {
             RendredCells[RendredCells.IndexOf(cell)] = cell;
         }
+    }
+
+    public static void ResetRendering()
+    {
+        foreach (Cell rendredCell in RendredCells)
+        {
+            MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X].GetComponent<SpriteRenderer>().sprite
+                = Sprites[(int)rendredCell.CellType];
+        }
+
+        foreach (var renderingBug in RenderingBugs)
+        {
+            Destroy(renderingBug);
+        }
+
+        foreach (var renderingObject in RenderingObjects)
+        {
+            Destroy(renderingObject);
+        }
+
+        RenderingObjects.Clear();
+        RendredCells.Clear();
+        RenderingBugs.Clear();
+        RendredCellsBug.Clear();
     }
 }
