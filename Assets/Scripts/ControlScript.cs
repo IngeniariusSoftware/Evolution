@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ControlScript : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class ControlScript : MonoBehaviour
 
     public static List<Bug> DeadBugs = new List<Bug>();
 
+    public static ScrollRect Scroll;
+
     void Start()
     {
         RenderingScript.InitializeObjects();
@@ -19,12 +22,29 @@ public class ControlScript : MonoBehaviour
         bugs = new BugCollection(Data.BugCount);
     }
 
+    public static void SaveGame()
+    {
+        // Сохранение жуков
+    }
+
+    public static void LoadGame()
+    {
+        RenderingScript.ResetRendering();
+        Data.CurrentStepsRendering = 0;
+        Map.CreateMap();
+        // Загрузка жуков
+        // Распределение по карте
+        // Выставить NUll last position, 50 жизней, текущие координаты
+        NextTurn();
+    }
+
     public static void NextTurn()
     {
+        Data.CurrentGameStep++;
+        Map.RefreshMap();
         bugs.StartExecution();
         bugs.AddBug(childs);
-        Map.RefreshMap();
-        if (bugs.Count <= Data.BugCount / 10)
+        if (bugs.CountBugs <= Data.BugCount / 10)
         {
             bugs.NewGeneration();
         }
