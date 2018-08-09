@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using UnityEngine;
 
+using Random = System.Random;
+
 public class Bug
 {
     public Coordinates LastPosition { get; set; }
@@ -31,8 +33,6 @@ public class Bug
             }
         }
     }
-
-    public int GenerationNumber { get; set; }
 
     public Genome Gene { get; set; }
 
@@ -100,7 +100,6 @@ public class Bug
         }
 
         Health = Data.StartBugHealth;
-        GenerationNumber = 0;
         LifeTime = 0;
         CurrentGenePosition = 0;
         Direction = Data.Rnd.Next(0, 8);
@@ -292,19 +291,35 @@ public class Bug
 
         if (DestinationCell.CellType != CellEnum.TypeOfCell.Wall)
         {
-            Coordinates pushDestination = Coordinates.CoordinateShift[((bug.Direction + bug.Gene.genome[bug.NextGenePosition(1)]) % 8)] + DestinationCell.Coordinate;
-            Cell pushDestinationCell = Map.WorldMap[pushDestination.Y, pushDestination.X];
-            if (pushDestinationCell.CellType == CellEnum.TypeOfCell.Empty)
+            if (DestinationCell.CellType == CellEnum.TypeOfCell.Bamboo)
             {
-                pushDestinationCell.CellType = DestinationCell.CellType;
-                if (pushDestinationCell.CellType == CellEnum.TypeOfCell.Bug)
+                if (Data.Rnd.Next(0, 3) == 0)
                 {
-                    pushDestinationCell.LinkedBug = DestinationCell.LinkedBug;
-                    pushDestinationCell.LinkedBug.CurrentPosition = pushDestination;
-                    DestinationCell.LinkedBug = null;
+                    DestinationCell.CellType = CellEnum.TypeOfCell.Poison;
                 }
+                else
+                {
+                    DestinationCell.CellType = CellEnum.TypeOfCell.Berry;
+                }
+            }
+            else
+            {
+                Coordinates pushDestination =
+                    Coordinates.CoordinateShift[((bug.Direction + bug.Gene.genome[bug.NextGenePosition(1)]) % 8)]
+                    + DestinationCell.Coordinate;
+                Cell pushDestinationCell = Map.WorldMap[pushDestination.Y, pushDestination.X];
+                if (pushDestinationCell.CellType == CellEnum.TypeOfCell.Empty)
+                {
+                    pushDestinationCell.CellType = DestinationCell.CellType;
+                    if (pushDestinationCell.CellType == CellEnum.TypeOfCell.Bug)
+                    {
+                        pushDestinationCell.LinkedBug = DestinationCell.LinkedBug;
+                        pushDestinationCell.LinkedBug.CurrentPosition = pushDestination;
+                        DestinationCell.LinkedBug = null;
+                    }
 
-                DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
+                    DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
+                }
             }
         }
 
