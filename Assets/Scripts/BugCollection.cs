@@ -1,20 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
 /// <summary>
 /// Класс, в котором хранится коллекция жуков
 /// </summary>
+[Serializable]
 public class BugCollection
 {
-    public int Count;
+    public int GenerationNumber;
+
+    public int CountBugs;
 
     public void AddBug(List<Bug> bugs)
     {
         foreach (Bug bug in bugs)
         {
             Bugs.Add(bug);
-            Count++;
+            CountBugs++;
         }
 
         bugs.Clear();
@@ -25,7 +29,8 @@ public class BugCollection
     public BugCollection()
     {
         Bugs = new List<Bug>();
-        Count = 0;
+        CountBugs = 0;
+        GenerationNumber = 0;
     }
 
     public BugCollection(int countBug)
@@ -34,7 +39,7 @@ public class BugCollection
         for (int i = 0; i < countBug; i++)
         {
             Bugs.Add(new Bug());
-            Count++;
+            CountBugs++;
         }
     }
 
@@ -60,7 +65,8 @@ public class BugCollection
             Bugs.Remove(bug);
             Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
             Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-            Count--;
+            CountBugs--;
+            Data.NumberDeadBugs++;
             if (ControlScript.BestBugs.Count < Data.BugCount)
             {
                 ControlScript.BestBugs.Add(bug);
@@ -81,8 +87,10 @@ public class BugCollection
 
     public void NewGeneration()
     {
+        GenerationNumber++;
         foreach (var bug in Bugs)
         {
+            Data.NumberDeadBugs++;
             Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
             Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
             if (ControlScript.BestBugs.Count < Data.BugCount)
@@ -106,7 +114,7 @@ public class BugCollection
             bugs.Add(new Bug(new Genome(ControlScript.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
         }
 
-        Count = bugs.Count;
+        CountBugs = bugs.Count;
         Bugs = bugs;
     }
 
@@ -116,7 +124,6 @@ public class BugCollection
     private void SortBugs()
     {
         ControlScript.BestBugs = ControlScript.BestBugs.OrderBy(x => x.LifeTime).ToList();
-        //Bugs= Array.Sort(Bugs.ToArray());
     }
 }
 
