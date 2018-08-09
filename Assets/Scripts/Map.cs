@@ -1,14 +1,12 @@
-using System.Threading;
-
-public static class Map
+п»їpublic static class Map
 {
     /// <summary>
-    /// Карта мира, состоящая из клеток
+    ///     РљР°СЂС‚Р° РјРёСЂР°, СЃРѕСЃС‚РѕСЏС‰Р°СЏ РёР· РєР»РµС‚РѕРє
     /// </summary>
     public static Cell[,] WorldMap = new Cell[Data.MapSize.Y, Data.MapSize.X];
 
     /// <summary>
-    /// Поддержание уровня еды, яда, стен и минералов на карте
+    ///     РџРѕРґРґРµСЂР¶Р°РЅРёРµ СѓСЂРѕРІРЅСЏ РµРґС‹, СЏРґР°, СЃС‚РµРЅ Рё РјРёРЅРµСЂР°Р»РѕРІ РЅР° РєР°СЂС‚Рµ
     /// </summary>
     public static void RefreshMap()
     {
@@ -26,7 +24,7 @@ public static class Map
     }
 
     /// <summary>
-    /// Заполнение клеток карты каким-либо типом клетки, генерация стен
+    ///     Р—Р°РїРѕР»РЅРµРЅРёРµ РєР»РµС‚РѕРє РєР°СЂС‚С‹ РєР°РєРёРј-Р»РёР±Рѕ С‚РёРїРѕРј РєР»РµС‚РєРё, РіРµРЅРµСЂР°С†РёСЏ СЃС‚РµРЅ
     /// </summary>
     public static void CreateMap()
     {
@@ -48,3 +46,4 @@ public static class Map
         RefreshMap();
     }
 }
+

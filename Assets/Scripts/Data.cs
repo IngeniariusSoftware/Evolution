@@ -60,7 +60,7 @@ public static class Data
     /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте
     /// </summary>
-    public static readonly float[] PercentObjects = {0, 0.06f, 0.06f, 0.08f, 0.03f, 0, 0};
+    public static readonly float[] PercentObjects = {0, 0.06f, 0.06f, 0.08f, 0.03f, 0, 0.04f, 0};
 
     /// <summary>
     ///     Общее количетсво клеток на карте
@@ -78,13 +78,14 @@ public static class Data
             (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Wall]),
             (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Mineral]),
             (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.MineralBerry]),
+            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Bamboo]),
             (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Bug])
         };
 
     /// <summary>
     ///     Текущее количество различных объектов на карте
     /// </summary>
-    public static readonly int[] CurrentCountObjects = { 0, 0, 0, 0, 0, 0, 0 };
+    public static readonly int[] CurrentCountObjects = new int[MaxCountObjects.Length];
 
     /// <summary>
     ///     Размер клетки по абсциссе для корректного отображения спрайта
@@ -100,6 +101,16 @@ public static class Data
     ///     Текущий шаг отрисовки
     /// </summary>
     public static int CurrentStepsRendering = 0;
+
+    /// <summary>
+    ///     Текущий ход
+    /// </summary>
+    public static int CurrentGameStep = 0;
+
+    /// <summary>
+    ///     Количество мертвых жуков
+    /// </summary>
+    public static int NumberDeadBugs = 0;
 
     /// <summary>
     ///     Максимальный шаг отрисовки (Влияет на плавность отрисовки хода)
