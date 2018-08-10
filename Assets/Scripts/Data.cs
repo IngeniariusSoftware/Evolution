@@ -8,9 +8,9 @@ public static class Data
     #region Переменные
     
     /// <summary>
-    ///     Максимальное количество команд, которое может выполнить жук за один ход
+    ///     Максимальное количество команд, которое может выполнить жук за один ход  TODO переносить в багколлектион походу
     /// </summary>
-    public static readonly int MaxStepsBug = 25;
+    public static readonly int MaxStepsBug = 64;
 
     /// <summary>
     ///     Переменная для генерации случайный значений
@@ -25,7 +25,7 @@ public static class Data
     /// <summary>
     ///     Количество ячеек в геноме жука
     /// </summary>
-    public static readonly int LengthGenome = 64;
+    public static readonly int LengthGenome = 128;
 
     /// <summary>
     ///     Максимальное количество жизней у жука
