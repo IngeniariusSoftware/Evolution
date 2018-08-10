@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,10 @@ public class ControlScript : MonoBehaviour
     public static void SaveGame()
     {
         // Сохранение жуков
+        using (var fs = new FileStream("/save", FileMode.Create))
+        {
+
+        }
     }
 
     public static void LoadGame()

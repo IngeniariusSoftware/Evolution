@@ -1,4 +1,7 @@
-﻿public class Cell
+﻿using System;
+
+[Serializable]
+public class Cell
 {
     public Coordinates Coordinate { get; set; }
 

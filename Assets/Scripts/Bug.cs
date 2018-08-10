@@ -1,4 +1,7 @@
-﻿public class Bug
+﻿using System;
+
+[Serializable]
+public class Bug
 {
     // Зачем здесь логика на спавн???
     public Bug(Genome genome = null, Coordinates currentPosition = null)

@@ -10,6 +10,7 @@
     /// </summary>
     public static void RefreshMap()
     {
+        // Тут из глобала надо сюда перенести
         for (int i = 0; i < Data.MaxCountObjects.Length; i++)
         {
             while (Data.CurrentCountObjects[i] < Data.MaxCountObjects[i])
