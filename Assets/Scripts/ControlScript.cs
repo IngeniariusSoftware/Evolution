@@ -35,7 +35,7 @@ public class ControlScript : MonoBehaviour
     public static void LoadGame()
     {
         RenderingScript.ResetRendering();
-        Data.CurrentStepsRendering = 0;
+        RenderingScript.CurrentStepsRendering = 0;
         Map.CreateMap();
         // Загрузка жуков
         // Распределение по карте
@@ -58,10 +58,19 @@ public class ControlScript : MonoBehaviour
     void Update()
     {
         RenderingScript.UpdateObjects();
-        if (Data.CurrentStepsRendering > Data.MaxStepsRendering)
+        if (RenderingScript.CurrentStepsRendering > RenderingScript.MaxStepsRendering)
         {
-            Data.CurrentStepsRendering = 0;
-            Data.MaxStepsRendering = TimeManageScript.TimeSpeed;
+            RenderingScript.CurrentStepsRendering = 0;
+            RenderingScript.MaxStepsRendering = TimeManageScript.TimeSpeed;
+            if (RenderingScript.RenderingMode != UIManageScript.CurrentRenderingMode)
+            {
+                RenderingScript.RenderingMode = UIManageScript.CurrentRenderingMode;
+                foreach (Cell cell in Data.WorldMap)
+                {
+                    RenderingScript.UpdateTypeCell(cell);
+                }
+            }
+
             NextTurn();
         }
     }
