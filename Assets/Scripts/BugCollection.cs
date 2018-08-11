@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+using UnityEngine;
+
 /// <summary>
 /// Класс, в котором хранится коллекция жуков
 /// </summary>
 [Serializable]
 public class BugCollection
 {
+    /// <summary>
+    ///     Максимальное количество команд, которое может выполнить жук за один ход  
+    /// </summary>
+    public static readonly int MaxStepsBug = 64;
+
+
+
     public int GenerationNumber;
 
     public int CountBugs;
@@ -38,7 +47,7 @@ public class BugCollection
         Bugs = new List<Bug>();
         for (int i = 0; i < countBug; i++)
         {
-            Bugs.Add(new Bug());
+            Bugs.Add(new Bug(Color.white));
             CountBugs++;
         }
     }
@@ -63,8 +72,8 @@ public class BugCollection
         foreach (Bug bug in ControlScript.DeadBugs)
         {
             Bugs.Remove(bug);
-            Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
-            Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
             CountBugs--;
             Data.NumberDeadBugs++;
             if (ControlScript.BestBugs.Count < Data.BugCount)
@@ -91,8 +100,8 @@ public class BugCollection
         foreach (var bug in Bugs)
         {
             Data.NumberDeadBugs++;
-            Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
-            Map.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
             if (ControlScript.BestBugs.Count < Data.BugCount)
             {
                 ControlScript.BestBugs.Add(bug);
@@ -111,7 +120,7 @@ public class BugCollection
         List<Bug> bugs = new List<Bug>();
         for (int i = 0; i < Data.BugCount * 10; i++)
         {
-            bugs.Add(new Bug(new Genome(ControlScript.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
+            bugs.Add(new Bug(ControlScript.BestBugs[i / 10].color, new Genome(ControlScript.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
         }
 
         CountBugs = bugs.Count;
