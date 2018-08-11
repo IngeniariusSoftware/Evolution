@@ -68,12 +68,12 @@ public class CameraManageScript : MonoBehaviour
             delta = (MousePosition - (Vector2)Input.mousePosition) * 0.1f;
         }
 
-        if (Data.MapSize.Y / 2.0 * Data.CellSizeY > Math.Abs(delta.y + CameraPosition.y))
+        if (Map.Size.Y / 2.0 * Cell.SizeY > Math.Abs(delta.y + CameraPosition.y))
         {
             CameraPosition.y += delta.y;
         }
 
-        if (Data.MapSize.X / 2.0 * Data.CellSizeX > Math.Abs(delta.x + CameraPosition.x))
+        if (Map.Size.X / 2.0 * Cell.SizeX > Math.Abs(delta.x + CameraPosition.x))
         {
             CameraPosition.x += delta.x;
         }

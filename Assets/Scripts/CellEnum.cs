@@ -2,9 +2,9 @@
 {
     public enum TypeOfCell
     {
-        Empty=0,
+        Empty = 0, 
 
-        Berry=1,
+        Berry = 1,
 
         Poison,
 
