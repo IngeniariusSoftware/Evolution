@@ -8,7 +8,29 @@ using UnityEngine;
 /// </summary>
 public class RenderingScript : MonoBehaviour
 {
-    public static Color Capacity = new Color(1, 1, 1, 0);
+    #region Constants 
+
+    /// <summary>
+    ///     Максимальный шаг отрисовки (Влияет на плавность отрисовки хода)
+    /// </summary>
+    public static int MaxStepsRendering = 24;
+
+    #endregion
+
+    /// <summary>
+    ///     Текущий шаг отрисовки
+    /// </summary>
+    public static int CurrentStepsRendering;
+
+    /// <summary>
+    ///     Режим отрисовки
+    /// </summary>
+    public static bool RenderingMode = true;
+
+    /// <summary>
+    /// Прозрачность изображений на данном шаге
+    /// </summary>
+    public static float Capacity = 0;
 
     /// <summary>
     ///     Лист всех клеток на отрисовку
@@ -43,7 +65,7 @@ public class RenderingScript : MonoBehaviour
     /// <summary>
     ///     Массив всех объектов Unity на карте
     /// </summary>
-    private static Transform[,] MapObjects = new Transform[Data.MapSize.Y, Data.MapSize.X];
+    private static Transform[,] MapObjects = new Transform[Map.Size.Y, Map.Size.X];
 
     /// <summary>
     ///     Инициализация стандартного объекта карты, загрузка всех необходимых изображений
@@ -51,7 +73,7 @@ public class RenderingScript : MonoBehaviour
     void Awake()
     {
         Object = Resources.Load<GameObject>("Empty");
-        for (int i = 0; i < Data.MaxCountObjects.Length; i++)
+        for (int i = 0; i < Map.MaxCountObjects.Length; i++)
         {
             Sprites.Add(
                 Resources.Load<Sprite>("Sprites/" + CellEnum.GetCellType(i).ToString().Replace("TypeOfCell.", "")));
@@ -63,13 +85,13 @@ public class RenderingScript : MonoBehaviour
     /// </summary>
     public static void InitializeObjects()
     {
-        for (int x = 0; x < Data.MapSize.X; x++)
+        for (int x = 0; x < Map.Size.X; x++)
         {
-            for (int y = 0; y < Data.MapSize.Y; y++)
+            for (int y = 0; y < Map.Size.Y; y++)
             {
                 MapObjects[y, x] = Instantiate(
                     Object.transform,
-                    new Vector3((x - Data.MapSize.X / 2) * Data.CellSizeX, (y - Data.MapSize.Y / 2) * Data.CellSizeY),
+                    new Vector3((x - Map.Size.X / 2) * Cell.SizeX, (y - Map.Size.Y / 2) * Cell.SizeY),
                     new Quaternion(0, 0, 0, 0));
 
             }
@@ -81,8 +103,8 @@ public class RenderingScript : MonoBehaviour
     /// </summary>
     public static void UpdateObjects()
     {
-        Capacity.a = (float)Data.CurrentStepsRendering / Data.MaxStepsRendering;
-        if (Data.CurrentStepsRendering == 0)
+        Capacity = (float)CurrentStepsRendering / MaxStepsRendering;
+        if (CurrentStepsRendering == 0)
         {
             foreach (Cell rendredCell in RendredCells)
             {
@@ -94,12 +116,25 @@ public class RenderingScript : MonoBehaviour
                             Instantiate(
                                 Object,
                                 new Vector3(
-                                    (rendredCell.LinkedBug.LastPosition.X - Data.MapSize.X / 2) * Data.CellSizeX,
-                                    (rendredCell.LinkedBug.LastPosition.Y - Data.MapSize.Y / 2) * Data.CellSizeY,
+                                    (rendredCell.LinkedBug.LastPosition.X - Map.Size.X / 2) * Cell.SizeX,
+                                    (rendredCell.LinkedBug.LastPosition.Y - Map.Size.Y / 2) * Cell.SizeY,
                                     -3),
                                 new Quaternion(0, 0, 0, 0)));
                         RenderingBugs.Last().GetComponent<SpriteRenderer>().sprite =
                             Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        if (RenderingMode)
+                        {
+                            RenderingBugs.Last().GetComponent<SpriteRenderer>().color = rendredCell.LinkedBug.color;
+                        }
+                        else
+                        {
+                            RenderingBugs.Last().GetComponent<SpriteRenderer>().color = new Color(
+                                1,
+                                (float)(Bug.MaxBugHealth - rendredCell.LinkedBug.Health) / Bug.MaxBugHealth,
+                                (float)(Bug.MaxBugHealth - rendredCell.LinkedBug.Health) / Bug.MaxBugHealth,
+                                1);
+                        }
+
                         MapObjects[rendredCell.LinkedBug.LastPosition.Y, rendredCell.LinkedBug.LastPosition.X]
                             .GetComponent<SpriteRenderer>().sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
                         RendredCellsBug.Add(rendredCell.LinkedBug);
@@ -110,14 +145,27 @@ public class RenderingScript : MonoBehaviour
                             Instantiate(
                                 Object,
                                 new Vector3(
-                                    (rendredCell.Coordinate.X - Data.MapSize.X / 2) * Data.CellSizeX,
-                                    (rendredCell.Coordinate.Y - Data.MapSize.Y / 2) * Data.CellSizeY,
+                                    (rendredCell.Coordinate.X - Map.Size.X / 2) * Cell.SizeX,
+                                    (rendredCell.Coordinate.Y - Map.Size.Y / 2) * Cell.SizeY,
                                     -3),
                                 new Quaternion(0, 0, 0, 0)));
                         RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
                             Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        Color color = RenderingObjects.Last().GetComponent<SpriteRenderer>().color;
+                        if (RenderingMode)
+                        {
+                            color = rendredCell.LinkedBug.color;
+                            color.a = Capacity;
+                        }
+                        else
+                        {
+                            color = new Color(
+                                1,
+                                (float)(Bug.MaxBugHealth - rendredCell.LinkedBug.Health) / Bug.MaxBugHealth,
+                                (float)(Bug.MaxBugHealth - rendredCell.LinkedBug.Health) / Bug.MaxBugHealth,
+                                1);
+                        }
                     }
-
                 }
                 else
                 {
@@ -125,20 +173,31 @@ public class RenderingScript : MonoBehaviour
                         Instantiate(
                             Object,
                             new Vector3(
-                                (rendredCell.Coordinate.X - Data.MapSize.X / 2) * Data.CellSizeX,
-                                (rendredCell.Coordinate.Y - Data.MapSize.Y / 2) * Data.CellSizeY,
+                                (rendredCell.Coordinate.X - Map.Size.X / 2) * Cell.SizeX,
+                                (rendredCell.Coordinate.Y - Map.Size.Y / 2) * Cell.SizeY,
                                 -2),
                             new Quaternion(0, 0, 0, 0)));
-                    RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite = Sprites[(int)rendredCell.CellType];
-                    RenderingObjects.Last().GetComponent<SpriteRenderer>().color = Capacity;
+                    if (RenderingMode)
+                    {
+                        RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
+                            Sprites[(int)rendredCell.CellType];
+                    }
+                    else
+                    {
+                        RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
+                            Sprites[(int)CellEnum.TypeOfCell.Empty];
+                    }
+
+                    Color color = RenderingObjects.Last().GetComponent<SpriteRenderer>().color;
+                    color.a = Capacity;
                 }
             }
 
-            Data.CurrentStepsRendering++;
+            CurrentStepsRendering++;
         }
         else
         {
-            if (Data.CurrentStepsRendering < Data.MaxStepsRendering)
+            if (CurrentStepsRendering < MaxStepsRendering)
             {
                 for (int i = 0; i < RenderingBugs.Count; i++)
                 {
@@ -149,22 +208,22 @@ public class RenderingScript : MonoBehaviour
                         RendredCellsBug[i].LastPosition.X,
                         RendredCellsBug[i].LastPosition.Y);
                     RenderingBugs[i].transform.position +=
-                        (Vector3)((currentPosition - lastPosition) * Data.CellSizeX
-                                  / Data.MaxStepsRendering); // Размер клетки только по х, опасно
+                        (Vector3)((currentPosition - lastPosition) * Cell.SizeX
+                                  / MaxStepsRendering); // Размер клетки только по х, опасно
                 }
 
                 foreach (GameObject renderingObject in RenderingObjects)
                 {
-                    renderingObject.GetComponent<SpriteRenderer>().color = Capacity;
+                    Color color = renderingObject.GetComponent<SpriteRenderer>().color;
+                    color.a = Capacity;
                 }
             }
             else
             {
-
                 ResetRendering();
             }
 
-            Data.CurrentStepsRendering++;
+            CurrentStepsRendering++;
         }
     }
 
@@ -174,7 +233,7 @@ public class RenderingScript : MonoBehaviour
     /// <param name="cell"> Клетка, в которой изменилось значение, и её необходимо отрисовать </param>
     public static void UpdateTypeCell(Cell cell)
     {
-        if (!RendredCells.Contains(cell)) 
+        if (!RendredCells.Contains(cell))
         {
             RendredCells.Add(cell);
         }
@@ -186,11 +245,48 @@ public class RenderingScript : MonoBehaviour
 
     public static void ResetRendering()
     {
-        foreach (Cell rendredCell in RendredCells)
+        foreach (Cell renderedCell in RendredCells)
         {
-            MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X].GetComponent<SpriteRenderer>().sprite
-                = Sprites[(int)rendredCell.CellType];
+            if (RenderingMode)
+            {
+                if (renderedCell.LinkedBug != null)
+                {
+                    MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
+                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Bug];
+                    MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
+                        .color = renderedCell.LinkedBug.color;
+                }
+                else
+                {
+                    MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
+                        .sprite = Sprites[(int)renderedCell.CellType];
+                    MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
+                        .color = Color.white;
+                }
+            }
+            else
+            {
+                if (renderedCell.LinkedBug != null)
+                {
+                    MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
+                        .color = new Color(
+                        1,
+                        (float)(Bug.MaxBugHealth - renderedCell.LinkedBug.Health) / Bug.MaxBugHealth,
+                        (float)(Bug.MaxBugHealth - renderedCell.LinkedBug.Health) / Bug.MaxBugHealth,
+                        1);
+                    MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
+                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Bug];
+                }
+                else
+                {
+                    MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
+                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
+                    MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
+                        .color = Color.white;
+                }
+            }
         }
+
 
         foreach (var renderingBug in RenderingBugs)
         {
