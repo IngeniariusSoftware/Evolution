@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class UIManageScript : MonoBehaviour
 {
+    public Toggle NormalViewToggle;
+
+    public Toggle EnergyViewToggle;
+
     public Transform MainMenu;
 
     public Transform LoadGameMenu;
@@ -14,20 +18,22 @@ public class UIManageScript : MonoBehaviour
 
     public Text[] StatisticsText;
 
-    private bool _showMainMenu;
+    private static bool _showMainMenu;
 
-    private bool _showLoadMenu;
+    private static bool _showLoadMenu;
 
-    private bool _showSaveMenu;
+    private static bool _showSaveMenu;
 
-	// Update is called once per frame
+    public static bool CurrentRenderingMode = RenderingScript.RenderingMode;
+
+    // Update is called once per frame
     void Update()
     {
         StatisticsText[0].text = "Поколение: " + ControlScript.bugs.GenerationNumber;
         StatisticsText[1].text = "Шаг: " + Data.CurrentGameStep;
         StatisticsText[2].text = "Жуков: " + ControlScript.bugs.CountBugs;
         StatisticsText[3].text = "Мёртв. жуков: " + Data.NumberDeadBugs;
-        StatisticsText[4].text = "Обыч. ягод: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Berry]; 
+        StatisticsText[4].text = "Обыч. ягод: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Berry];
         StatisticsText[5].text = "Яда: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Poison];
         StatisticsText[6].text = "Стен: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Wall];
         StatisticsText[7].text = "Минералов: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Mineral];
@@ -143,6 +149,39 @@ public class UIManageScript : MonoBehaviour
             _showSaveMenu = true;
             SaveGameMenu.GetComponent<CanvasGroup>().alpha = 1;
             SaveGameMenu.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        }
+    }
+
+    public void ChangeRenderingMode()
+    {
+        if (EnergyViewToggle.isOn && NormalViewToggle.isOn)
+        {
+            if (CurrentRenderingMode)
+            {
+                NormalViewToggle.isOn = false;
+            }
+            else
+            {
+                EnergyViewToggle.isOn = false;
+            }
+
+            CurrentRenderingMode = !CurrentRenderingMode;
+        }
+        else
+        {
+            if (!EnergyViewToggle.isOn && !NormalViewToggle.isOn)
+            {
+                if (CurrentRenderingMode)
+                {
+                    EnergyViewToggle.isOn = true;
+                }
+                else
+                {
+                    NormalViewToggle.isOn = true;
+                }
+
+                CurrentRenderingMode = !CurrentRenderingMode;
+            }
         }
     }
 
