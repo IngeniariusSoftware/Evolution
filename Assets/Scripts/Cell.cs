@@ -3,6 +3,20 @@
 [Serializable]
 public class Cell
 {
+    #region Constants
+
+    /// <summary>
+    ///     Размер клетки по абсциссе для корректного отображения спрайта
+    /// </summary>
+    public static readonly float SizeX = 2.56f;
+
+    /// <summary>
+    ///     Размер клетки по ординате для корректного отображения спрайта
+    /// </summary>
+    public static readonly float SizeY = 2.56f;
+
+    #endregion
+
     public Coordinates Coordinate { get; set; }
 
     public Bug LinkedBug { get; set; }
