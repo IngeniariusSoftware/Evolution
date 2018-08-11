@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManageScript : MonoBehaviour
 {
+    public InputField NameSaveGameField;
+
     public Toggle NormalViewToggle;
 
     public Toggle EnergyViewToggle;
@@ -15,6 +20,14 @@ public class UIManageScript : MonoBehaviour
     public Transform LoadGameMenu;
 
     public Transform SaveGameMenu;
+
+    public Dropdown DropdownSaveGames;
+
+    public Transform DeleteGameButton;
+
+    public Transform LoadGameButton;
+
+    public Transform SaveGameButtonYes;
 
     public Text[] StatisticsText;
 
@@ -26,7 +39,6 @@ public class UIManageScript : MonoBehaviour
 
     public static bool CurrentRenderingMode = RenderingScript.RenderingMode;
 
-    // Update is called once per frame
     void Update()
     {
         StatisticsText[0].text = "Поколение: " + ControlScript.bugs.GenerationNumber;
@@ -67,7 +79,6 @@ public class UIManageScript : MonoBehaviour
                 SaveGameMenu.GetComponent<CanvasGroup>().alpha = 0;
                 SaveGameMenu.GetComponent<CanvasGroup>().blocksRaycasts = false;
             }
-
         }
     }
 
@@ -115,6 +126,25 @@ public class UIManageScript : MonoBehaviour
         }
     }
 
+    public void ClickDeleteGabe() //TODO Разработать логику
+    {
+        
+    }
+
+    public void CheckField()
+    {
+        if (NameSaveGameField.text != "")
+        {
+            SaveGameButtonYes.GetComponent<CanvasGroup>().alpha = 1;
+            SaveGameButtonYes.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        }
+        else
+        {
+            SaveGameButtonYes.GetComponent<CanvasGroup>().alpha = 0.5f;
+            SaveGameButtonYes.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        }
+    }
+
     public void ClickLoadGameYes() //TODO Разработать логику
     {
         Debug.Log("Загрузка поколения");
@@ -122,6 +152,7 @@ public class UIManageScript : MonoBehaviour
 
     public void ClickSaveGameYes() //TODO Разработать логику
     {
+
         Debug.Log("Сохранение поколения");
     }
 
@@ -133,6 +164,27 @@ public class UIManageScript : MonoBehaviour
     public void ClickLoadGame()
     {
         ClickContinue();
+        DropdownSaveGames.ClearOptions();
+        var files = Directory.GetFiles(Data.SavePath, ".txt");
+        Debug.Log(files.ToList().ToString());
+        DropdownSaveGames.AddOptions(files.ToList());
+        if (DropdownSaveGames.options.Count == 0)
+        {
+            List<string> emptySaves = new List<string> { "Сохранения отсутствуют" };
+            DropdownSaveGames.AddOptions(emptySaves);
+            DeleteGameButton.GetComponent<CanvasGroup>().alpha = 0.5f;
+            DeleteGameButton.GetComponent<CanvasGroup>().blocksRaycasts = false;
+            LoadGameButton.GetComponent<CanvasGroup>().alpha = 0.5f;
+            LoadGameButton.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        }
+        else
+        {
+            DeleteGameButton.GetComponent<CanvasGroup>().alpha = 1;
+            DeleteGameButton.GetComponent<CanvasGroup>().blocksRaycasts = true;
+            LoadGameButton.GetComponent<CanvasGroup>().alpha = 1;
+            LoadGameButton.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        }
+
         if (!_showLoadMenu)
         {
             _showLoadMenu = true;
