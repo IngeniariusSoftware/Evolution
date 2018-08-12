@@ -489,7 +489,7 @@ public class Bug
     }
 
     /// <summary>
-    /// Команда находится в разработке из-за своей несбалансированности, пока жук помежет получать +2 к жизни, если применит команду к минералу
+    /// Команда находится в разработке из-за своей несбалансированности, пока жук может получать +2 к жизни, если применит команду к минералу
     /// </summary>
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Photosynthesize(Bug bug)
@@ -498,7 +498,7 @@ public class Bug
         var neighbourBug = DestinationCell.LinkedBug;
         if (neighbourBug != null && neighbourBug.IsFriendBug(bug)) bug.Gene.CurrentGenePosition++;
 
-        if (DestinationCell.CellType == CellEnum.TypeOfCell.Mineral) bug.Health += 5;
+        if (DestinationCell.CellType == CellEnum.TypeOfCell.Mineral) bug.Health += 2;
 
         return true;
     }
