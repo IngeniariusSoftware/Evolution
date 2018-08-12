@@ -165,8 +165,7 @@ public class UIManageScript : MonoBehaviour
     {
         ClickContinue();
         DropdownSaveGames.ClearOptions();
-        var files = Directory.GetFiles(Data.SavePath, ".txt");
-        Debug.Log(files.ToList().ToString());
+        var files = Directory.GetFiles(Data.SavePath, "*.txt");
         DropdownSaveGames.AddOptions(files.ToList());
         if (DropdownSaveGames.options.Count == 0)
         {
