@@ -192,7 +192,7 @@ public class Bug
     /// <summary>
     ///     Массив делегатов, которые хранят команды жука
     /// </summary>
-    public static BugCommand[] MasBugCommands = {Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Share};
+    public static BugCommand[] MasBugCommands = {Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Share,Photosynthesize};
 
     private static int CalculateShift(Bug bug)
     {
@@ -502,6 +502,7 @@ public class Bug
         if (DestinationCell.CellType == CellEnum.TypeOfCell.Mineral)
         {
             bug.Health += 10;
+            bug.color = new Color(bug.color.r - 0.1f, bug.color.g - 0.1f, bug.color.b + 0.1f);
             //Шанс 20% что жук сломает минерал
             if (Data.Rnd.Next(0, 5) == 0)
             {
