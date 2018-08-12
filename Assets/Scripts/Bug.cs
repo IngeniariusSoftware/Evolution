@@ -498,7 +498,16 @@ public class Bug
         var neighbourBug = DestinationCell.LinkedBug;
         if (neighbourBug != null && neighbourBug.IsFriendBug(bug)) bug.Gene.CurrentGenePosition++;
 
-        if (DestinationCell.CellType == CellEnum.TypeOfCell.Mineral) bug.Health += 2;
+        // Если в цель(клетка) минерал, то его ломает 
+        if (DestinationCell.CellType == CellEnum.TypeOfCell.Mineral)
+        {
+            bug.Health += 10;
+            //Шанс 20% что жук сломает минерал
+            if (Data.Rnd.Next(0, 5) == 0)
+            {
+                DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
+            }
+        } 
 
         return true;
     }
