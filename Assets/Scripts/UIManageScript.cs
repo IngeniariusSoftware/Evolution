@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManageScript : MonoBehaviour
 {
+
+    /// <summary>
+    ///     Текущий шаг отрисовки
+    /// </summary>
+    public static bool NeedLoadGame = false;
+
     public InputField NameSaveGameField;
 
     public Toggle NormalViewToggle;
@@ -147,13 +152,18 @@ public class UIManageScript : MonoBehaviour
 
     public void ClickLoadGameYes() //TODO Разработать логику
     {
-        Debug.Log("Загрузка поколения");
+        _showLoadMenu = false;
+        LoadGameMenu.GetComponent<CanvasGroup>().alpha = 0;
+        LoadGameMenu.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        NeedLoadGame = true;
     }
 
-    public void ClickSaveGameYes() //TODO Разработать логику
+    public void ClickSaveGameYes()
     {
-
-        Debug.Log("Сохранение поколения");
+        _showSaveMenu = false;
+        SaveGameMenu.GetComponent<CanvasGroup>().alpha = 0;
+        SaveGameMenu.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        ControlScript.SaveGame(NameSaveGameField.text);
     }
 
     public void ClickNewGame() //TODO Разработать логику

@@ -40,14 +40,31 @@ public class ControlScript : MonoBehaviour
         bugsFile.Close();
     }
 
-    public static void LoadGame()
+    public static void LoadGame(string nameLoadGame)
     {
         RenderingScript.ResetRendering();
+
+        foreach (Cell cell in Data.WorldMap)
+        {
+            if (cell.LinkedBug != null)
+            {
+                cell.LinkedBug = null;
+                cell.CellType = CellEnum.TypeOfCell.Empty;
+            }
+        }
+
+
+
         RenderingScript.CurrentStepsRendering = 0;
         Map.CreateMap();
         // Загрузка жуков
+
+        FileStream bugsFile = new FileStream(Data.SavePath + nameLoadGame + ".gen", FileMode.Create);
+        BinaryFormatter binForm = new BinaryFormatter();
+
         // Распределение по карте
         // Выставить NUll last position, 50 жизней, текущие координаты
+
         NextTurn();
     }
 
@@ -72,6 +89,10 @@ public class ControlScript : MonoBehaviour
             RenderingScript.MaxStepsRendering = TimeManageScript.TimeSpeed;
             if (RenderingScript.RenderingMode != UIManageScript.CurrentRenderingMode)
             {
+                if (UIManageScript.NeedLoadGame)
+                {
+                    
+                }
                 RenderingScript.RenderingMode = UIManageScript.CurrentRenderingMode;
                 foreach (Cell cell in Data.WorldMap)
                 {
