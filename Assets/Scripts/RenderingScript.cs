@@ -155,7 +155,6 @@ public class RenderingScript : MonoBehaviour
                         if (RenderingMode)
                         {
                             color = rendredCell.LinkedBug.color;
-                            color.a = Capacity;
                         }
                         else
                         {
@@ -165,6 +164,9 @@ public class RenderingScript : MonoBehaviour
                                 (float)(Bug.MaxBugHealth - rendredCell.LinkedBug.Health) / Bug.MaxBugHealth,
                                 1);
                         }
+
+                        color.a = Capacity;
+                        RenderingObjects.Last().GetComponent<SpriteRenderer>().color = color;
                     }
                 }
                 else
@@ -190,6 +192,7 @@ public class RenderingScript : MonoBehaviour
 
                     Color color = RenderingObjects.Last().GetComponent<SpriteRenderer>().color;
                     color.a = Capacity;
+                    RenderingObjects.Last().GetComponent<SpriteRenderer>().color = color;
                 }
             }
 
@@ -216,6 +219,7 @@ public class RenderingScript : MonoBehaviour
                 {
                     Color color = renderingObject.GetComponent<SpriteRenderer>().color;
                     color.a = Capacity;
+                    renderingObject.GetComponent<SpriteRenderer>().color = color;
                 }
             }
             else
