@@ -504,7 +504,7 @@ public class Bug
             bug.Health += 10;
             bug.color = new Color(bug.color.r - 0.1f, bug.color.g - 0.1f, bug.color.b + 0.1f);
             //Шанс 20% что жук сломает минерал
-            if (Data.Rnd.Next(0, 5) == 0)
+            if (Data.Rnd.Next(0, 2) == 0)
             {
                 DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
             }
