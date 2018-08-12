@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,13 +24,20 @@ public class ControlScript : MonoBehaviour
         bugs = new BugCollection(Data.BugCount);
     }
 
-    public static void SaveGame()
+    public static void SaveGame(string nameSaveGame)
     {
-        // Сохранение жуков
-        using (var fs = new FileStream("/save", FileMode.Create))
+        int number = 0;
+        string name = nameSaveGame;
+        while (Data.SaveGames.Contains(nameSaveGame))
         {
-
+            number++;
+            nameSaveGame = name + "(" + number + ")";
         }
+
+        FileStream bugsFile = new FileStream(Data.SavePath + nameSaveGame + ".gen", FileMode.Create);
+        BinaryFormatter binForm = new BinaryFormatter();
+        binForm.Serialize(bugsFile, bugs);
+        bugsFile.Close();
     }
 
     public static void LoadGame()
