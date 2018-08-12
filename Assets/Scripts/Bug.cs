@@ -192,7 +192,7 @@ public class Bug
     /// <summary>
     ///     Массив делегатов, которые хранят команды жука
     /// </summary>
-    public static BugCommand[] MasBugCommands = {Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Attack, Share};
+    public static BugCommand[] MasBugCommands = {Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Share};
 
     private static int CalculateShift(Bug bug)
     {
