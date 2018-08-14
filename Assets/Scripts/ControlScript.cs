@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 public class ControlScript : MonoBehaviour
 {
@@ -27,23 +32,23 @@ public class ControlScript : MonoBehaviour
     public static void SaveGame(string nameSaveGame)
     {
         int number = 0;
-        string name = nameSaveGame;
-        while (Data.SaveGames.Contains(nameSaveGame))
+        string nameGame = nameSaveGame;
+        Data.SaveGames = Directory.GetFiles(Data.SavePath, "*.json").ToList();
+        while (Data.SaveGames.Contains(Data.SavePath + nameSaveGame + ".json"))
         {
             number++;
-            nameSaveGame = name + "(" + number + ")";
+            nameSaveGame = nameGame + " (" + number + ")";
         }
 
-        FileStream bugsFile = new FileStream(Data.SavePath + nameSaveGame + ".gen", FileMode.Create);
-        BinaryFormatter binForm = new BinaryFormatter();
-        binForm.Serialize(bugsFile, bugs);
-        bugsFile.Close();
+        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(BugCollection));
+        FileStream bugsSaveFile = new FileStream(Data.SavePath + nameSaveGame + ".json", FileMode.Create);
+        jsonSerializer.WriteObject(bugsSaveFile, bugs);
+        bugsSaveFile.Close();
     }
 
-    public static void LoadGame(string nameLoadGame)
+    public static void LoadGame()
     {
         RenderingScript.ResetRendering();
-
         foreach (Cell cell in Data.WorldMap)
         {
             if (cell.LinkedBug != null)
@@ -53,20 +58,25 @@ public class ControlScript : MonoBehaviour
             }
         }
 
+        FileStream bugsLoadFile = new FileStream(UIManageScript.LoadGameName, FileMode.Open);
+        DataContractJsonSerializer jsonDeserializer = new DataContractJsonSerializer(typeof(BugCollection));
+        bugs = (BugCollection)jsonDeserializer.ReadObject(bugsLoadFile);
+        bugsLoadFile.Close();
+        foreach (Bug bug in bugs.Bugs)
+        {
+            bug.Health = 50;
+            bug.LastPosition = null;
+            Cell emptyCell = Map.FindEmptyCell();
+            emptyCell.LinkedBug = bug;
+            emptyCell.CellType = CellEnum.TypeOfCell.Bug;
+            bug.CurrentPosition = emptyCell.Coordinate;
+        }
 
-
-        RenderingScript.CurrentStepsRendering = 0;
-        Map.CreateMap();
-        // Загрузка жуков
-
-        FileStream bugsFile = new FileStream(Data.SavePath + nameLoadGame + ".gen", FileMode.Create);
-        BinaryFormatter binForm = new BinaryFormatter();
-
-        // Распределение по карте
-        // Выставить NUll last position, 50 жизней, текущие координаты
-
-        NextTurn();
+        UIManageScript.LoadGameName = null;
+        UIManageScript.NeedLoadGame = false;
     }
+
+
 
     public static void NextTurn()
     {
@@ -77,6 +87,7 @@ public class ControlScript : MonoBehaviour
         if (bugs.CountBugs <= Data.BugCount / 10)
         {
             bugs.NewGeneration();
+            Data.CurrentGameStep = 0;
         }
     }
 
@@ -87,20 +98,25 @@ public class ControlScript : MonoBehaviour
         {
             RenderingScript.CurrentStepsRendering = 0;
             RenderingScript.MaxStepsRendering = TimeManageScript.TimeSpeed;
+            if (!UIManageScript.NeedLoadGame && RenderingScript.RenderingMode == UIManageScript.CurrentRenderingMode)
+            {
+                NextTurn();
+            }
+
+            if (UIManageScript.NeedLoadGame)
+            {
+                Data.CurrentGameStep = 0;
+                LoadGame();
+            }
+
             if (RenderingScript.RenderingMode != UIManageScript.CurrentRenderingMode)
             {
-                if (UIManageScript.NeedLoadGame)
-                {
-                    
-                }
                 RenderingScript.RenderingMode = UIManageScript.CurrentRenderingMode;
                 foreach (Cell cell in Data.WorldMap)
                 {
                     RenderingScript.UpdateTypeCell(cell);
                 }
             }
-
-            NextTurn();
         }
     }
 }
