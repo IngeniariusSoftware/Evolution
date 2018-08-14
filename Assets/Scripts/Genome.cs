@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
+[DataContract]
 public class Genome
 {
     #region Constants
@@ -10,8 +12,10 @@ public class Genome
     public static readonly int LengthGenome = 128;
 
     #endregion
-
+    
     private int _currentGenePosition;
+
+    #region Properties
 
     public int CurrentGenePosition
     {
@@ -20,6 +24,11 @@ public class Genome
         set { _currentGenePosition = value % Genome.LengthGenome; }
     }
 
+    #endregion
+
+
+
+    [DataMember]
     public int[] genome = new int[LengthGenome];
 
     public int[] GenomeMutate(int countMutation)
@@ -39,8 +48,10 @@ public class Genome
         return (CurrentGenePosition + shift) % LengthGenome;
     }
 
+    #region Constructors
     public Genome()
     {
+        CurrentGenePosition = 0;
         for (int i = 0; i < genome.Length; i++)
         {
             genome[i] = Data.Rnd.Next(0, LengthGenome);
@@ -49,8 +60,13 @@ public class Genome
 
     public Genome(int[] newGenome)
     {
+        CurrentGenePosition = 0;
         genome = newGenome;
     }
+
+    #endregion
+
+
 }
 
 
