@@ -10,7 +10,7 @@ public static class Data
     /// <summary>
     ///             
     /// </summary>
-    public static readonly string SavePath = "BugGenerations\\";
+    public static readonly string SavePath = @"BugGenerations\";
 
     /// <summary>
     ///     Переменная для генерации случайный значений

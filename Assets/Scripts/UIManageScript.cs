@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class UIManageScript : MonoBehaviour
 {
-
+    
     /// <summary>
     ///     Текущий шаг отрисовки
     /// </summary>
@@ -44,6 +44,7 @@ public class UIManageScript : MonoBehaviour
 
     public static bool CurrentRenderingMode = RenderingScript.RenderingMode;
 
+    public static string LoadGameName;
     void Update()
     {
         StatisticsText[0].text = "Поколение: " + ControlScript.bugs.GenerationNumber;
@@ -83,6 +84,7 @@ public class UIManageScript : MonoBehaviour
                 _showSaveMenu = false;
                 SaveGameMenu.GetComponent<CanvasGroup>().alpha = 0;
                 SaveGameMenu.GetComponent<CanvasGroup>().blocksRaycasts = false;
+                
             }
         }
     }
@@ -131,9 +133,10 @@ public class UIManageScript : MonoBehaviour
         }
     }
 
-    public void ClickDeleteGabe() //TODO Разработать логику
+    public void ClickDeleteGame()
     {
-        
+        File.Delete(DropdownSaveGames.options[DropdownSaveGames.value].text);
+        ClickLoadGame();
     }
 
     public void CheckField()
@@ -150,8 +153,9 @@ public class UIManageScript : MonoBehaviour
         }
     }
 
-    public void ClickLoadGameYes() //TODO Разработать логику
+    public void ClickLoadGameYes()
     {
+        LoadGameName = DropdownSaveGames.options[DropdownSaveGames.value].text;
         _showLoadMenu = false;
         LoadGameMenu.GetComponent<CanvasGroup>().alpha = 0;
         LoadGameMenu.GetComponent<CanvasGroup>().blocksRaycasts = false;
@@ -175,7 +179,7 @@ public class UIManageScript : MonoBehaviour
     {
         ClickContinue();
         DropdownSaveGames.ClearOptions();
-        var files = Directory.GetFiles(Data.SavePath, "*.txt");
+        var files = Directory.GetFiles(Data.SavePath, "*.json");
         DropdownSaveGames.AddOptions(files.ToList());
         if (DropdownSaveGames.options.Count == 0)
         {
