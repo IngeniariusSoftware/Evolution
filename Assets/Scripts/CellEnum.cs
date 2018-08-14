@@ -1,4 +1,7 @@
-﻿public class CellEnum
+﻿using System;
+
+[Serializable]
+public class CellEnum
 {
     public enum TypeOfCell
     {
@@ -21,6 +24,6 @@
 
     public static TypeOfCell GetCellType(int number)
     {
-        return (TypeOfCell) number;
+        return (TypeOfCell)number;
     }
 }

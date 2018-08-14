@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 using UnityEngine;
 
 /// <summary>
 /// Класс, в котором хранится коллекция жуков
 /// </summary>
-[Serializable]
+[DataContract]
 public class BugCollection
 {
     /// <summary>
@@ -16,10 +17,10 @@ public class BugCollection
     /// </summary>
     public static readonly int MaxStepsBug = 64;
 
-
-
+    [DataMember]
     public int GenerationNumber;
 
+    [DataMember]
     public int CountBugs;
 
     public void AddBug(List<Bug> bugs)
@@ -32,7 +33,7 @@ public class BugCollection
 
         bugs.Clear();
     }
-
+    [DataMember]
     public List<Bug> Bugs { get; set; }
 
     public BugCollection()
@@ -120,7 +121,10 @@ public class BugCollection
         List<Bug> bugs = new List<Bug>();
         for (int i = 0; i < Data.BugCount * 10; i++)
         {
-            bugs.Add(new Bug(ControlScript.BestBugs[i / 10].color, new Genome(ControlScript.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
+            bugs.Add(
+                new Bug(
+                    ControlScript.BestBugs[i / 10].color,
+                    new Genome(ControlScript.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
         }
 
         CountBugs = bugs.Count;
