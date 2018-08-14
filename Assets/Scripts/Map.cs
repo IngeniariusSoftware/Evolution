@@ -39,18 +39,25 @@
     /// </summary>
     public static void RefreshMap()
     {
-        // Тут из глобала надо сюда перенести
         for (int i = 0; i < MaxCountObjects.Length; i++)
         {
             while (Data.CurrentCountObjects[i] < MaxCountObjects[i])
             {
-                Coordinates randomPosition = Coordinates.RandomCoordinates(Size.Y, Size.X);
-                if (Data.WorldMap[randomPosition.Y, randomPosition.X].CellType == CellEnum.TypeOfCell.Empty)
-                {
-                    Data.WorldMap[randomPosition.Y, randomPosition.X].CellType = CellEnum.GetCellType(i);
-                }
+                 FindEmptyCell().CellType = CellEnum.GetCellType(i);
             }
         }
+    }
+
+    public static Cell FindEmptyCell()
+    {
+        Coordinates randomPosition;
+        do
+        {
+            randomPosition = Coordinates.RandomCoordinates(Size.Y, Size.X);
+        }
+        while (Data.WorldMap[randomPosition.Y, randomPosition.X].CellType != CellEnum.TypeOfCell.Empty);
+
+        return Data.WorldMap[randomPosition.Y, randomPosition.X];
     }
 
     /// <summary>
