@@ -1,14 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
-using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-
 
 public class ControlScript : MonoBehaviour
 {
@@ -20,30 +12,11 @@ public class ControlScript : MonoBehaviour
 
     public static List<Bug> DeadBugs = new List<Bug>();
 
-    public static ScrollRect Scroll;
-
     void Start()
     {
         RenderingScript.InitializeObjects();
         Map.CreateMap();
         bugs = new BugCollection(Data.BugCount);
-    }
-
-    public static void SaveGame(string nameSaveGame)
-    {
-        int number = 0;
-        string nameGame = nameSaveGame;
-        Data.SaveGames = Directory.GetFiles(Data.SavePath, "*.json").ToList();
-        while (Data.SaveGames.Contains(Data.SavePath + nameSaveGame + ".json"))
-        {
-            number++;
-            nameSaveGame = nameGame + " (" + number + ")";
-        }
-
-        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(BugCollection));
-        FileStream bugsSaveFile = new FileStream(Data.SavePath + nameSaveGame + ".json", FileMode.Create);
-        jsonSerializer.WriteObject(bugsSaveFile, bugs);
-        bugsSaveFile.Close();
     }
 
     public static void LoadGame()
@@ -58,10 +31,7 @@ public class ControlScript : MonoBehaviour
             }
         }
 
-        FileStream bugsLoadFile = new FileStream(UIManageScript.LoadGameName, FileMode.Open);
-        DataContractJsonSerializer jsonDeserializer = new DataContractJsonSerializer(typeof(BugCollection));
-        bugs = (BugCollection)jsonDeserializer.ReadObject(bugsLoadFile);
-        bugsLoadFile.Close();
+        SavesManager.LoadGame();
         foreach (Bug bug in bugs.Bugs)
         {
             bug.Health = 50;
@@ -72,12 +42,9 @@ public class ControlScript : MonoBehaviour
             bug.CurrentPosition = emptyCell.Coordinate;
         }
 
-        UIManageScript.LoadGameName = null;
-        UIManageScript.NeedLoadGame = false;
+        SavesManager.NeedLoadGame = false;
     }
-
-
-
+    
     public static void NextTurn()
     {
         Data.CurrentGameStep++;
@@ -97,21 +64,21 @@ public class ControlScript : MonoBehaviour
         if (RenderingScript.CurrentStepsRendering > RenderingScript.MaxStepsRendering)
         {
             RenderingScript.CurrentStepsRendering = 0;
-            RenderingScript.MaxStepsRendering = TimeManageScript.TimeSpeed;
-            if (!UIManageScript.NeedLoadGame && RenderingScript.RenderingMode == UIManageScript.CurrentRenderingMode)
+            RenderingScript.MaxStepsRendering = TimeManager.TimeSpeed;
+            if (!SavesManager.NeedLoadGame && RenderingScript.RenderingMode == RenderModeManager.CurrentRenderingMode)
             {
                 NextTurn();
             }
 
-            if (UIManageScript.NeedLoadGame)
+            if (SavesManager.NeedLoadGame)
             {
                 Data.CurrentGameStep = 0;
                 LoadGame();
             }
 
-            if (RenderingScript.RenderingMode != UIManageScript.CurrentRenderingMode)
+            if (RenderingScript.RenderingMode != RenderModeManager.CurrentRenderingMode)
             {
-                RenderingScript.RenderingMode = UIManageScript.CurrentRenderingMode;
+                RenderingScript.RenderingMode = RenderModeManager.CurrentRenderingMode;
                 foreach (Cell cell in Data.WorldMap)
                 {
                     RenderingScript.UpdateTypeCell(cell);
