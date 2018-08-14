@@ -1,7 +1,8 @@
 ﻿using System;
-using UnityEngine;
+using System.Runtime.Serialization;
 
-[Serializable]
+using UnityEngine;
+[DataContract]
 public class Bug
 {
     #region Constants
@@ -61,9 +62,16 @@ public class Bug
 
     #endregion
 
-    #region Properties
+    #region Fields
 
+    [DataMember]
     private Color _color;
+
+    private int _health;
+
+    #endregion
+
+    #region Properties
 
     public Color color
     {
@@ -108,11 +116,11 @@ public class Bug
         }
     }
 
+    [DataMember]
     public int Direction { get; set; }
 
+    [DataMember]
     public int LifeTime { get; set; }
-
-    private int _health;
 
     public int Health
     {
@@ -127,19 +135,16 @@ public class Bug
         }
     }
 
+    [DataMember]
     public Genome Gene { get; set; }
-
-    #endregion
-
-    #region Position
 
     public Coordinates LastPosition { get; set; }
 
     public Coordinates CurrentPosition { get; set; }
 
-    private static Cell DestinationCell;
-
     #endregion
+
+    private static Cell DestinationCell;
 
     /// <summary>
     ///     Массив делегатов, который хранит команды жука
@@ -158,10 +163,12 @@ public class Bug
         }
 
         // Убить жука, если он превысил допустимое количество команд за один ход
-        if (countSteps == BugCollection.MaxStepsBug && !isEnd) Health = 0;
+        if (countSteps == BugCollection.MaxStepsBug && !isEnd)
+        {
+            Health = 0;
+        }
     }
     
-
     /// <summary>
     ///     Считает промежуточные данные, необходимые для выполнения дальнейших команд
     /// </summary>
@@ -169,7 +176,7 @@ public class Bug
     public static bool DoCommand(Bug bug)
     {
         Coordinates destination =
-            Coordinates.CoordinateShift[CalculateShift(bug)] + bug.CurrentPosition;
+            Coordinates.CoordinateShift[bug.CalculateShift()] + bug.CurrentPosition;
         DestinationCell = Data.WorldMap[destination.Y, destination.X];
 
         // Если данному номеру генома присвоена команда, тогда необходимо её выполнить
@@ -194,13 +201,14 @@ public class Bug
     /// </summary>
     public static BugCommand[] MasBugCommands = {Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Share,Photosynthesize};
 
-    private static int CalculateShift(Bug bug)
+    /// <summary>
+    ///     Метод, который считает направление жука с учётом его текущего положения и следующей ячейки генома
+    /// </summary>
+    private int CalculateShift()
     {
-        int res = 0;
-
         // С учетом текущего поворота
-        res = (bug.Direction + bug.Gene.genome[bug.Gene.NextGenePosition()]) % 8;
-        return res;
+        int direction = (Direction + Gene.genome[Gene.NextGenePosition()]) % 8;
+        return direction;
     }
 
     #region BugCommands
@@ -211,7 +219,7 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Move(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int) DestinationCell.CellType + 1;
+        bug.Gene.CurrentGenePosition += (int)DestinationCell.CellType + 1;
         var neighbourBug = DestinationCell.LinkedBug;
         if (neighbourBug != null && neighbourBug.IsFriendBug(bug)) bug.Gene.CurrentGenePosition++;
 
