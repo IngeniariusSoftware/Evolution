@@ -1,7 +1,4 @@
-﻿using System;
-
-[Serializable]
-public class CellEnum
+﻿public class CellEnum
 {
     public enum TypeOfCell
     {

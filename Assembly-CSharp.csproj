@@ -71,8 +71,13 @@
     <Compile Include="Assets\Scripts\Genome.cs" />
     <Compile Include="Assets\Scripts\Map.cs" />
     <Compile Include="Assets\Scripts\RenderingScript.cs" />
-    <Compile Include="Assets\Scripts\TimeManageScript.cs" />
-    <Compile Include="Assets\Scripts\UIManageScript.cs" />
+    <Compile Include="Assets\Scripts\SavesManager.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\LoadGameMenu.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\PauseGameMenu.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\RenderModeManager.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\SaveGameMenu.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\StatisticsMenu.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\TimeManager.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>D:/Projects/Evolution/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
