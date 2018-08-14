@@ -7,10 +7,6 @@ using System.Collections.Generic;
 public static class Data
 {
     #region Constants
-    /// <summary>
-    ///             
-    /// </summary>
-    public static readonly string SavePath = @"BugGenerations\";
 
     /// <summary>
     ///     Переменная для генерации случайный значений
@@ -41,10 +37,6 @@ public static class Data
     ///     Количество мертвых жуков
     /// </summary>
     public static int NumberDeadBugs = 0;
-
-
-
-    public static List<string> SaveGames = new List<string>();
 
     #endregion
 }
