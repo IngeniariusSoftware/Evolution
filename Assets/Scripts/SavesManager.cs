@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
+using System.Text;
 using UnityEngine;
 
 /// <summary>
@@ -59,10 +60,15 @@ public class SavesManager : MonoBehaviour
             nameSaveGame = nameGame + " (" + number + ")";
         }
 
-        DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(BugCollection));
-        FileStream bugsSaveFile = new FileStream(_savePath + nameSaveGame + ".json", FileMode.Create);
-        jsonSerializer.WriteObject(bugsSaveFile, ControlScript.bugs);
-        bugsSaveFile.Close();
+        using (var bugsFile = new FileStream(_savePath + nameSaveGame + ".json", FileMode.Create))
+        {
+            using (var writer = JsonReaderWriterFactory.CreateJsonWriter(bugsFile, Encoding.UTF8, true, true, "  "))
+            {
+                var serializer = new DataContractJsonSerializer(typeof(BugCollection));
+                serializer.WriteObject(writer, ControlScript.bugs);
+                writer.Flush();
+            }
+        }
     }
 
     /// <summary>
