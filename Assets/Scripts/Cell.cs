@@ -32,14 +32,37 @@ public class Cell
 
         set
         {
-            if (_cellType != CellEnum.TypeOfCell.Empty && _cellType != CellEnum.TypeOfCell.Bug)
+            if (_cellType == CellEnum.TypeOfCell.Empty)
             {
-                Data.CurrentCountObjects[(int)_cellType]--;
+                if (value != CellEnum.TypeOfCell.Empty)
+                {
+                    Data.CountFillCell++;
+                }
+            }
+            else
+            {
+                if (value == CellEnum.TypeOfCell.Empty)
+                {
+                    Data.CountFillCell--;
+                }
+
+                if (_cellType != CellEnum.TypeOfCell.Bug)
+                {
+                    Data.CurrentCountObjects[(int)_cellType]--;
+                }
             }
 
-            if (value != CellEnum.TypeOfCell.Empty && value != CellEnum.TypeOfCell.Bug)
+
+            if (value == CellEnum.TypeOfCell.Empty)
             {
-                Data.CurrentCountObjects[(int)value]++;
+            }
+            else
+            {
+                if (value != CellEnum.TypeOfCell.Bug)
+                {
+                    Data.CurrentCountObjects[(int)value]++;
+
+                }
             }
 
             _cellType = value;
