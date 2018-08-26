@@ -3,59 +3,103 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 /// <summary>
 /// Класс для управления режимами отрисовки
 /// </summary>
 public class RenderModeManager : MonoBehaviour
 {
     /// <summary>
-    /// Текущий режим отрисовки
+    /// Режим отрисовки
     /// </summary>
-    public static bool CurrentRenderingMode = RenderingScript.RenderingMode;
-
+    public static RenderModeEnum.RenderingType RenderingMode = RenderModeEnum.RenderingType.Normal;
+    
     /// <summary>
-    /// Переключатель режима отрисовки
+    /// Переключатель обычного режима отрисовки
     /// </summary>
     public Toggle NormalViewToggle;
 
     /// <summary>
-    /// Переключатель режима отрисовки
+    /// Переключатель энергетического режима отрисовки
     /// </summary>
     public Toggle EnergyViewToggle;
 
     /// <summary>
-    /// Метод изменения режима отрисовки, основан на состояниях переключателей
+    /// Переключатель ускоренного режима отрисовки 
     /// </summary>
-    public void ChangeRenderingMode()
+    public Toggle RewindViewToggle;
+
+    /// <summary>
+    /// Переключатель режима отрисовки
+    /// </summary>
+    private static bool IsSessionBlocked;
+
+    /// <summary>
+    /// Методы изменения режима отрисовки, основан на состояниях переключателей
+    /// </summary>
+    public void OnRewindViewToggle()
     {
-        if (EnergyViewToggle.isOn && NormalViewToggle.isOn)
+        if (!IsSessionBlocked)
         {
-            if (CurrentRenderingMode)
+            RenderingMode = RenderModeEnum.RenderingType.Rewind;
+            IsSessionBlocked = true;
+            if (RewindViewToggle.isOn)
             {
+                EnergyViewToggle.isOn = false;
                 NormalViewToggle.isOn = false;
             }
             else
             {
-                EnergyViewToggle.isOn = false;
+                RewindViewToggle.isOn = true;
             }
-
-            CurrentRenderingMode = !CurrentRenderingMode;
         }
         else
         {
-            if (!EnergyViewToggle.isOn && !NormalViewToggle.isOn)
-            {
-                if (CurrentRenderingMode)
-                {
-                    EnergyViewToggle.isOn = true;
-                }
-                else
-                {
-                    NormalViewToggle.isOn = true;
-                }
+            IsSessionBlocked = false;
+        }
+    }
 
-                CurrentRenderingMode = !CurrentRenderingMode;
+    public void OnNormalViewToggle()
+    {
+        if (!IsSessionBlocked)
+        {
+            RenderingMode = RenderModeEnum.RenderingType.Normal;
+            IsSessionBlocked = true;
+            if (NormalViewToggle.isOn)
+            {
+                EnergyViewToggle.isOn = false;
+                RewindViewToggle.isOn = false;
             }
+            else
+            {
+                NormalViewToggle.isOn = true;
+            }
+        }
+        else
+        {
+            IsSessionBlocked = false;
+        }
+    }
+
+    public void OnEnergyViewToggle()
+    {
+        if (!IsSessionBlocked)
+        {
+            RenderingMode = RenderModeEnum.RenderingType.Energy;
+            IsSessionBlocked = true;
+            if (EnergyViewToggle.isOn)
+            {
+                RewindViewToggle.isOn = false;
+                NormalViewToggle.isOn = false;
+            }
+            else
+            {
+                EnergyViewToggle.isOn = true;
+            }
+        }
+        else
+        {
+            IsSessionBlocked = false;
         }
     }
 }

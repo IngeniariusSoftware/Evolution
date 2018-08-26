@@ -54,17 +54,20 @@ public class SavesManager : MonoBehaviour
         int number = 0;
         string nameGame = nameSaveGame;
         List<string> saveGames = GetSaveGames();
-        while (saveGames.Contains(nameSaveGame))
+        if (nameSaveGame != "autosave")
         {
-            number++;
-            nameSaveGame = nameGame + " (" + number + ")";
+            while (saveGames.Contains(nameSaveGame))
+            {
+                number++;
+                nameSaveGame = nameGame + " (" + number + ")";
+            }
         }
 
-        using (var bugsFile = new FileStream(_savePath + nameSaveGame + ".json", FileMode.Create))
+        using (FileStream bugsFile = new FileStream(_savePath + nameSaveGame + _format, FileMode.Create))
         {
             using (var writer = JsonReaderWriterFactory.CreateJsonWriter(bugsFile, Encoding.UTF8, true, true, "  "))
             {
-                var serializer = new DataContractJsonSerializer(typeof(BugCollection));
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(BugCollection));
                 serializer.WriteObject(writer, ControlScript.bugs);
                 writer.Flush();
             }
