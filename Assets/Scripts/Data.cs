@@ -16,7 +16,12 @@ public static class Data
     /// <summary>
     ///     Начальное количество жуков на карте
     /// </summary>
-    public static readonly int BugCount = 100;
+    public static readonly int BugCount = 5;
+
+    /// <summary>
+    ///     Количество заполненных клеток
+    /// </summary>
+    public static int CountFillCell = Map.AllCellCount;
 
     /// <summary>
     ///     Карта мира, состоящая из клеток
@@ -26,7 +31,7 @@ public static class Data
     /// <summary>
     ///     Текущее количество различных объектов на карте
     /// </summary>
-    public static readonly int[] CurrentCountObjects = new int[Map.MaxCountObjects.Length];
+    public static readonly int[] CurrentCountObjects = new int[Map.CountTypeObjects.Length];
 
     /// <summary>
     ///     Текущий ход
