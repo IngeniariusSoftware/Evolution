@@ -60,7 +60,7 @@ public class BugCollection
     {
         foreach (var bug in Bugs)
         {
-            if (bug.Health == 0)
+            if (bug.Health == 0 || bug.LifeTime == 0)
             {
                 ControlScript.DeadBugs.Add(bug);
             }
@@ -69,26 +69,19 @@ public class BugCollection
                 bug.StartAction();
             }
         }
+    }
 
+    public void DeleteBugs()
+    {
         foreach (Bug bug in ControlScript.DeadBugs)
         {
-            Bugs.Remove(bug);
-            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
-            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-            CountBugs--;
-            Data.NumberDeadBugs++;
-            if (ControlScript.BestBugs.Count < Data.BugCount)
+            if (CountBugs > Data.BugCount)
             {
-                ControlScript.BestBugs.Add(bug);
-            }
-            else
-            {
-                if (ControlScript.BestBugs.Exists(x => x.LifeTime < bug.LifeTime))
-                {
-                    ControlScript.BestBugs.Add(bug);
-                    ControlScript.BestBugs.Remove(ControlScript.BestBugs[0]);
-                    SortBugs();
-                }
+                Bugs.Remove(bug);
+                CountBugs--;
+                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                Data.NumberDeadBugs++;
             }
         }
 
@@ -98,45 +91,25 @@ public class BugCollection
     public void NewGeneration()
     {
         GenerationNumber++;
+        List<Bug> bugs = new List<Bug>();
+
         foreach (var bug in Bugs)
         {
             Data.NumberDeadBugs++;
             Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
             Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-            if (ControlScript.BestBugs.Count < Data.BugCount)
+            for (int i = 0; i < 10; i++)
             {
-                ControlScript.BestBugs.Add(bug);
+                bugs.Add(new Bug(bug.color, new Genome(bug.Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
             }
-            else
-            {
-                if (ControlScript.BestBugs.Exists(x => x.LifeTime < bug.LifeTime))
-                {
-                    ControlScript.BestBugs.Add(bug);
-                    ControlScript.BestBugs.Remove(ControlScript.BestBugs[0]);
-                    SortBugs();
-                }
-            }
-        }
-
-        List<Bug> bugs = new List<Bug>();
-        for (int i = 0; i < Data.BugCount * 10; i++)
-        {
-            bugs.Add(
-                new Bug(
-                    ControlScript.BestBugs[i / 10].color,
-                    new Genome(ControlScript.BestBugs[i / 10].Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
         }
 
         CountBugs = bugs.Count;
         Bugs = bugs;
-    }
-
-    /// <summary>
-    /// Сортировка жуков по значению прожитого времени для дальнейшего отбора
-    /// </summary>
-    private void SortBugs()
-    {
-        ControlScript.BestBugs = ControlScript.BestBugs.OrderBy(x => x.LifeTime).ToList();
+        if (GenerationNumber % 10 == 0)
+        {
+            SavesManager.SaveGame("autosave");
+        }
     }
 }
 
