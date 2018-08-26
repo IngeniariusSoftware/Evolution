@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+
 using UnityEngine;
 
 public class ControlScript : MonoBehaviour
@@ -8,12 +10,16 @@ public class ControlScript : MonoBehaviour
 
     public static List<Bug> childs = new List<Bug>();
 
-    public static List<Bug> BestBugs = new List<Bug>();
-
     public static List<Bug> DeadBugs = new List<Bug>();
 
     void Start()
     {
+        StartGame();
+    }
+
+    public static void StartGame()
+    {
+        // очистка ренедреа и карты
         RenderingScript.InitializeObjects();
         Map.CreateMap();
         bugs = new BugCollection(Data.BugCount);
@@ -21,7 +27,8 @@ public class ControlScript : MonoBehaviour
 
     public static void LoadGame()
     {
-        RenderingScript.ResetRendering();
+        Data.CurrentGameStep = 0;
+        RenderingScript.ClearRenderingObjects();
         foreach (Cell cell in Data.WorldMap)
         {
             if (cell.LinkedBug != null)
@@ -44,46 +51,107 @@ public class ControlScript : MonoBehaviour
 
         SavesManager.NeedLoadGame = false;
     }
-    
+
     public static void NextTurn()
     {
-        Data.CurrentGameStep++;
-        Map.RefreshMap();
-        bugs.StartExecution();
-        bugs.AddBug(childs);
-        if (bugs.CountBugs <= Data.BugCount / 10)
+        if (RenderingScript.RenderingMode != RenderModeEnum.RenderingType.Rewind)
         {
-            bugs.NewGeneration();
-            Data.CurrentGameStep = 0;
+            Data.CurrentGameStep++;
+            Map.RefreshMap();
+            bugs.StartExecution();
+            bugs.AddBug(childs);
+            bugs.DeleteBugs();
+            if (bugs.CountBugs <= Data.BugCount)
+            {
+                bugs.NewGeneration();
+                Data.CurrentGameStep = 0;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                Data.CurrentGameStep++;
+                Map.RefreshMap();
+                bugs.StartExecution();
+                bugs.AddBug(childs);
+                bugs.DeleteBugs();
+                if (bugs.CountBugs <= Data.BugCount)
+                {
+                    bugs.NewGeneration();
+                    Data.CurrentGameStep = 0;
+                }
+            }
         }
     }
 
     void Update()
     {
-        RenderingScript.UpdateObjects();
+        if (RenderingScript.CurrentStepsRendering <= TimeManager.TimeSpeed
+            && RenderingScript.RenderingMode != RenderModeEnum.RenderingType.Rewind)
+        {
+            RenderingScript.MaxStepsRendering = TimeManager.TimeSpeed;
+        }
+
         if (RenderingScript.CurrentStepsRendering > RenderingScript.MaxStepsRendering)
         {
-            RenderingScript.CurrentStepsRendering = 0;
-            RenderingScript.MaxStepsRendering = TimeManager.TimeSpeed;
-            if (!SavesManager.NeedLoadGame && RenderingScript.RenderingMode == RenderModeManager.CurrentRenderingMode)
+            if (RenderingScript.RenderingMode == RenderModeManager.RenderingMode)
             {
-                NextTurn();
-            }
+                if (RenderingScript.RenderingMode != RenderModeEnum.RenderingType.Rewind)
+                {
+                    RenderingScript.CurrentStepsRendering = 0;
+                }
 
-            if (SavesManager.NeedLoadGame)
-            {
-                Data.CurrentGameStep = 0;
-                LoadGame();
+                if (SavesManager.NeedLoadGame)
+                {
+                    LoadGame();
+                }
+                else
+                {
+                    NextTurn();
+                }
             }
-
-            if (RenderingScript.RenderingMode != RenderModeManager.CurrentRenderingMode)
+            else
             {
-                RenderingScript.RenderingMode = RenderModeManager.CurrentRenderingMode;
+                RenderingScript.CurrentStepsRendering = 0;
+                if (SavesManager.NeedLoadGame)
+                {
+                    LoadGame();
+                }
+                else
+                {
+                    NextTurn();
+                }
+
+                RenderingScript.RenderingMode = RenderModeManager.RenderingMode;
                 foreach (Cell cell in Data.WorldMap)
                 {
                     RenderingScript.UpdateTypeCell(cell);
                 }
             }
+        }
+        else
+        {
+            if (RenderingScript.CurrentStepsRendering == 0)
+            {
+                if (RenderingScript.RenderingMode != RenderModeEnum.RenderingType.Rewind)
+                {
+                    RenderingScript.StartRendering();
+                }
+            }
+            else
+            {
+                if (RenderingScript.RenderingMode == RenderModeEnum.RenderingType.Rewind)
+                {
+                    RenderingScript.HideObjects();
+                }
+                else
+                {
+                    RenderingScript.UpdateObjects();
+                }
+            }
+
+            RenderingScript.CurrentStepsRendering++;
         }
     }
 }
