@@ -32,7 +32,7 @@ public class SaveGameMenu : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && Menu.GetComponent<CanvasGroup>().alpha == 1)
         {
             Close();
         }
@@ -69,6 +69,7 @@ public class SaveGameMenu : MonoBehaviour
     /// </summary>
     public void Open()
     {
+        CameraManager.IsActiveUI = true;
         Menu.GetComponent<CanvasGroup>().alpha = 1;
         Menu.GetComponent<CanvasGroup>().blocksRaycasts = true;
         CheckField();
@@ -79,6 +80,7 @@ public class SaveGameMenu : MonoBehaviour
     /// </summary>
     public void Close()
     {
+        CameraManager.IsActiveUI = false;
         Menu.GetComponent<CanvasGroup>().alpha = 0;
         Menu.GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
