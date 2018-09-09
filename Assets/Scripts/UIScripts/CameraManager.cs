@@ -14,6 +14,8 @@ public class CameraManager : MonoBehaviour
 
     public static Vector3 CameraPosition;
 
+    public static bool IsActiveUI = false;
+
     public void ChangeCameraSize()
     {
         Camera.main.orthographicSize = 100 - slider.value;
@@ -28,83 +30,95 @@ public class CameraManager : MonoBehaviour
 
     void Update()
     {
-        float axis = Input.GetAxis("Mouse ScrollWheel");
-        if (axis != 0)
+        if (!IsActiveUI)
         {
-            ChangeSliderValue(axis * 20);
-        }
-
-        if (Input.GetKey(KeyCode.Plus) || Input.GetKey(KeyCode.KeypadPlus))
-        {
-            ChangeSliderValue(1);
-        }
-
-        if (Input.GetMouseButton(2) || Input.GetMouseButton(1))
-        {
-            mouseDelta = (MousePosition - (Vector2)Input.mousePosition) * 0.1f;
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            Coordinates clickCoordinate = new Coordinates
-                                              {
-                                                  Y = -(int)Math.Round(
-                                                          (Input.mousePosition.y - Screen.height / 2.0)
-                                                          / 100 / Cell.SizeY / 5.4
-                                                          * Camera.main.orthographicSize - Map.Size.Y / 2
-                                                          + CameraPosition.y / Cell.SizeY,
-                                                          MidpointRounding.AwayFromZero),
-                                                  X = (int)Math.Round(
-                                                      (Input.mousePosition.x - Screen.width / 2.0) / 100
-                                                                                                   / Cell
-                                                                                                       .SizeX
-                                                                                                   / 5.4
-                                                      * Camera.main.orthographicSize + Map.Size.X / 2
-                                                                                     + CameraPosition.x
-                                                                                     / Cell.SizeX,
-                                                      MidpointRounding.AwayFromZero)
-                                              };
+            slider.enabled = true;
+            float axis = Input.GetAxis("Mouse ScrollWheel");
+            if (axis != 0)
+            {
+                ChangeSliderValue(axis * 20);
             }
 
-        if (Input.GetKey(KeyCode.Minus) || Input.GetKey(KeyCode.KeypadMinus))
-        {
-            ChangeSliderValue(-1);
-        }
+            if (Input.GetKey(KeyCode.Plus) || Input.GetKey(KeyCode.KeypadPlus))
+            {
+                ChangeSliderValue(1);
+            }
 
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            mouseDelta += Vector2.up;
-        }
+            if (Input.GetMouseButton(2) || Input.GetMouseButton(1))
+            {
+                mouseDelta = (MousePosition - (Vector2)Input.mousePosition) * 0.1f;
+            }
 
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            mouseDelta += Vector2.right;
-        }
+            if (Input.GetMouseButtonDown(0))
+            {
+                Coordinates clickCoordinate = new Coordinates
+                                                  {
+                                                      Y = -(int)Math.Round(
+                                                              (Input.mousePosition.y - Screen.height / 2.0)
+                                                              / 100 / Cell.SizeY / 5.4
+                                                              * Camera.main.orthographicSize
+                                                              - Map.Size.Y / 2
+                                                              + CameraPosition.y / Cell.SizeY,
+                                                              MidpointRounding.AwayFromZero),
+                                                      X = (int)Math.Round(
+                                                          (Input.mousePosition.x - Screen.width / 2.0) / 100
+                                                                                                       / Cell
+                                                                                                           .SizeX
+                                                                                                       / 5.4
+                                                          * Camera.main.orthographicSize + Map.Size.X / 2
+                                                                                         + CameraPosition.x
+                                                                                         / Cell.SizeX,
+                                                          MidpointRounding.AwayFromZero)
+                                                  };
+            }
 
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            mouseDelta += Vector2.down;
-        }
+            if (Input.GetKey(KeyCode.Minus) || Input.GetKey(KeyCode.KeypadMinus))
+            {
+                ChangeSliderValue(-1);
+            }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            mouseDelta += Vector2.left;
-        }
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                mouseDelta += Vector2.up;
+            }
 
-        if (Map.Size.Y / 2.0 * Cell.SizeY > Math.Abs(mouseDelta.y + CameraPosition.y))
-        {
-            CameraPosition.y += mouseDelta.y;
-        }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                mouseDelta += Vector2.right;
+            }
 
-        if (Map.Size.X / 2.0 * Cell.SizeX > Math.Abs(mouseDelta.x + CameraPosition.x))
-        {
-            CameraPosition.x += mouseDelta.x;
-        }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                mouseDelta += Vector2.down;
+            }
 
-        Camera.main.transform.position = new Vector3(CameraPosition.x, CameraPosition.y, Camera.main.transform.position.z);
-        MousePosition = Input.mousePosition;
-        Background.position = new Vector3(CameraPosition.x, CameraPosition.y, Background.position.z);
-        mouseDelta = new Vector2(0, 0);
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                mouseDelta += Vector2.left;
+            }
+
+            if (Map.Size.Y / 2.0 * Cell.SizeY > Math.Abs(mouseDelta.y + CameraPosition.y))
+            {
+                CameraPosition.y += mouseDelta.y;
+            }
+
+            if (Map.Size.X / 2.0 * Cell.SizeX > Math.Abs(mouseDelta.x + CameraPosition.x))
+            {
+                CameraPosition.x += mouseDelta.x;
+            }
+
+            Camera.main.transform.position = new Vector3(
+                CameraPosition.x,
+                CameraPosition.y,
+                Camera.main.transform.position.z);
+            MousePosition = Input.mousePosition;
+            Background.position = new Vector3(CameraPosition.x, CameraPosition.y, Background.position.z);
+            mouseDelta = new Vector2(0, 0);
+        }
+        else
+        {
+            slider.enabled = false;
+        }
     }
 
     public void ChangeSliderValue(float axis)
