@@ -15,9 +15,9 @@ public class PauseGameMenu : MonoBehaviour
     public Transform Menu;
     
     /// <summary>
-    /// Открыто ли меню
+    /// Открыто ли основное меню
     /// </summary>
-    private bool IsOpen = false;
+    private bool _isOpen = false;
 
     #endregion
 
@@ -28,7 +28,7 @@ public class PauseGameMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (IsOpen)
+            if (_isOpen)
             {
                 Close();
             }
@@ -53,9 +53,10 @@ public class PauseGameMenu : MonoBehaviour
     /// </summary>
     public void Open()
     {
+        CameraManager.IsActiveUI = true;
         Menu.GetComponent<CanvasGroup>().alpha = 1;
         Menu.GetComponent<CanvasGroup>().blocksRaycasts = true;
-        IsOpen = true;
+        _isOpen = true;
     }
 
     /// <summary>
@@ -63,9 +64,10 @@ public class PauseGameMenu : MonoBehaviour
     /// </summary>
     public void Close()
     {
+        CameraManager.IsActiveUI = false;
         Menu.GetComponent<CanvasGroup>().alpha = 0;
         Menu.GetComponent<CanvasGroup>().blocksRaycasts = false;
-        IsOpen = false;
+        _isOpen = false;
     }
 
     /// <summary>

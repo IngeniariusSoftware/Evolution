@@ -89,7 +89,6 @@ public class RenderingScript : MonoBehaviour
         {
             for (int x = 0; x < Map.Size.X; x++)
             {
-
                 MapObjects[y, x] = Instantiate(
                     Object.transform,
                     new Vector3((x - Map.Size.X / 2) * Cell.SizeX, (-y + Map.Size.Y / 2) * Cell.SizeY),
