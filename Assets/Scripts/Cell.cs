@@ -52,22 +52,24 @@ public class Cell
                 }
             }
 
-
-            if (value == CellEnum.TypeOfCell.Empty)
-            {
-            }
-            else
+            if (value != CellEnum.TypeOfCell.Empty)
             {
                 if (value != CellEnum.TypeOfCell.Bug)
                 {
                     Data.CurrentCountObjects[(int)value]++;
-
                 }
             }
 
+            Map.UpdateCellList(this, value);
             _cellType = value;
-            RenderingScript.UpdateTypeCell(this);
         }
+    }
+
+    public Cell()
+    {
+        Coordinate = null;
+        LinkedBug = null;
+        CellType = CellEnum.TypeOfCell.Empty;
     }
 
     public Cell(Coordinates coordinate, CellEnum.TypeOfCell cellType, Bug bug = null)
