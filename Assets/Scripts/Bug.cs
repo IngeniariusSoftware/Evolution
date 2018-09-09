@@ -235,7 +235,11 @@ public class Bug
     /// <summary>
     ///     Массив делегатов, которые хранят команды жука
     /// </summary>
-    public static BugCommand[] MasBugCommands = {Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Share, Photosynthesize, Attack};
+    public static BugCommand[] MasBugCommands =
+        {
+            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Share, Photosynthesize, Attack,
+            CheckHealthNeighbor
+        };
 
     /// <summary>
     ///     Метод, который считает направление жука с учётом его текущего положения и следующей ячейки генома
@@ -262,44 +266,50 @@ public class Bug
         switch (DestinationCell.CellType)
         {
             case CellEnum.TypeOfCell.Empty:
-            {
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
-                bug.CurrentPosition = DestinationCell.Coordinate;
-                DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
-                DestinationCell.LinkedBug = bug;
-                break;
-            }
+                {
+                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                    bug.CurrentPosition = DestinationCell.Coordinate;
+                    DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
+                    DestinationCell.LinkedBug = bug;
+                    break;
+                }
 
             case CellEnum.TypeOfCell.Berry:
-            {
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
-                bug.CurrentPosition = DestinationCell.Coordinate;
-                DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
-                DestinationCell.LinkedBug = bug;
-                bug.Health += BerryValue;
-                bug.color = new Color(bug.color.r, bug.color.g + 0.01f, bug.color.b);
+                {
+                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                    bug.CurrentPosition = DestinationCell.Coordinate;
+                    DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
+                    DestinationCell.LinkedBug = bug;
+                    bug.Health += BerryValue;
+                    bug.color = new Color(bug.color.r, bug.color.g + 0.01f, bug.color.b);
                     break;
-            }
+                }
 
             case CellEnum.TypeOfCell.MineralBerry:
-            {
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
-                bug.CurrentPosition = DestinationCell.Coordinate;
-                DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
-                DestinationCell.LinkedBug = bug;
-                bug.Health += MineralBerryValue;
-                bug.color = new Color(bug.color.r, bug.color.g, bug.color.b + 0.01f);
+                {
+                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                    bug.CurrentPosition = DestinationCell.Coordinate;
+                    DestinationCell.CellType = CellEnum.TypeOfCell.Bug;
+                    DestinationCell.LinkedBug = bug;
+                    bug.Health += MineralBerryValue;
+                    bug.color = new Color(bug.color.r, bug.color.g, bug.color.b + 0.01f);
                     break;
-            }
+                }
+
+            case CellEnum.TypeOfCell.Prickle:
+                {
+                    bug.Health -= 10;
+                    break;
+                }
 
             case CellEnum.TypeOfCell.Poison:
-            {
-                bug.Health = 0;
-                break;
-            }
+                {
+                    bug.Health = 0;
+                    break;
+                }
         }
 
         return true;
@@ -362,14 +372,21 @@ public class Bug
     /// <param name="bug"> Жук, которого надо проверить на родство с нашим  </param>
     private bool IsFriendBug(Bug bug)
     {
-        var isDifference = false;
-        for (var i = 0; i < Gene.genome.Length; i++)
+        bool isDifference = false;
+        for (int i = 0; i < Gene.genome.Length; i++)
+        {
             if (Gene.genome[i] != bug.Gene.genome[i])
             {
                 if (isDifference)
+                {
                     return false;
-                isDifference = true;
+                }
+                else
+                {
+                    isDifference = true;
+                }
             }
+        }
 
         return true;
     }
@@ -392,10 +409,10 @@ public class Bug
     private static bool Multiply(Bug bug)
     {
         bug.Health -= MuptiplyCost;
-        var isBorn = false;
-        for (var i = 0; i < 8 && !isBorn; i++)
+        bool isBorn = false;
+        for (int i = 0; i < 8 && !isBorn; i++)
         {
-            var birthCoordinate = bug.CurrentPosition + Coordinates.CoordinateShift[i];
+            Coordinates birthCoordinate = bug.CurrentPosition + Coordinates.CoordinateShift[i];
             if (Data.WorldMap[birthCoordinate.Y, birthCoordinate.X].CellType == CellEnum.TypeOfCell.Empty)
             {
                 Bug childBug = new Bug(bug.color,
@@ -403,13 +420,13 @@ public class Bug
                     birthCoordinate);
                 ControlScript.childs.Add(childBug);
                 isBorn = true;
-                if (bug.Health > 50)
+                if (bug.Health > 100)
                 {
                     childBug.Health = 50;
                 }
                 else
                 {
-                    childBug.Health = bug.Health;
+                    childBug.Health = bug.Health - 50;
                 }
             }
         }
@@ -500,56 +517,63 @@ public class Bug
         switch (DestinationCell.CellType)
         {
             case CellEnum.TypeOfCell.Mineral:
-            {
-                DestinationCell.CellType = CellEnum.TypeOfCell.MineralBerry;
-                break;
-            }
-
-            case CellEnum.TypeOfCell.Bug:
-            {
-                if (DestinationCell.LinkedBug != null)
                 {
-                    bug.color = new Color(bug.color.r + 0.01f, bug.color.g, bug.color.b);
-                    if (DestinationCell.LinkedBug.Health > bug.Health)
-                    {
-                        if (bug.Health < 10)
-                        {
-                            DestinationCell.LinkedBug.Health += bug.Health;
-                        }
-                        else
-                        {
-                            DestinationCell.LinkedBug.Health += 10;
-                        }
-
-                        bug.Health -= 10;
-                    }
-                    else
-                    {
-                        if (DestinationCell.LinkedBug.Health < 10)
-                        {
-                            bug.Health += DestinationCell.LinkedBug.Health;
-                        }
-                        else
-                        {
-                            bug.Health += 10;
-                        }
-                        DestinationCell.LinkedBug.Health -= 10;
-                    }
+                    DestinationCell.CellType = CellEnum.TypeOfCell.MineralBerry;
+                    break;
                 }
 
-                break;
-            }
+            case CellEnum.TypeOfCell.Bug:
+                {
+                    if (DestinationCell.LinkedBug != null)
+                    {
+                        bug.color = new Color(bug.color.r + 0.01f, bug.color.g, bug.color.b);
+                        if (DestinationCell.LinkedBug.Health > bug.Health)
+                        {
+                            if (bug.Health < 10)
+                            {
+                                DestinationCell.LinkedBug.Health += bug.Health;
+                            }
+                            else
+                            {
+                                DestinationCell.LinkedBug.Health += 10;
+                            }
+
+                            bug.Health -= 10;
+                        }
+                        else
+                        {
+                            if (DestinationCell.LinkedBug.Health < 10)
+                            {
+                                bug.Health += DestinationCell.LinkedBug.Health;
+                            }
+                            else
+                            {
+                                bug.Health += 10;
+                            }
+
+                            DestinationCell.LinkedBug.Health -= 10;
+                        }
+                    }
+
+                    break;
+                }
 
             case CellEnum.TypeOfCell.Wall:
-            {
-                break;
-            }
+                {
+                    break;
+                }
 
+            case CellEnum.TypeOfCell.Prickle:
+                {
+                    DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
+                    bug.Health -= 10;
+                    break;
+                }
             default:
-            {
-                DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
-                break;
-            }
+                {
+                    DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
+                    break;
+                }
         }
 
         return true;
@@ -561,7 +585,7 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Share(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int) DestinationCell.CellType + 1;
+        bug.Gene.CurrentGenePosition += (int)DestinationCell.CellType + 1;
         var neighbourBug = DestinationCell.LinkedBug;
         if (neighbourBug != null)
         {
@@ -578,11 +602,51 @@ public class Bug
             bug.Health -= 10;
         }
 
+        return true;
+    }
+
+    /// <summary>
+    /// Жук пытается поделиться едой с содержимым определённой клетки рядом с собой
+    /// </summary>
+    /// <param name="bug"> Жук, который сейчас ходит  </param>
+    private static bool CheckHealthNeighbor(Bug bug)
+    {
+        Bug neighbourBug = DestinationCell.LinkedBug;
+        if (neighbourBug != null)
+        {
+            if (neighbourBug.IsFriendBug(bug))
+            {
+                if (neighbourBug.Health > bug.Health)
+                {
+                    bug.Gene.CurrentGenePosition += 2;
+                }
+                else
+                {
+                    bug.Gene.CurrentGenePosition += 3;
+                }
+            }
+            else
+            {
+                if (neighbourBug.Health > bug.Health)
+                {
+                    bug.Gene.CurrentGenePosition += 4;
+                }
+                else
+                {
+                    bug.Gene.CurrentGenePosition += 5;
+                }
+            }
+        }
+        else
+        {
+            bug.Gene.CurrentGenePosition++;
+        }
+
         return false;
     }
 
     /// <summary>
-    /// Команда находится в разработке из-за своей несбалансированности, пока жук может получать +2 к жизни, если применит команду к минералу
+    /// Жук может получать +2 к жизни, если применит команду к солнцу
     /// </summary>
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Photosynthesize(Bug bug)
@@ -594,13 +658,12 @@ public class Bug
             bug.Gene.CurrentGenePosition++;
         }
 
-        // Если в цель(клетка) минерал, то его ломает 
-        if (DestinationCell.CellType == CellEnum.TypeOfCell.Mineral)
+        if (DestinationCell.CellType == CellEnum.TypeOfCell.Sun)
         {
             bug.Health += 2;
-            bug.color = new Color(bug.color.r, bug.color.g, bug.color.b + 0.001f);
-            //Шанс 20% что жук сломает минерал
-            if (Data.Rnd.Next(0, 16) == 0)
+            bug.color = new Color(bug.color.r + 0.001f, bug.color.g + 0.001f, bug.color.b);
+            //Определённый шанс, что жук сломает солнце
+            if (Data.Rnd.Next(0, 100) == 0)
             {
                 DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
             }
