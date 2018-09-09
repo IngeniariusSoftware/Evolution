@@ -17,6 +17,11 @@ public class BugCollection
     /// </summary>
     public static readonly int MaxStepsBug = 64;
 
+    /// <summary>
+    /// Количество всех родившихся жуков      
+    /// </summary>
+    public static readonly int CountBirthBugs = 0;
+
     [DataMember]
     public int GenerationNumber;
 
@@ -29,10 +34,16 @@ public class BugCollection
         {
             Bugs.Add(bug);
             CountBugs++;
+            CountBirthBugs++;
+            if(CountBirthBugs % Data.BugCollection * 10)
+            {
+               GenerationNumber++;        
+            }
         }
 
         bugs.Clear();
     }
+
     [DataMember]
     public List<Bug> Bugs { get; set; }
 
