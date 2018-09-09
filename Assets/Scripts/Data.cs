@@ -16,12 +16,12 @@ public static class Data
     /// <summary>
     ///     Начальное количество жуков на карте
     /// </summary>
-    public static readonly int BugCount = 5;
+    public static readonly int BugCount = 50;
 
     /// <summary>
     ///     Количество заполненных клеток
     /// </summary>
-    public static int CountFillCell = Map.AllCellCount;
+    public static int CountFillCell = 0;
 
     /// <summary>
     ///     Карта мира, состоящая из клеток
