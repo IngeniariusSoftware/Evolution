@@ -16,6 +16,10 @@
 
         Bamboo,
 
+        Sun,
+
+        Prickle,
+
         Bug
     }
 
