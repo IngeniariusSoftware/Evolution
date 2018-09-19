@@ -34,11 +34,11 @@ public class BugCollection
         {
             Bugs.Add(bug);
             CountBugs++;
-            //CountBirthBugs++;
-            //if(CountBirthBugs % Data.Collection * 10)
-            //{
-            //   GenerationNumber++;        
-            //}
+            CountBirthBugs++;
+            if(CountBirthBugs % Data.BugCollection * 10)
+            {
+               GenerationNumber++;        
+            }
         }
 
         bugs.Clear();
