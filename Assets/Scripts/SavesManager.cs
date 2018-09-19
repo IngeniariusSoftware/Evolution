@@ -14,7 +14,7 @@ public class SavesManager : MonoBehaviour
     /// <summary>
     /// Путь для сохранения поколений жуков
     /// </summary>
-    private static string _savePath = @"BugGenerations";
+    private static string _savePath = @"BugGenerations\";
 
     /// <summary>
     /// Расширение, в котором сохраняется файл с поколениями жуков
