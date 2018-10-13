@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
@@ -134,3 +135,131 @@ public class BugCollection
     }
 }
 
+=======
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+
+using UnityEngine;
+
+/// <summary>
+/// Класс, в котором хранится коллекция жуков
+/// </summary>
+[DataContract]
+public class BugCollection
+{
+    /// <summary>
+    ///     Максимальное количество команд, которое может выполнить жук за один ход  
+    /// </summary>
+    public static readonly int MaxStepsBug = 64;
+
+    /// <summary>
+    /// Количество всех родившихся жуков      
+    /// </summary>
+    public static readonly int CountBirthBugs = 0;
+
+    [DataMember]
+    public int GenerationNumber;
+
+    [DataMember]
+    public int CountBugs;
+
+    public void AddBug(List<Bug> bugs)
+    {
+        foreach (Bug bug in bugs)
+        {
+            Bugs.Add(bug);
+            CountBugs++;
+            //CountBirthBugs++;
+            //if(CountBirthBugs % Data.BugCollection * 10)
+            //{
+            //   GenerationNumber++;        
+            //}
+        }
+
+        bugs.Clear();
+    }
+
+    [DataMember]
+    public List<Bug> Bugs { get; set; }
+
+    public BugCollection()
+    {
+        Bugs = new List<Bug>();
+        CountBugs = 0;
+        GenerationNumber = 0;
+    }
+
+    public BugCollection(int countBug)
+    {
+        Bugs = new List<Bug>();
+        for (int i = 0; i < countBug; i++)
+        {
+            Bugs.Add(new Bug(Color.white));
+            CountBugs++;
+        }
+    }
+
+    /// <summary>
+    /// Начать действие над коллекцией жуков
+    /// </summary>
+    public void StartExecution()
+    {
+        foreach (var bug in Bugs)
+        {
+            if (bug.Health == 0 || bug.LifeTime == 0)
+            {
+                ControlScript.DeadBugs.Add(bug);
+            }
+            else
+            {
+                bug.StartAction();
+            }
+        }
+    }
+
+    public void DeleteBugs()
+    {
+        foreach (Bug bug in ControlScript.DeadBugs)
+        {
+            if (CountBugs > Data.BugCount)
+            {
+                Bugs.Remove(bug);
+                CountBugs--;
+                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                Data.NumberDeadBugs++;
+            }
+        }
+
+        ControlScript.DeadBugs.Clear();
+    }
+
+    public void NewGeneration()
+    {
+        GenerationNumber++;
+        List<Bug> bugs = new List<Bug>();
+
+        foreach (var bug in Bugs)
+        {
+            Data.NumberDeadBugs++;
+            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+            for (int i = 0; i < 10; i++)
+            {
+                bugs.Add(new Bug(bug.color, new Genome(bug.Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
+            }
+        }
+
+        CountBugs = bugs.Count;
+        Bugs = bugs;
+        if (GenerationNumber % 10 == 0)
+        {
+            SavesManager.SaveGame("autosave");
+        }
+    }
+}
+
+>>>>>>> origin/master
