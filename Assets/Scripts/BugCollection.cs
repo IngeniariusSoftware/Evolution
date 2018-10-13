@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -99,9 +100,18 @@ public class BugCollection
         ControlScript.DeadBugs.Clear();
     }
 
+
     public void NewGeneration()
     {
         GenerationNumber++;
+        var str = String.Format("{0} {1}",GenerationNumber,Data.CurrentGameStep);
+        using (FileStream bugsFile = new FileStream(@"stat.txt", FileMode.OpenOrCreate))
+        {
+            using (var writer = new StreamWriter(bugsFile))
+            {
+                writer.WriteLine(str);
+            }
+        }
         List<Bug> bugs = new List<Bug>();
 
         foreach (var bug in Bugs)
