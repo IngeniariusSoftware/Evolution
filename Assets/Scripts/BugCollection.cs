@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -102,6 +103,11 @@ public class BugCollection
     public void NewGeneration()
     {
         GenerationNumber++;
+
+        var sw = new StreamWriter("stat.txt",true);
+        sw.WriteLine(String.Format("{0} {1}", GenerationNumber, Data.CurrentGameStep));
+        sw.Close();
+
         List<Bug> bugs = new List<Bug>();
 
         foreach (var bug in Bugs)

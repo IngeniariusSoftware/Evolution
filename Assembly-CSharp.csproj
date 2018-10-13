@@ -66,9 +66,12 @@
     <Compile Include="Assets\Scripts\CellEnum.cs" />
     <Compile Include="Assets\Scripts\ControlScript.cs" />
     <Compile Include="Assets\Scripts\Coordinates.cs" />
+    <Compile Include="Assets\Scripts\CrystalScript.cs" />
     <Compile Include="Assets\Scripts\Data.cs" />
+    <Compile Include="Assets\Scripts\FoodScript.cs" />
     <Compile Include="Assets\Scripts\Genome.cs" />
     <Compile Include="Assets\Scripts\Map.cs" />
+    <Compile Include="Assets\Scripts\PoisonScript.cs" />
     <Compile Include="Assets\Scripts\RenderingScript.cs" />
     <Compile Include="Assets\Scripts\SavesManager.cs" />
     <Compile Include="Assets\Scripts\UIScripts\CameraManager.cs" />
@@ -80,16 +83,16 @@
     <Compile Include="Assets\Scripts\UIScripts\StatisticsMenu.cs" />
     <Compile Include="Assets\Scripts\UIScripts\TimeManager.cs" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>D:/Projects/Evolution/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/grishchuk/Desktop/MyProjects/Evolution/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>D:/Projects/Evolution/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/grishchuk/Desktop/MyProjects/Evolution/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>D:/Projects/Evolution/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/grishchuk/Desktop/MyProjects/Evolution/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:/Projects/Evolution/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/grishchuk/Desktop/MyProjects/Evolution/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -290,10 +293,10 @@
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Analytics">
-      <HintPath>C:/Users/Максим/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
+      <HintPath>C:/Users/grishchuk/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.StandardEvents">
-      <HintPath>C:/Users/Максим/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/grishchuk/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

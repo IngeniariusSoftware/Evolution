@@ -38,6 +38,32 @@ public static class Map
             (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Bug])
         };
 
+    public static void RecalculateAllCountTypeObjects()
+    {
+        for (int i = 0; i < CountTypeObjects.Length; i++)
+        {
+            CountTypeObjects[i] = (int)(AllCellCount * PercentObjects[i]);
+        }
+    }
+
+    public static void RecalculateSingleTypeObject(int i)
+    {
+        CountTypeObjects[i] = (int)(AllCellCount * PercentObjects[i]);
+    }
+
+    public static void CleanMap(int itemIndex)
+    {
+        if (Data.CurrentCountObjects[itemIndex] > CountTypeObjects[itemIndex])
+        {
+            var countItemsToDelete = Data.CurrentCountObjects[itemIndex] - CountTypeObjects[itemIndex];
+            foreach (var cell in Data.WorldMap)
+            {
+                if ((int) cell.CellType == itemIndex)
+                    cell.CellType = CellEnum.TypeOfCell.Empty;
+            }
+        }
+    }
+
     public static List<List<Coordinates>> CellLists = new List<List<Coordinates>>();
 
     #endregion
