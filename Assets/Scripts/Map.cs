@@ -64,16 +64,27 @@ public static class Map
                     checkCell.CellType = CellEnum.GetCellType(i);
                 }
 
+                int tryCount = 0;
                 while (Data.CurrentCountObjects[i] < CountTypeObjects[i]
                        && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
                 {
-                    checkCell = FindEmptyCell(checkCell.Coordinate);
-                    if (checkCell != null)
+                    if (tryCount < 50)
                     {
-                        checkCell.CellType = CellEnum.GetCellType(i);
+                        checkCell = FindEmptyCell(checkCell.Coordinate);
                     }
                     else
                     {
+                        checkCell = FindEmptyCell();
+                    }
+
+                    if (checkCell != null)
+                    {
+                        checkCell.CellType = CellEnum.GetCellType(i);
+                        tryCount = 0;
+                    }
+                    else
+                    {
+                        tryCount++;
                         Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
                         checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
                     }
