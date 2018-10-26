@@ -17,7 +17,7 @@
 
 ## License
 
-This project is licensed under the AGPL-3.0 License - see the LICENSE.md file for details
+This project is licensed under the AGPL-3.0 License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Спасибо
 - Каналу [foo52ru](https://www.youtube.com/user/foo52ru) за демонстрацию возмонжностей применения генетических алгоритвом и создание
