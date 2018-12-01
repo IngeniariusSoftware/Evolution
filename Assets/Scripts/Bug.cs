@@ -15,12 +15,12 @@ public class Bug
     /// <summary>
     ///     Максимальное количество жизней у жука
     /// </summary>
-    public static readonly int MaxBugHealth = 256;
+    public static readonly int MaxBugHealth = 512;
 
     /// <summary>
     ///     Количество жизней, на которое уменьшается жизнь жука-родителя при генерации нового жука
     /// </summary>
-    public static readonly int MuptiplyCost = 30;
+    public static readonly int MuptiplyCost = 10;
 
     /// <summary>
     ///     Количество жизней, которое получаает жук, съедая минеральную ягоду
@@ -65,7 +65,7 @@ public class Bug
     /// <summary>
     ///     Количество шагов, оставшихся жуку до смерти
     /// </summary>
-    public int _lifeTime = 512;
+    public int _lifeTime = 1024;
 
     [DataMember]
     private Color _color;
@@ -237,8 +237,8 @@ public class Bug
     /// </summary>
     public static BugCommand[] MasBugCommands =
         {
-            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Share, Photosynthesize, Attack,
-            CheckHealthNeighbor
+            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Share, Photosynthesize, CheckHealthNeighbor,
+            Attack
         };
 
     /// <summary>
@@ -259,10 +259,7 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Move(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int)DestinationCell.CellType + 1;
-        var neighbourBug = DestinationCell.LinkedBug;
-        if (neighbourBug != null && neighbourBug.IsFriendBug(bug)) bug.Gene.CurrentGenePosition++;
-
+        CheckCell(bug);
         switch (DestinationCell.CellType)
         {
             case CellEnum.TypeOfCell.Empty:
@@ -321,10 +318,14 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool CheckCell(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int) DestinationCell.CellType + 1;
+        bug.Gene.CurrentGenePosition += (int)DestinationCell.CellType + 1;
         var neighbourBug = DestinationCell.LinkedBug;
-        if (neighbourBug != null && neighbourBug.IsFriendBug(bug)) bug.Gene.CurrentGenePosition++;
+        if (neighbourBug != null && neighbourBug.IsFriendBug(bug))
+        {
+            bug.Gene.CurrentGenePosition++;
+        }
 
+        bug.Gene.NextGenePosition(bug.Gene.genome[bug.Gene.CurrentGenePosition]);
         return false;
     }
 
@@ -334,10 +335,7 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Take(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int) DestinationCell.CellType + 1;
-        var neighbourBug = DestinationCell.LinkedBug;
-        if (neighbourBug != null && neighbourBug.IsFriendBug(bug)) bug.Gene.CurrentGenePosition++;
-
+        CheckCell(bug);
         switch (DestinationCell.CellType)
         {
             case CellEnum.TypeOfCell.Berry:
@@ -442,10 +440,7 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Push(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int) DestinationCell.CellType + 1;
-        var neighbourBug = DestinationCell.LinkedBug;
-        if (neighbourBug != null && neighbourBug.IsFriendBug(bug)) bug.Gene.CurrentGenePosition++;
-
+        CheckCell(bug);
         if (DestinationCell.CellType != CellEnum.TypeOfCell.Wall)
         {
             if (DestinationCell.CellType == CellEnum.TypeOfCell.Bamboo)
@@ -498,6 +493,7 @@ public class Bug
             bug.Gene.CurrentGenePosition += 3;
         }
 
+        bug.Gene.NextGenePosition(bug.Gene.genome[bug.Gene.CurrentGenePosition]);
         return false;
     }
 
@@ -507,13 +503,7 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Attack(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int) DestinationCell.CellType + 1;
-        var neighbourBug = DestinationCell.LinkedBug;
-        if (neighbourBug != null && neighbourBug.IsFriendBug(bug))
-        {
-            bug.Gene.CurrentGenePosition++;
-        }
-
+        CheckCell(bug);
         switch (DestinationCell.CellType)
         {
             case CellEnum.TypeOfCell.Mineral:
@@ -529,29 +519,29 @@ public class Bug
                         bug.color = new Color(bug.color.r + 0.01f, bug.color.g, bug.color.b);
                         if (DestinationCell.LinkedBug.Health > bug.Health)
                         {
-                            if (bug.Health < 10)
+                            if (bug.Health < 5)
                             {
                                 DestinationCell.LinkedBug.Health += bug.Health;
                             }
                             else
                             {
-                                DestinationCell.LinkedBug.Health += 10;
+                                DestinationCell.LinkedBug.Health += 5;
                             }
 
-                            bug.Health -= 10;
+                            bug.Health -= 5;
                         }
                         else
                         {
-                            if (DestinationCell.LinkedBug.Health < 10)
+                            if (DestinationCell.LinkedBug.Health < 5)
                             {
                                 bug.Health += DestinationCell.LinkedBug.Health;
                             }
                             else
                             {
-                                bug.Health += 10;
+                                bug.Health += 5;
                             }
 
-                            DestinationCell.LinkedBug.Health -= 10;
+                            DestinationCell.LinkedBug.Health -= 5;
                         }
                     }
 
@@ -569,6 +559,21 @@ public class Bug
                     bug.Health -= 10;
                     break;
                 }
+
+            case CellEnum.TypeOfCell.Poison:
+                {
+                    if (Data.Rnd.Next(0, 2) == 0)
+                    {
+                        DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
+                    }
+                    else
+                    {
+                        bug.Health = 0;
+                    }
+
+                    break;
+                }
+
             default:
                 {
                     DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
@@ -585,15 +590,10 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Share(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int)DestinationCell.CellType + 1;
+        CheckCell(bug);
         var neighbourBug = DestinationCell.LinkedBug;
         if (neighbourBug != null)
         {
-            if (neighbourBug.IsFriendBug(bug))
-            {
-                bug.Gene.CurrentGenePosition++;
-            }
-
             if (bug.Health < 10)
             {
                 neighbourBug.Health += bug.Health;
@@ -642,6 +642,7 @@ public class Bug
             bug.Gene.CurrentGenePosition++;
         }
 
+        bug.Gene.NextGenePosition(bug.Gene.genome[bug.Gene.CurrentGenePosition]);
         return false;
     }
 
@@ -651,19 +652,13 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Photosynthesize(Bug bug)
     {
-        bug.Gene.CurrentGenePosition += (int) DestinationCell.CellType + 1;
-        var neighbourBug = DestinationCell.LinkedBug;
-        if (neighbourBug != null && neighbourBug.IsFriendBug(bug))
-        {
-            bug.Gene.CurrentGenePosition++;
-        }
-
+        CheckCell(bug);
         if (DestinationCell.CellType == CellEnum.TypeOfCell.Sun)
         {
             bug.Health += 2;
             bug.color = new Color(bug.color.r + 0.001f, bug.color.g + 0.001f, bug.color.b);
             //Определённый шанс, что жук сломает солнце
-            if (Data.Rnd.Next(0, 100) == 0)
+            if (Data.Rnd.Next(0, 100) == -1)
             {
                 DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
             }
