@@ -21,7 +21,7 @@ public class BugCollection
     /// <summary>
     /// Количество всех родившихся жуков      
     /// </summary>
-    public static readonly int CountBirthBugs = 0;
+    public static int CountBirthBugs = 0;
 
     [DataMember]
     public int GenerationNumber;
@@ -35,11 +35,11 @@ public class BugCollection
         {
             Bugs.Add(bug);
             CountBugs++;
-            //CountBirthBugs++;
-            //if(CountBirthBugs % Data.BugCollection * 10)
-            //{
-            //   GenerationNumber++;        
-            //}
+            CountBirthBugs++;
+            if (CountBirthBugs % (Data.BugCount * 10) == 0)
+            {
+                GenerationNumber++;
+            }
         }
 
         bugs.Clear();
@@ -103,9 +103,9 @@ public class BugCollection
     public void NewGeneration()
     {
         GenerationNumber++;
-
+        CountBirthBugs = 0;
         var sw = new StreamWriter("stat.txt",true);
-        sw.WriteLine(String.Format("{0} {1}", GenerationNumber, Data.CurrentGameStep));
+        sw.WriteLine("{0} {1}", GenerationNumber, Data.CurrentGameStep);
         sw.Close();
 
         List<Bug> bugs = new List<Bug>();
