@@ -9,12 +9,12 @@ public static class Map
     /// <summary>
     ///     Размер карты по y и по x (количество клеток)   
     /// </summary>
-    public static readonly Coordinates Size = new Coordinates(40, 80);
+    public static readonly Coordinates Size = new Coordinates(30, 50);
 
     /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте 
     /// </summary>
-    public static readonly float[] PercentObjects = { 0, 0.1f, 0.1f, 0f, 0.1f, 0, 0.1f, 0.1f, 0.1f, 0 };
+    public static readonly float[] PercentObjects = { 0, 0.1f, 0.1f, 0.05f, 0.05f, 0, 0.05f, 0.01f, 0.05f, 0 };
 
     /// <summary>
     ///     Общее количетсво клеток на карте
@@ -73,76 +73,83 @@ public static class Map
     /// </summary>
     public static void RefreshMap()
     {
-        for (int i = 1; i < CountTypeObjects.Length; i++)
+        if (false) // Тип генерации карты
         {
-            if (Data.CurrentCountObjects[i] < CountTypeObjects[i]
-                && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
-            {
-                Cell checkCell;
-                if (CellLists[i].Count > 0)
-                {
-                    Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
-                    checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
-                }
-                else
-                {
-                    checkCell = FindEmptyCell();
-                    checkCell.CellType = CellEnum.GetCellType(i);
-                }
 
-                int tryCount = 0;
-                while (Data.CurrentCountObjects[i] < CountTypeObjects[i]
-                       && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
+            for (int i = 1; i < CountTypeObjects.Length; i++)
+            {
+                if (Data.CurrentCountObjects[i] < CountTypeObjects[i]
+                    && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
                 {
-                    if (tryCount < 50)
+                    Cell checkCell;
+                    if (CellLists[i].Count > 0)
                     {
-                        checkCell = FindEmptyCell(checkCell.Coordinate);
+                        Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
+                        checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
                     }
                     else
                     {
                         checkCell = FindEmptyCell();
+                        checkCell.CellType = CellEnum.GetCellType(i);
                     }
 
-                    if (checkCell != null)
+                    int tryCount = 0;
+                    while (Data.CurrentCountObjects[i] < CountTypeObjects[i]
+                           && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
                     {
-                        checkCell.CellType = CellEnum.GetCellType(i);
-                        tryCount = 0;
-                    }
-                    else
-                    {
-                        tryCount++;
-                        Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
-                        checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
+                        if (tryCount < 50)
+                        {
+                            checkCell = FindEmptyCell(checkCell.Coordinate);
+                        }
+                        else
+                        {
+                            checkCell = FindEmptyCell();
+                        }
+
+                        if (checkCell != null)
+                        {
+                            checkCell.CellType = CellEnum.GetCellType(i);
+                            tryCount = 0;
+                        }
+                        else
+                        {
+                            tryCount++;
+                            Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
+                            checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
+                        }
                     }
                 }
             }
         }
-
-        //for (int i = 0; i < CountTypeObjects.Length; i++)
-        //{
-        //    while (CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0 && Data.CurrentCountObjects[i] < CountTypeObjects[i])
-        //    {
-        //        if (i == (int)CellEnum.TypeOfCell.Bamboo)
-        //        {
-        //            Cell checkCell = FindEmptyCell();
-        //            checkCell.CellType = CellEnum.TypeOfCell.Bamboo;
-        //            while (Data.Rnd.Next(0, 50) != 0 && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0
-        //                                             && Data.CurrentCountObjects[i] < CountTypeObjects[i]
-        //                                             && checkCell != null)
-        //            {
-        //                checkCell = FindEmptyCell(checkCell.Coordinate);
-        //                if (checkCell != null)
-        //                {
-        //                    checkCell.CellType = CellEnum.TypeOfCell.Bamboo;
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            FindEmptyCell().CellType = CellEnum.GetCellType(i);
-        //        }
-        //    }
-        //}
+        else
+        {
+            for (int i = 0; i < CountTypeObjects.Length; i++)
+            {
+                while (CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0
+                       && Data.CurrentCountObjects[i] < CountTypeObjects[i])
+                {
+                    if (i == (int)CellEnum.TypeOfCell.Bamboo)
+                    {
+                        Cell checkCell = FindEmptyCell();
+                        checkCell.CellType = CellEnum.TypeOfCell.Bamboo;
+                        while (Data.Rnd.Next(0, 50) != 0 && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0
+                                                         && Data.CurrentCountObjects[i] < CountTypeObjects[i]
+                                                         && checkCell != null)
+                        {
+                            checkCell = FindEmptyCell(checkCell.Coordinate);
+                            if (checkCell != null)
+                            {
+                                checkCell.CellType = CellEnum.TypeOfCell.Bamboo;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        FindEmptyCell().CellType = CellEnum.GetCellType(i);
+                    }
+                }
+            }
+        }
     }
 
     public static bool CheckRadius(Cell cell, CellEnum.TypeOfCell cellType)
