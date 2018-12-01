@@ -19,7 +19,7 @@ public class ControlScript : MonoBehaviour
 
     public static void StartGame()
     {
-        // очистка ренедера и карты
+        // очистка рендера и карты
         RenderingScript.InitializeObjects();
         Map.CreateMap();
         bugs = new BugCollection(Data.BugCount);
@@ -70,7 +70,7 @@ public class ControlScript : MonoBehaviour
         else
         {
             var startTime = System.Diagnostics.Stopwatch.StartNew();
-            while (100 > startTime.ElapsedMilliseconds)
+            while (250 > startTime.ElapsedMilliseconds)
             {
                 Data.CurrentGameStep++;
                 Map.RefreshMap();
