@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 [DataContract]
@@ -9,7 +10,7 @@ public class Genome
     /// <summary>
     ///     Количество ячеек в геноме жука
     /// </summary>
-    public static readonly int LengthGenome = 128;
+    public static readonly int LengthGenome = 64;
 
     #endregion
     
@@ -37,7 +38,13 @@ public class Genome
 
         for (int i = 0; i < countMutation; i++)
         {
-            mutateGenome[Data.Rnd.Next(0, mutateGenome.Length)] = Data.Rnd.Next(0, LengthGenome);
+            int newGen = Data.Rnd.Next(0, Bug.MasBugCommands.Length + 1);
+            if (newGen == Bug.MasBugCommands.Length)
+            {
+                newGen = Data.Rnd.Next(Bug.MasBugCommands.Length, mutateGenome.Length);
+            }
+
+            mutateGenome[Data.Rnd.Next(0, mutateGenome.Length)] = newGen;
         }
 
         return mutateGenome;
