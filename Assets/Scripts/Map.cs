@@ -9,12 +9,12 @@ public static class Map
     /// <summary>
     ///     Размер карты по y и по x (количество клеток)   
     /// </summary>
-    public static readonly Coordinates Size = new Coordinates(30, 50);
+    public static readonly Coordinates Size = new Coordinates(50, 100);
 
     /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте 
     /// </summary>
-    public static readonly float[] PercentObjects = { 0, 0.1f, 0.1f, 0.05f, 0.05f, 0, 0.05f, 0.01f, 0.05f, 0 };
+    public static readonly float[] PercentObjects = { 0, 0.07f, 0.07f, 0f, 0.05f, 0, 0.05f, 0.01f, 0f, 0 };
 
     /// <summary>
     ///     Общее количетсво клеток на карте
@@ -73,7 +73,7 @@ public static class Map
     /// </summary>
     public static void RefreshMap()
     {
-        if (false) // Тип генерации карты
+        if (true) // Тип генерации карты
         {
 
             for (int i = 1; i < CountTypeObjects.Length; i++)
