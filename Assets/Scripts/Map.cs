@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using UnityEngine;
+
+using Random = System.Random;
 
 public static class Map
 {
@@ -9,12 +12,12 @@ public static class Map
     /// <summary>
     ///     Размер карты по y и по x (количество клеток)   
     /// </summary>
-    public static readonly Coordinates Size = new Coordinates(50, 100);
+    public static readonly Coordinates Size = new Coordinates(40, 80);
 
     /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте 
     /// </summary>
-    public static readonly float[] PercentObjects = { 0, 0.07f, 0.07f, 0f, 0.05f, 0, 0.05f, 0.01f, 0f, 0 };
+    public static readonly float[] PercentObjects = { 0, 0.07f, 0.07f, 0.2f, 0.05f, 0, 0.05f, 0.05f, 0f, 0 };
 
     /// <summary>
     ///     Общее количетсво клеток на карте
@@ -64,7 +67,7 @@ public static class Map
         }
     }
 
-    public static List<List<Coordinates>> CellLists = new List<List<Coordinates>>();
+    public static System.Collections.Generic.List<System.Collections.Generic.List<Coordinates>> CellLists = new System.Collections.Generic.List<System.Collections.Generic.List<Coordinates>>();
 
     #endregion
 
@@ -174,15 +177,36 @@ public static class Map
         return Data.WorldMap[randomCoordinate.Y, randomCoordinate.X];
     }
 
+    /// <summary>
+    /// Ищет свободную клетку вокруг клетки, с указанными координатами
+    /// </summary>
+    /// <param name="coordinate"> Координаты клетки, вокруг которой нужно искать </param>
+    /// <returns></returns>
     public static Cell FindEmptyCell(Coordinates coordinate)
     {
-        int i = Data.Rnd.Next(0, 8);
-        Coordinates checkCoordinate = coordinate + Coordinates.CoordinateShift[i];
-        if (Data.WorldMap[checkCoordinate.Y, checkCoordinate.X].CellType == CellEnum.TypeOfCell.Empty)
+        // Вместо обхода по часовой стрелки вокруг клетки, будем использовать рандомные сдвиги с запоминанием
+        List<byte> randomShifts = new List<byte>(8);
+        for (byte i = 0; i < randomShifts.Capacity; i++)
         {
-            return Data.WorldMap[checkCoordinate.Y, checkCoordinate.X];
+            randomShifts.Add(i);
         }
 
+        // Ищем свободную клетку до тех пор, пока не проверим все 8 позиций вокруг клетки, либо найдем пустую
+        while (randomShifts.Count > 0)
+        {
+            byte shift = (byte)Data.Rnd.Next(0, randomShifts.Count);
+            var checkCoordinate = coordinate + Coordinates.CoordinateShift[randomShifts[shift]];
+            if (checkCoordinate.Y > -1 && checkCoordinate.Y < Size.Y && checkCoordinate.X > -1
+                && checkCoordinate.X < Size.X && Data.WorldMap[checkCoordinate.Y, checkCoordinate.X].CellType
+                == CellEnum.TypeOfCell.Empty)
+            {
+                return Data.WorldMap[checkCoordinate.Y, checkCoordinate.X];
+            }
+
+            randomShifts.Remove(randomShifts[shift]);
+        }
+
+        // Если не нашли ни одной пустой клетки, вернем null
         return null;
     }
 
@@ -217,7 +241,7 @@ public static class Map
     {
         for (int i = 0; i < CountTypeObjects.Length; i++)
         {
-            CellLists.Add(new List<Coordinates>());
+            CellLists.Add(new System.Collections.Generic.List<Coordinates>());
         }   
     }
 
