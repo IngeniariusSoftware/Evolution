@@ -79,10 +79,10 @@ public static class Map
         if (true) // Тип генерации карты
         {
 
-            for (int i = 1; i < CountTypeObjects.Length; i++)
+            for (byte i = 1; i < CountTypeObjects.Length; i++)
             {
                 if (Data.CurrentCountObjects[i] < CountTypeObjects[i]
-                    && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
+                    && CellLists[(byte)CellEnum.TypeOfCell.Empty].Count > 0)
                 {
                     Cell checkCell;
                     if (CellLists[i].Count > 0)
@@ -96,18 +96,11 @@ public static class Map
                         checkCell.CellType = CellEnum.GetCellType(i);
                     }
 
-                    int tryCount = 0;
+                    byte tryCount = 0;
                     while (Data.CurrentCountObjects[i] < CountTypeObjects[i]
                            && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
                     {
-                        if (tryCount < 50)
-                        {
-                            checkCell = FindEmptyCell(checkCell.Coordinate);
-                        }
-                        else
-                        {
-                            checkCell = FindEmptyCell();
-                        }
+                        checkCell = tryCount < 50 ? FindEmptyCell(checkCell.Coordinate) : FindEmptyCell();
 
                         if (checkCell != null)
                         {
@@ -205,7 +198,7 @@ public static class Map
 
             randomShifts.Remove(randomShifts[shift]);
         }
-
+        
         // Если не нашли ни одной пустой клетки, вернем null
         return null;
     }
