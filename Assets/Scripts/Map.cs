@@ -73,7 +73,7 @@ public static class Map
     /// </summary>
     public static void RefreshMap()
     {
-        if (true) // Тип генерации карты
+        if (true) // Режим генерации карты
         {
 
             for (byte i = 1; i < CountTypeObjects.Length; i++)
