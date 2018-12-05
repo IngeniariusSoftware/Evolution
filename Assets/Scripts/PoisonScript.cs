@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine;
 using Slider = UnityEngine.UI.Slider;
 
 namespace Assets.Scripts

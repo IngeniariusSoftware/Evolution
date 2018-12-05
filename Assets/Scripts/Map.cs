@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using UnityEngine;
-
-using Random = System.Random;
 
 public static class Map
 {
@@ -17,7 +14,7 @@ public static class Map
     /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте 
     /// </summary>
-    public static readonly float[] PercentObjects = { 0, 0.07f, 0.07f, 0.2f, 0.05f, 0, 0.05f, 0.05f, 0f, 0 };
+    public static readonly float[] PercentObjects = { 0, 0.07f, 0.07f, 0.1f, 0.05f, 0, 0.05f, 0.05f, 0.1f, 0 };
 
     /// <summary>
     ///     Общее количетсво клеток на карте
@@ -67,7 +64,7 @@ public static class Map
         }
     }
 
-    public static System.Collections.Generic.List<System.Collections.Generic.List<Coordinates>> CellLists = new System.Collections.Generic.List<System.Collections.Generic.List<Coordinates>>();
+    public static List<List<Coordinates>> CellLists = new List<List<Coordinates>>();
 
     #endregion
 
@@ -162,6 +159,10 @@ public static class Map
         return false;
     }
 
+    /// <summary>
+    /// Ищет свободную пустую клетку по листу пустых клеток
+    /// </summary>
+    /// <returns></returns>
     public static Cell FindEmptyCell()
     {
         Coordinates randomCoordinate = CellLists[(int)CellEnum.TypeOfCell.Empty][Data.Rnd.Next(
@@ -238,6 +239,11 @@ public static class Map
         }   
     }
 
+    /// <summary>
+    /// Обновляет клетку в листе клеток и просит пересовать её
+    /// </summary>
+    /// <param name="cell"> Клетка, которую обновляем </param>
+    /// <param name="newType"> Новый тип этой клетки </param>
     public static void UpdateCellList(Cell cell, CellEnum.TypeOfCell newType)
     {
         CellLists[(int)cell.CellType].Remove(cell.Coordinate);

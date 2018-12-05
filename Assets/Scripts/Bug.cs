@@ -223,6 +223,7 @@ public class Bug
         else
         {
             // Иначе сделать переход по геному
+            bug.Gene.CurrentGenePosition++;
             return GenomJump(bug);
         }
     }
@@ -237,8 +238,7 @@ public class Bug
     /// </summary>
     public static BugCommand[] MasBugCommands =
         {
-            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Photosynthesize, CheckHealthNeighbor,
-            Attack
+            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Photosynthesize, CheckHealthNeighbor, Attack
         };
 
     /// <summary>
@@ -368,7 +368,7 @@ public class Bug
     ///     Комадна сравнивает геномы текущего и переданного жуков, если геном отличается больше чем на 1 ячейку, считается, что жуки не родственники
     /// </summary>
     /// <param name="bug"> Жук, которого надо проверить на родство с нашим  </param>
-    private bool IsFriendBug(Bug bug)
+    public bool IsFriendBug(Bug bug)
     {
         bool isDifference = false;
         for (int i = 0; i < Gene.genome.Length; i++)
@@ -505,41 +505,17 @@ public class Bug
                     break;
                 }
 
-            //case CellEnum.TypeOfCell.Bug:
-            //    {
-            //        if (DestinationCell.LinkedBug != null)
-            //        {
-            //            bug.color = new Color(bug.color.r + 0.01f, bug.color.g, bug.color.b);
-            //            if (DestinationCell.LinkedBug.Health > bug.Health)
-            //            {
-            //                if (bug.Health < 5)
-            //                {
-            //                    DestinationCell.LinkedBug.Health += bug.Health;
-            //                }
-            //                else
-            //                {
-            //                    DestinationCell.LinkedBug.Health += 5;
-            //                }
+            case CellEnum.TypeOfCell.Bug:
+                {
+                    if (DestinationCell.LinkedBug != null)
+                    {
+                        bug.color = new Color(bug.color.r + 0.01f, bug.color.g, bug.color.b);
+                        DestinationCell.LinkedBug.Health -= 10;
+                        bug._health -= 5;
+                    }
 
-            //                bug.Health -= 5;
-            //            }
-            //            else
-            //            {
-            //                if (DestinationCell.LinkedBug.Health < 5)
-            //                {
-            //                    bug.Health += DestinationCell.LinkedBug.Health;
-            //                }
-            //                else
-            //                {
-            //                    bug.Health += 5;
-            //                }
-
-            //                DestinationCell.LinkedBug.Health -= 5;
-            //            }
-            //        }
-
-            //        break;
-            //    }
+                    break;
+                }
 
             case CellEnum.TypeOfCell.Wall:
                 {
@@ -555,15 +531,7 @@ public class Bug
 
             case CellEnum.TypeOfCell.Poison:
                 {
-                    if (Data.Rnd.Next(0, 2) == 0)
-                    {
-                        DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
-                    }
-                    else
-                    {
-                        bug.Health = 0;
-                    }
-
+                    bug.Health = 0;
                     break;
                 }
 
@@ -651,10 +619,10 @@ public class Bug
             bug.Health += 2;
             bug.color = new Color(bug.color.r + 0.001f, bug.color.g + 0.001f, bug.color.b);
             //Определённый шанс, что жук сломает солнце
-            //if (Data.Rnd.Next(0, 1000) == 0)
-            //{
-            //    DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
-            //}
+            if (Data.Rnd.Next(0, 300) == 0)
+            {
+                DestinationCell.CellType = CellEnum.TypeOfCell.Empty;
+            }
         } 
 
         return true;

@@ -70,7 +70,8 @@ public class ControlScript : MonoBehaviour
         else
         {
             var startTime = System.Diagnostics.Stopwatch.StartNew();
-            while (250 > startTime.ElapsedMilliseconds)
+            int currentGeneration = bugs.GenerationNumber;
+            while (bugs.GenerationNumber == currentGeneration)
             {
                 Data.CurrentGameStep++;
                 Map.RefreshMap();

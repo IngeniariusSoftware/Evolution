@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine;
 using Slider = UnityEngine.UI.Slider;
 
 
