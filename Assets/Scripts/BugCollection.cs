@@ -115,7 +115,7 @@ public class BugCollection
             Data.NumberDeadBugs++;
             Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
             Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10 && Map.CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0; i++)
             {
                 bugs.Add(new Bug(bug.color, new Genome(bug.Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
             }

@@ -61,7 +61,7 @@ public class ControlScript : MonoBehaviour
             bugs.StartExecution();
             bugs.AddBug(childs);
             bugs.DeleteBugs();
-            if (bugs.CountBugs <= Data.BugCount)
+            if (bugs.CountBugs <= Data.BugCount && Map.CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
             {
                 bugs.NewGeneration();
                 Data.CurrentGameStep = 0;
@@ -69,7 +69,6 @@ public class ControlScript : MonoBehaviour
         }
         else
         {
-            var startTime = System.Diagnostics.Stopwatch.StartNew();
             int currentGeneration = bugs.GenerationNumber;
             while (bugs.GenerationNumber == currentGeneration)
             {
@@ -78,7 +77,7 @@ public class ControlScript : MonoBehaviour
                 bugs.StartExecution();
                 bugs.AddBug(childs);
                 bugs.DeleteBugs();
-                if (bugs.CountBugs <= Data.BugCount)
+                if (bugs.CountBugs <= Data.BugCount && Map.CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
                 {
                     bugs.NewGeneration();
                     Data.CurrentGameStep = 0;
