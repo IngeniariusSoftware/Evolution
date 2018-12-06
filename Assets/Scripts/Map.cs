@@ -9,7 +9,7 @@ public static class Map
     /// <summary>
     ///     Размер карты по y и по x (количество клеток)   
     /// </summary>
-    public static readonly Coordinates Size = new Coordinates(60, 120);
+    public static readonly Coordinates Size = new Coordinates(50, 100);
 
     /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте 
