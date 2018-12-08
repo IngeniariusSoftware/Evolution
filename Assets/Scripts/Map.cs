@@ -75,7 +75,7 @@ public static class Map
     {
         if (true) // Режим генерации карты
         {
-
+            
             for (byte i = 1; i < CountTypeObjects.Length; i++)
             {
                 if (Data.CurrentCountObjects[i] < CountTypeObjects[i]
@@ -86,6 +86,7 @@ public static class Map
                     {
                         Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
                         checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
+                        
                     }
                     else
                     {
