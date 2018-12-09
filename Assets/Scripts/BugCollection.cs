@@ -66,13 +66,13 @@ public class BugCollection
     }
 
     /// <summary>
-    /// Начать действие над коллекцией жуков
+    /// Начинаем ход поколения жуков
     /// </summary>
     public void StartExecution()
     {
         foreach (var bug in Bugs)
         {
-            if (bug.Health == 0 || bug.LifeTime == 0)
+            if (bug.LifeTime == 0 || bug.LifeTime == Bug.MaxLifeTime)
             {
                 ControlScript.DeadBugs.Add(bug);
             }

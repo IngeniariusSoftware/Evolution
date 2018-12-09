@@ -8,34 +8,45 @@ public class Bug
     #region Constants
 
     /// <summary>
-    ///     Количество жизней, с которым появляется жук
+    /// Количество жизней, с которым появляется жук
     /// </summary>
-    public static readonly int StartBugHealth = 50;
+    public const int StartBugHealth = 50;
 
     /// <summary>
-    ///     Максимальное количество жизней у жука
+    /// Максимальное количество жизней у жука
     /// </summary>
-    public static readonly int MaxBugHealth = 512;
+    public const int MaxBugHealth = 512;
 
     /// <summary>
-    ///     Количество жизней, на которое уменьшается жизнь жука-родителя при генерации нового жука
+    /// Количество жизней, на которое уменьшается жизнь жука-родителя при генерации нового жука
     /// </summary>
-    public static readonly int MuptiplyCost = 10;
+    public const int MuptiplyCost = 10;
 
     /// <summary>
-    ///     Количество жизней, которое получаает жук, съедая минеральную ягоду
+    /// Количество жизней, которое получаает жук, съедая минеральную ягоду
     /// </summary>
-    public static readonly int MineralBerryValue = 20;
+    public const int MineralBerryValue = 20;
 
     /// <summary>
-    ///     Количество жизней, которое получаает жук, съедая обычную ягоду
+    /// Количество жизней, которое получаает жук, съедая обычную ягоду
     /// </summary>
-    public static readonly int BerryValue = 10;
-    
+    public const int BerryValue = 10;
+
+    /// <summary>
+    /// Максимальное количество шагов, которое жук может прожить
+    /// </summary>
+    public const int MaxLifeTime = 1024;
+
     #endregion
 
     #region Constructors
-    // Зачем здесь логика на спавн???
+
+    /// <summary>
+    /// Создание жука
+    /// </summary>
+    /// <param name="bugColor"> Цвет жука </param>
+    /// <param name="genome"> Геном жука, если есть </param>
+    /// <param name="currentPosition"> Позиция создания жука, если есть </param>
     public Bug(Color bugColor, Genome genome = null, Coordinates currentPosition = null)
     {
         if (currentPosition == null)
@@ -67,9 +78,9 @@ public class Bug
     #region Fields
 
     /// <summary>
-    ///     Количество шагов, оставшихся жуку до смерти
+    ///     Количество шагов, которое прожил жук
     /// </summary>
-    public int _lifeTime = 1024;
+    public int currentLifeTime = 0;
 
     [DataMember]
     private Color _color;
@@ -139,17 +150,20 @@ public class Bug
     [DataMember]
     public int LifeTime
     {
-        get { return _lifeTime; }
+        get
+        {
+            return currentLifeTime;
+        }
 
         set
         {
-            if (value < 0)
+            if (value >= MaxLifeTime)
             {
-                _lifeTime = 0;
+                currentLifeTime = MaxLifeTime;
             }
             else
             {
-                _lifeTime = value;
+                currentLifeTime = value;
             }
         }
     }
@@ -165,8 +179,12 @@ public class Bug
             {
                 _health = MaxBugHealth;
             }
+
             if (value > -1 && value <= MaxBugHealth)
+            {
                 _health = value;
+            }
+
             if (value < 0)
             {
                 _health = 0;
@@ -194,7 +212,7 @@ public class Bug
         int countSteps = 0;
         bool isEnd = false;
         Health--;
-        LifeTime--;
+        LifeTime++;
         color = new Color(color.r - 0.0002f, color.g - 0.0002f, color.b - 0.0002f);
         while (countSteps < BugCollection.MaxStepsBug && !isEnd)
         {
