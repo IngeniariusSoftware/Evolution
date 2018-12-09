@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 [Serializable]
 public class Cell
@@ -8,31 +9,76 @@ public class Cell
     /// <summary>
     ///     Размер клетки по абсциссе для корректного отображения спрайта
     /// </summary>
-    public static readonly float SizeX = 2.56f;
+    public const float SizeX = 2.56f;
 
     /// <summary>
-    ///     Размер клетки по ординате для корректного отображения спрайта
+    /// Размер клетки по ординате для корректного отображения спрайта
     /// </summary>
-    public static readonly float SizeY = 2.56f;
+    public const float SizeY = 2.56f;
 
     #endregion
 
+    #region Fields
+
+    /// <summary>
+    /// Тип клетки
+    /// </summary>
+    private CellEnum.TypeOfCell cellType;
+
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    /// Создание пустой клетки
+    /// </summary>
+    public Cell()
+    {
+        Coordinate = null;
+        LinkedBug = null;
+        CellType = CellEnum.TypeOfCell.Empty;
+    }
+
+    /// <summary>
+    /// Создание клетки с указанными параметрами
+    /// </summary>
+    /// <param name="coordinate"> Координаты клетки на карте </param>
+    /// <param name="cellType"> Тип клетки </param>
+    /// <param name="bug"> Жук, находящийся в клетке, если есть </param>
+    public Cell(Coordinates coordinate, CellEnum.TypeOfCell cellType, Bug bug = null)
+    {
+        Coordinate = coordinate;
+        LinkedBug = bug;
+        CellType = cellType;
+    }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Координаты клетки на карте
+    /// </summary>
     public Coordinates Coordinate { get; set; }
 
+    /// <summary>
+    /// Ссылка на жука, который находится в клетке
+    /// </summary>
     public Bug LinkedBug { get; set; }
 
-    private CellEnum.TypeOfCell _cellType;
-
+    /// <summary>
+    /// Учет всех клеток на карте во время измения типа клетки
+    /// </summary>
     public CellEnum.TypeOfCell CellType
     {
         get
         {
-            return _cellType;
+            return cellType;
         }
 
         set
         {
-            if (_cellType == CellEnum.TypeOfCell.Empty)
+            if (cellType == CellEnum.TypeOfCell.Empty)
             {
                 if (value != CellEnum.TypeOfCell.Empty)
                 {
@@ -46,9 +92,9 @@ public class Cell
                     Data.CountFillCell--;
                 }
 
-                if (_cellType != CellEnum.TypeOfCell.Bug)
+                if (cellType != CellEnum.TypeOfCell.Bug)
                 {
-                    Data.CurrentCountObjects[(int)_cellType]--;
+                    Data.CurrentCountObjects[(int)cellType]--;
                 }
             }
 
@@ -61,21 +107,9 @@ public class Cell
             }
 
             Map.UpdateCellList(this, value);
-            _cellType = value;
+            cellType = value;
         }
     }
 
-    public Cell()
-    {
-        Coordinate = null;
-        LinkedBug = null;
-        CellType = CellEnum.TypeOfCell.Empty;
-    }
-
-    public Cell(Coordinates coordinate, CellEnum.TypeOfCell cellType, Bug bug = null)
-    {
-        Coordinate = coordinate;
-        LinkedBug = bug;
-        CellType = cellType;
-    }
+    #endregion
 }

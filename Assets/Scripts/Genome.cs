@@ -8,27 +8,35 @@ public class Genome
     #region Constants
 
     /// <summary>
-    ///     Количество ячеек в геноме жука
+    /// Количество ячеек в геноме жука
     /// </summary>
     public static readonly int LengthGenome = 64;
 
     #endregion
-    
+
+    /// <summary>
+    /// Текуая позиция в геноме
+    /// </summary>
     private int _currentGenePosition;
+
 
     #region Properties
 
     public int CurrentGenePosition
     {
-        get { return _currentGenePosition; }
+        get
+        {
+            return _currentGenePosition;
+        }
 
-        set { _currentGenePosition = value % Genome.LengthGenome; }
+        set
+        {
+            _currentGenePosition = value % Genome.LengthGenome;
+        }
     }
 
     #endregion
-
-
-
+    
     [DataMember]
     public int[] genome = new int[LengthGenome];
 
@@ -56,6 +64,7 @@ public class Genome
     }
 
     #region Constructors
+
     public Genome()
     {
         CurrentGenePosition = 0;
@@ -72,8 +81,4 @@ public class Genome
     }
 
     #endregion
-
-
 }
-
-

@@ -69,13 +69,13 @@ public static class Map
     #endregion
 
     /// <summary>
-    ///     Поддержание уровня еды, яда, стен и минералов на карте
+    /// Поддержание уровня еды, яда, стен и минералов на карте
     /// </summary>
     public static void RefreshMap()
     {
         if (true) // Режим генерации карты
         {
-            
+
             for (byte i = 1; i < CountTypeObjects.Length; i++)
             {
                 if (Data.CurrentCountObjects[i] < CountTypeObjects[i]
@@ -86,7 +86,7 @@ public static class Map
                     {
                         Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
                         checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
-                        
+
                     }
                     else
                     {
@@ -206,7 +206,7 @@ public static class Map
     }
 
     /// <summary>
-    ///     Заполнение клеток карты каким-либо типом клетки, генерация стен
+    /// Заполнение клеток карты каким-либо типом клетки, генерация стен
     /// </summary>
     public static void CreateMap()
     {

@@ -46,9 +46,13 @@ public class Bug
         CurrentPosition = currentPosition;
         Data.WorldMap[currentPosition.Y, currentPosition.X].CellType = CellEnum.TypeOfCell.Bug;
         if (genome == null)
+        {
             Gene = new Genome();
+        }
         else
+        {
             Gene = genome;
+        }
 
         Health = StartBugHealth;
         Gene.CurrentGenePosition = 0;
@@ -182,7 +186,7 @@ public class Bug
     private static Cell DestinationCell;
 
     /// <summary>
-    ///     Массив делегатов, который хранит команды жука
+    /// Массив делегатов, который хранит команды жука
     /// </summary>
     public void StartAction()
     {
@@ -204,9 +208,9 @@ public class Bug
             Health = 0;
         }
     }
-    
+
     /// <summary>
-    ///     Считает промежуточные данные, необходимые для выполнения дальнейших команд
+    /// Считает промежуточные данные, необходимые для выполнения дальнейших команд
     /// </summary>
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     public static bool DoCommand(Bug bug)
@@ -242,7 +246,7 @@ public class Bug
         };
 
     /// <summary>
-    ///     Метод, который считает направление жука с учётом его текущего положения и следующей ячейки генома
+    /// Метод, который считает направление жука с учётом его текущего положения и следующей ячейки генома
     /// </summary>
     private int CalculateShift()
     {
@@ -254,7 +258,7 @@ public class Bug
     #region BugCommands
 
     /// <summary>
-    ///     Жук пытается сходить на определённую клетку рядом с собой
+    /// Жук пытается сходить на определённую клетку рядом с собой
     /// </summary>
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Move(Bug bug)
@@ -313,7 +317,7 @@ public class Bug
     }
 
     /// <summary>
-    ///     Жук проверяет определённую клетку рядом с собой
+    /// Жук проверяет определённую клетку рядом с собой
     /// </summary>
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool CheckCell(Bug bug)
@@ -330,7 +334,7 @@ public class Bug
     }
 
     /// <summary>
-    ///     Жук пытается взять содержимое определённой клетки рядом с собой
+    /// Жук пытается взять содержимое определённой клетки рядом с собой
     /// </summary>
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool Take(Bug bug)
@@ -365,7 +369,7 @@ public class Bug
     }
 
     /// <summary>
-    ///     Комадна сравнивает геномы текущего и переданного жуков, если геном отличается больше чем на 1 ячейку, считается, что жуки не родственники
+    /// Комадна сравнивает геномы текущего и переданного жуков, если геном отличается больше чем на 1 ячейку, считается, что жуки не родственники
     /// </summary>
     /// <param name="bug"> Жук, которого надо проверить на родство с нашим  </param>
     public bool IsFriendBug(Bug bug)
