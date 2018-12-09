@@ -76,7 +76,7 @@ public class RenderingScript : MonoBehaviour
         for (int i = 0; i < Map.CountTypeObjects.Length; i++)
         {
             Sprites.Add(
-                Resources.Load<Sprite>("Sprites/" + CellEnum.GetCellType(i).ToString().Replace("TypeOfCell.", "")));
+                Resources.Load<Sprite>("Sprites/" + Cell.GetCellType(i).ToString().Replace("TypeOfCell.", "")));
         }
     }
 
@@ -131,7 +131,7 @@ public class RenderingScript : MonoBehaviour
                                 -3),
                             new Quaternion(0, 0, 0, 0)));
                     RenderingBugs.Last().GetComponent<SpriteRenderer>().sprite =
-                        Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        Sprites[(int)Cell.TypeOfCell.Bug];
                     if (RenderingMode == RenderModeEnum.RenderingType.Normal)
                     {
                         RenderingBugs.Last().GetComponent<SpriteRenderer>().color = rendredCell.LinkedBug.color;
@@ -146,15 +146,15 @@ public class RenderingScript : MonoBehaviour
                     }
 
                     MapObjects[rendredCell.LinkedBug.LastPosition.Y, rendredCell.LinkedBug.LastPosition.X]
-                        .GetComponent<SpriteRenderer>().sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
+                        .GetComponent<SpriteRenderer>().sprite = Sprites[(int)Cell.TypeOfCell.Empty];
                     RendredCellsBug.Add(rendredCell.LinkedBug);
                     MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X]
                         .GetComponent<SpriteRenderer>().color = Color.white;
                     if (MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                            .sprite == Sprites[(int)CellEnum.TypeOfCell.Bug])
+                            .sprite == Sprites[(int)Cell.TypeOfCell.Bug])
                     {
                         MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                            .sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
+                            .sprite = Sprites[(int)Cell.TypeOfCell.Empty];
                     }
                 }
                 else
@@ -168,7 +168,7 @@ public class RenderingScript : MonoBehaviour
                                 -2),
                             new Quaternion(0, 0, 0, 0)));
                     RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
-                        Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        Sprites[(int)Cell.TypeOfCell.Bug];
                     Color color = RenderingObjects.Last().GetComponent<SpriteRenderer>().color;
                     if (RenderingMode == RenderModeEnum.RenderingType.Normal)
                     {
@@ -205,7 +205,7 @@ public class RenderingScript : MonoBehaviour
                 else
                 {
                     RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
-                        Sprites[(int)CellEnum.TypeOfCell.Empty];
+                        Sprites[(int)Cell.TypeOfCell.Empty];
                 }
 
                 Color color = RenderingObjects.Last().GetComponent<SpriteRenderer>().color;
@@ -274,7 +274,7 @@ public class RenderingScript : MonoBehaviour
                 if (renderedCell.LinkedBug != null)
                 {
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        .sprite = Sprites[(int)Cell.TypeOfCell.Bug];
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
                         .color = renderedCell.LinkedBug.color;
                 }
@@ -297,12 +297,12 @@ public class RenderingScript : MonoBehaviour
                         (float)(Bug.MaxBugHealth - renderedCell.LinkedBug.Health) / Bug.MaxBugHealth,
                         1);
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        .sprite = Sprites[(int)Cell.TypeOfCell.Bug];
                 }
                 else
                 {
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
+                        .sprite = Sprites[(int)Cell.TypeOfCell.Empty];
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
                         .color = Color.white;
                 }

@@ -1,9 +1,39 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
+/// <summary>
+/// Класс клетки на карте
+/// </summary>
 [Serializable]
 public class Cell
 {
+    public enum TypeOfCell
+    {
+        Empty = 0,
+
+        Berry = 1,
+
+        Poison,
+
+        Wall,
+
+        Mineral,
+
+        MineralBerry,
+
+        Bamboo,
+
+        Sun,
+
+        Prickle,
+
+        Bug
+    }
+
+    public static TypeOfCell GetCellType(int number)
+    {
+        return (TypeOfCell)number;
+    }
+
     #region Constants
 
     /// <summary>
@@ -23,7 +53,7 @@ public class Cell
     /// <summary>
     /// Тип клетки
     /// </summary>
-    private CellEnum.TypeOfCell cellType;
+    private TypeOfCell cellType;
 
     #endregion
 
@@ -36,7 +66,7 @@ public class Cell
     {
         Coordinate = null;
         LinkedBug = null;
-        CellType = CellEnum.TypeOfCell.Empty;
+        CellType = TypeOfCell.Empty;
     }
 
     /// <summary>
@@ -45,7 +75,7 @@ public class Cell
     /// <param name="coordinate"> Координаты клетки на карте </param>
     /// <param name="cellType"> Тип клетки </param>
     /// <param name="bug"> Жук, находящийся в клетке, если есть </param>
-    public Cell(Coordinates coordinate, CellEnum.TypeOfCell cellType, Bug bug = null)
+    public Cell(Coordinates coordinate, TypeOfCell cellType, Bug bug = null)
     {
         Coordinate = coordinate;
         LinkedBug = bug;
@@ -69,7 +99,7 @@ public class Cell
     /// <summary>
     /// Учет всех клеток на карте во время измения типа клетки
     /// </summary>
-    public CellEnum.TypeOfCell CellType
+    public TypeOfCell CellType
     {
         get
         {
@@ -78,29 +108,29 @@ public class Cell
 
         set
         {
-            if (cellType == CellEnum.TypeOfCell.Empty)
+            if (cellType == TypeOfCell.Empty)
             {
-                if (value != CellEnum.TypeOfCell.Empty)
+                if (value != TypeOfCell.Empty)
                 {
                     Data.CountFillCell++;
                 }
             }
             else
             {
-                if (value == CellEnum.TypeOfCell.Empty)
+                if (value == TypeOfCell.Empty)
                 {
                     Data.CountFillCell--;
                 }
 
-                if (cellType != CellEnum.TypeOfCell.Bug)
+                if (cellType != TypeOfCell.Bug)
                 {
                     Data.CurrentCountObjects[(int)cellType]--;
                 }
             }
 
-            if (value != CellEnum.TypeOfCell.Empty)
+            if (value != TypeOfCell.Empty)
             {
-                if (value != CellEnum.TypeOfCell.Bug)
+                if (value != TypeOfCell.Bug)
                 {
                     Data.CurrentCountObjects[(int)value]++;
                 }

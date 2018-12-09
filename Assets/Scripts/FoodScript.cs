@@ -7,7 +7,7 @@ namespace Assets.Scripts
 {
     public class FoodScript : MonoBehaviour
     {
-        public int BERRY_INT = (int)CellEnum.TypeOfCell.Berry;
+        public int BERRY_INT = (int)Cell.TypeOfCell.Berry;
 
         public void ChangeItemCount()
         {

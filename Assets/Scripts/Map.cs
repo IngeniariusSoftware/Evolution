@@ -26,16 +26,16 @@ public static class Map
     /// </summary>
     public static int[] CountTypeObjects =
         {
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Empty]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Berry]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Poison]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Wall]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Mineral]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.MineralBerry]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Bamboo]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Sun]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Prickle]),
-            (int)(AllCellCount * PercentObjects[(int)CellEnum.TypeOfCell.Bug])
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Empty]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Berry]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Poison]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Wall]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Mineral]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.MineralBerry]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Bamboo]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Sun]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Prickle]),
+            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Bug])
         };
 
     public static void RecalculateAllCountTypeObjects()
@@ -59,7 +59,7 @@ public static class Map
             foreach (var cell in Data.WorldMap)
             {
                 if ((int) cell.CellType == itemIndex)
-                    cell.CellType = CellEnum.TypeOfCell.Empty;
+                    cell.CellType = Cell.TypeOfCell.Empty;
             }
         }
     }
@@ -79,7 +79,7 @@ public static class Map
             for (byte i = 1; i < CountTypeObjects.Length; i++)
             {
                 if (Data.CurrentCountObjects[i] < CountTypeObjects[i]
-                    && CellLists[(byte)CellEnum.TypeOfCell.Empty].Count > 0)
+                    && CellLists[(byte)Cell.TypeOfCell.Empty].Count > 0)
                 {
                     Cell checkCell;
                     if (CellLists[i].Count > 0)
@@ -91,18 +91,18 @@ public static class Map
                     else
                     {
                         checkCell = FindEmptyCell();
-                        checkCell.CellType = CellEnum.GetCellType(i);
+                        checkCell.CellType = Cell.GetCellType(i);
                     }
 
                     byte tryCount = 0;
                     while (Data.CurrentCountObjects[i] < CountTypeObjects[i]
-                           && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
+                           && CellLists[(int)Cell.TypeOfCell.Empty].Count > 0)
                     {
                         checkCell = tryCount < 50 ? FindEmptyCell(checkCell.Coordinate) : FindEmptyCell();
 
                         if (checkCell != null)
                         {
-                            checkCell.CellType = CellEnum.GetCellType(i);
+                            checkCell.CellType = Cell.GetCellType(i);
                             tryCount = 0;
                         }
                         else
@@ -119,34 +119,34 @@ public static class Map
         {
             for (int i = 0; i < CountTypeObjects.Length; i++)
             {
-                while (CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0
+                while (CellLists[(int)Cell.TypeOfCell.Empty].Count > 0
                        && Data.CurrentCountObjects[i] < CountTypeObjects[i])
                 {
-                    if (i == (int)CellEnum.TypeOfCell.Bamboo)
+                    if (i == (int)Cell.TypeOfCell.Bamboo)
                     {
                         Cell checkCell = FindEmptyCell();
-                        checkCell.CellType = CellEnum.TypeOfCell.Bamboo;
-                        while (Data.Rnd.Next(0, 50) != 0 && CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0
+                        checkCell.CellType = Cell.TypeOfCell.Bamboo;
+                        while (Data.Rnd.Next(0, 50) != 0 && CellLists[(int)Cell.TypeOfCell.Empty].Count > 0
                                                          && Data.CurrentCountObjects[i] < CountTypeObjects[i]
                                                          && checkCell != null)
                         {
                             checkCell = FindEmptyCell(checkCell.Coordinate);
                             if (checkCell != null)
                             {
-                                checkCell.CellType = CellEnum.TypeOfCell.Bamboo;
+                                checkCell.CellType = Cell.TypeOfCell.Bamboo;
                             }
                         }
                     }
                     else
                     {
-                        FindEmptyCell().CellType = CellEnum.GetCellType(i);
+                        FindEmptyCell().CellType = Cell.GetCellType(i);
                     }
                 }
             }
         }
     }
 
-    public static bool CheckRadius(Cell cell, CellEnum.TypeOfCell cellType)
+    public static bool CheckRadius(Cell cell, Cell.TypeOfCell cellType)
     {
         for (int i = 0; i < 8; i++)
         {
@@ -166,9 +166,9 @@ public static class Map
     /// <returns></returns>
     public static Cell FindEmptyCell()
     {
-        Coordinates randomCoordinate = CellLists[(int)CellEnum.TypeOfCell.Empty][Data.Rnd.Next(
+        Coordinates randomCoordinate = CellLists[(int)Cell.TypeOfCell.Empty][Data.Rnd.Next(
             0,
-            CellLists[(int)CellEnum.TypeOfCell.Empty].Count)];
+            CellLists[(int)Cell.TypeOfCell.Empty].Count)];
         return Data.WorldMap[randomCoordinate.Y, randomCoordinate.X];
     }
 
@@ -193,7 +193,7 @@ public static class Map
             var checkCoordinate = coordinate + Coordinates.CoordinateShift[randomShifts[shift]];
             if (checkCoordinate.Y > -1 && checkCoordinate.Y < Size.Y && checkCoordinate.X > -1
                 && checkCoordinate.X < Size.X && Data.WorldMap[checkCoordinate.Y, checkCoordinate.X].CellType
-                == CellEnum.TypeOfCell.Empty)
+                == Cell.TypeOfCell.Empty)
             {
                 return Data.WorldMap[checkCoordinate.Y, checkCoordinate.X];
             }
@@ -217,11 +217,11 @@ public static class Map
             {
                 if (x == 0 || x == Size.X - 1 || y == 0 || y == Size.Y - 1)
                 {
-                    Data.WorldMap[y, x] = new Cell(new Coordinates(y, x), CellEnum.TypeOfCell.Wall);
+                    Data.WorldMap[y, x] = new Cell(new Coordinates(y, x), Cell.TypeOfCell.Wall);
                 }
                 else
                 {
-                    Data.WorldMap[y, x] = new Cell(new Coordinates(y, x), CellEnum.TypeOfCell.Empty);
+                    Data.WorldMap[y, x] = new Cell(new Coordinates(y, x), Cell.TypeOfCell.Empty);
                 }
             }
         }
@@ -245,7 +245,7 @@ public static class Map
     /// </summary>
     /// <param name="cell"> Клетка, которую обновляем </param>
     /// <param name="newType"> Новый тип этой клетки </param>
-    public static void UpdateCellList(Cell cell, CellEnum.TypeOfCell newType)
+    public static void UpdateCellList(Cell cell, Cell.TypeOfCell newType)
     {
         CellLists[(int)cell.CellType].Remove(cell.Coordinate);
         CellLists[(int)newType].Add(cell.Coordinate);

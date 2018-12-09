@@ -10,7 +10,7 @@ namespace Assets.Scripts
     public class PoisonScript:MonoBehaviour
     {
 
-        public int POISON_INT = (int)CellEnum.TypeOfCell.Poison;
+        public int POISON_INT = (int)Cell.TypeOfCell.Poison;
 
         public void ChangeItemCount()
         {

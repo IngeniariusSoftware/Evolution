@@ -10,7 +10,7 @@ namespace Assets.Scripts
 {
     public class CrystalScript:MonoBehaviour
     {
-        public int CRYSTAL_INT = (int)CellEnum.TypeOfCell.Mineral;
+        public int CRYSTAL_INT = (int)Cell.TypeOfCell.Mineral;
 
         public void ChangeItemCount()
         {

@@ -34,7 +34,7 @@ public class ControlScript : MonoBehaviour
             if (cell.LinkedBug != null)
             {
                 cell.LinkedBug = null;
-                cell.CellType = CellEnum.TypeOfCell.Empty;
+                cell.CellType = Cell.TypeOfCell.Empty;
             }
         }
 
@@ -45,7 +45,7 @@ public class ControlScript : MonoBehaviour
             bug.LastPosition = null;
             Cell emptyCell = Map.FindEmptyCell();
             emptyCell.LinkedBug = bug;
-            emptyCell.CellType = CellEnum.TypeOfCell.Bug;
+            emptyCell.CellType = Cell.TypeOfCell.Bug;
             bug.CurrentPosition = emptyCell.Coordinate;
         }
 
@@ -61,7 +61,7 @@ public class ControlScript : MonoBehaviour
             bugs.StartExecution();
             bugs.AddBug(childs);
             bugs.DeleteBugs();
-            if (bugs.CountBugs <= Data.BugCount && Map.CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
+            if (bugs.CountBugs <= Data.BugCount && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0)
             {
                 bugs.NewGeneration();
                 Data.CurrentGameStep = 0;
@@ -77,7 +77,7 @@ public class ControlScript : MonoBehaviour
                 bugs.StartExecution();
                 bugs.AddBug(childs);
                 bugs.DeleteBugs();
-                if (bugs.CountBugs <= Data.BugCount && Map.CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0)
+                if (bugs.CountBugs <= Data.BugCount && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0)
                 {
                     bugs.NewGeneration();
                     Data.CurrentGameStep = 0;

@@ -22,11 +22,11 @@ public class StatisticsMenu : MonoBehaviour
         StatisticsText[1].text = "Шаг: " + Data.CurrentGameStep;
         StatisticsText[2].text = "Жуков: " + ControlScript.bugs.CountBugs;
         StatisticsText[3].text = "Мёртв. жуков: " + Data.NumberDeadBugs;
-        StatisticsText[4].text = "Обыч. ягод: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Berry];
-        StatisticsText[5].text = "Яда: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Poison];
-        StatisticsText[6].text = "Стен: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Wall];
-        StatisticsText[7].text = "Минералов: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Mineral];
-        StatisticsText[8].text = "Минер. ягод: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.MineralBerry];
-        StatisticsText[9].text = "Бамбука: " + Data.CurrentCountObjects[(int)CellEnum.TypeOfCell.Bamboo];
+        StatisticsText[4].text = "Обыч. ягод: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Berry];
+        StatisticsText[5].text = "Яда: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Poison];
+        StatisticsText[6].text = "Стен: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Wall];
+        StatisticsText[7].text = "Минералов: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Mineral];
+        StatisticsText[8].text = "Минер. ягод: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.MineralBerry];
+        StatisticsText[9].text = "Бамбука: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Bamboo];
     }
 }

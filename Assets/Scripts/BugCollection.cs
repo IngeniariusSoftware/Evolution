@@ -83,6 +83,9 @@ public class BugCollection
         }
     }
 
+    /// <summary>
+    /// Удалить жуков из тещего стека
+    /// </summary>
     public void DeleteBugs()
     {
         foreach (Bug bug in ControlScript.DeadBugs)
@@ -91,7 +94,7 @@ public class BugCollection
             {
                 Bugs.Remove(bug);
                 CountBugs--;
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = Cell.TypeOfCell.Empty;
                 Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
                 Data.NumberDeadBugs++;
             }
@@ -100,6 +103,10 @@ public class BugCollection
         ControlScript.DeadBugs.Clear();
     }
 
+
+    /// <summary>
+    /// Сгенирировать новое поколение на основе предыдущего
+    /// </summary>
     public void NewGeneration()
     {
         GenerationNumber++;
@@ -113,9 +120,9 @@ public class BugCollection
         foreach (var bug in Bugs)
         {
             Data.NumberDeadBugs++;
-            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = CellEnum.TypeOfCell.Empty;
+            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = Cell.TypeOfCell.Empty;
             Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-            for (int i = 0; i < 10 && Map.CellLists[(int)CellEnum.TypeOfCell.Empty].Count > 0; i++)
+            for (int i = 0; i < 10 && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0; i++)
             {
                 bugs.Add(new Bug(bug.color, new Genome(bug.Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
             }
