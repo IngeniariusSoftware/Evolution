@@ -14,7 +14,7 @@ public static class Map
     /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте 
     /// </summary>
-    public static readonly float[] PercentObjects = { 0, 0.07f, 0.07f, 0f, 0.05f, 0, 0f, 0f, 0f, 0 };
+    public static readonly float[] PercentObjects = { 0, 0.07f, 0.07f, 0.2f, 0.05f, 0, 0.1f, 0.1f, 0.1f, 0 };
 
     /// <summary>
     ///     Общее количетсво клеток на карте

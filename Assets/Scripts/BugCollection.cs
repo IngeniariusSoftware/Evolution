@@ -72,7 +72,7 @@ public class BugCollection
     {
         foreach (var bug in Bugs)
         {
-            if (bug.LifeTime == 0 || bug.LifeTime == Bug.MaxLifeTime)
+            if (bug.Health == 0 || bug.LifeTime == Bug.MaxLifeTime)
             {
                 ControlScript.DeadBugs.Add(bug);
             }
@@ -124,7 +124,7 @@ public class BugCollection
             Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
             for (int i = 0; i < 10 && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0; i++)
             {
-                bugs.Add(new Bug(bug.color, new Genome(bug.Gene.GenomeMutate(Data.Rnd.Next(0, 2)))));
+                bugs.Add(new Bug(bug.color, new Genome(bug.Gene, bug.LifeTime + bug.Health)));
             }
         }
 

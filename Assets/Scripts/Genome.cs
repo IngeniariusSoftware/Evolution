@@ -20,6 +20,16 @@ public class Genome
     private int _currentGenePosition;
 
 
+    /// <summary>
+    /// Показатель успешности данного генома
+    /// </summary>
+    private int _fitness;
+
+    /// <summary>
+    /// Координаты предыдущей мутации
+    /// </summary>
+    private Coordinates lastMutation;
+
     #region Properties
 
     public int CurrentGenePosition
@@ -31,20 +41,34 @@ public class Genome
 
         set
         {
-            _currentGenePosition = value % Genome.LengthGenome;
+            _currentGenePosition = value % LengthGenome;
         }
     }
 
     #endregion
-    
+
     [DataMember]
     public int[] genome = new int[LengthGenome];
 
-    public int[] GenomeMutate(int countMutation)
+    public int[] GenomeMutate(int countMutations, int lastFitness, int currentFitness)
     {
+        float fitnessSuccess = 1;
+        if (_fitness != -1 && lastFitness >= 1)
+        {
+            fitnessSuccess = currentFitness / lastFitness;
+        }
+
         int[] mutateGenome = (int[])genome.Clone();
 
-        for (int i = 0; i < countMutation; i++)
+        if (fitnessSuccess < 0.8f)
+        {
+            if (lastMutation != null)
+            {
+                mutateGenome[lastMutation.Y] = lastMutation.X;
+            }
+        }
+
+        for (int i = 0; i < countMutations; i++)
         {
             int newGen = Data.Rnd.Next(0, Bug.MasBugCommands.Length + 1);
             if (newGen == Bug.MasBugCommands.Length)
@@ -52,9 +76,24 @@ public class Genome
                 newGen = Data.Rnd.Next(Bug.MasBugCommands.Length, mutateGenome.Length);
             }
 
-            mutateGenome[Data.Rnd.Next(0, mutateGenome.Length)] = newGen;
+            if (fitnessSuccess > 1.2f && lastMutation != null)
+            {
+                lastMutation.Y = Data.Rnd.Next(
+                    Math.Max(0, lastMutation.Y - 6),
+                    Math.Min(LengthGenome, lastMutation.Y + 6));
+                mutateGenome[lastMutation.Y] = newGen;
+                lastMutation.X = newGen;
+            }
+            else
+            {
+                lastMutation = new Coordinates();
+                lastMutation.Y = Data.Rnd.Next(0, LengthGenome);
+                mutateGenome[lastMutation.Y] = newGen;
+                lastMutation.X = newGen;
+            }
         }
 
+        CurrentGenePosition = 0;
         return mutateGenome;
     }
 
@@ -72,12 +111,16 @@ public class Genome
         {
             genome[i] = Data.Rnd.Next(0, LengthGenome);
         }
+
+        _fitness = -1;
+        lastMutation = null;
     }
 
-    public Genome(int[] newGenome)
+    public Genome(Genome genePool, int currentFitness)
     {
         CurrentGenePosition = 0;
-        genome = newGenome;
+        genome = genePool.GenomeMutate(Data.Rnd.Next(0, 2), genePool._fitness, currentFitness);
+        _fitness = currentFitness;
     }
 
     #endregion

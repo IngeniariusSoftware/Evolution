@@ -10,7 +10,7 @@ public class Bug
     /// <summary>
     /// Количество жизней, с которым появляется жук
     /// </summary>
-    public const int StartBugHealth = 50;
+    public const int StartBugHealth = 100;
 
     /// <summary>
     /// Максимальное количество жизней у жука
@@ -437,7 +437,7 @@ public class Bug
             {
                 Bug childBug = new Bug(
                     bug.color,
-                    new Genome(bug.Gene.GenomeMutate(Data.Rnd.Next(0, 2))),
+                    new Genome(bug.Gene, bug.LifeTime),
                     birthCoordinate);
                 ControlScript.childs.Add(childBug);
                 isBorn = true;
