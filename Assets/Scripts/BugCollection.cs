@@ -122,7 +122,7 @@ public class BugCollection
             Data.NumberDeadBugs++;
             Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = Cell.TypeOfCell.Empty;
             Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-            for (int i = 0; i < 10 && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0; i++)
+            for (int i = 0; i < 4 && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0; i++)
             {
                 bugs.Add(new Bug(bug.color, new Genome(bug.Gene, bug.LifeTime + bug.Health)));
             }

@@ -20,17 +20,17 @@ public class Bug
     /// <summary>
     /// Количество жизней, на которое уменьшается жизнь жука-родителя при генерации нового жука
     /// </summary>
-    public const int MuptiplyCost = 10;
+    public const int MuptiplyCost = 30;
 
     /// <summary>
     /// Количество жизней, которое получаает жук, съедая минеральную ягоду
     /// </summary>
-    public const int MineralBerryValue = 20;
+    public const int MineralBerryValue = 80;
 
     /// <summary>
     /// Количество жизней, которое получаает жук, съедая обычную ягоду
     /// </summary>
-    public const int BerryValue = 10;
+    public const int BerryValue = 40;
 
     /// <summary>
     /// Максимальное количество шагов, которое жук может прожить
@@ -260,7 +260,7 @@ public class Bug
     /// </summary>
     public static BugCommand[] MasBugCommands =
         {
-            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Photosynthesize, CheckHealthNeighbor, Attack
+            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Photosynthesize, CheckHealthNeighbor, Attack, Share
         };
 
     /// <summary>
@@ -532,8 +532,8 @@ public class Bug
                     if (DestinationCell.LinkedBug != null)
                     {
                         bug.color = new Color(bug.color.r + 0.01f, bug.color.g, bug.color.b);
-                        DestinationCell.LinkedBug.Health -= 10;
-                        bug._health -= 5;
+                        DestinationCell.LinkedBug.Health = 0;
+                        bug.Health += 10;
                     }
 
                     break;
@@ -641,7 +641,7 @@ public class Bug
             bug.Health += 2;
             bug.color = new Color(bug.color.r + 0.001f, bug.color.g + 0.001f, bug.color.b);
             //Определённый шанс, что жук сломает солнце
-            if (Data.Rnd.Next(0, 300) == 0)
+            if (Data.Rnd.Next(0, 100) == 0)
             {
                 DestinationCell.CellType = Cell.TypeOfCell.Empty;
             }

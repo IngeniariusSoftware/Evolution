@@ -9,12 +9,12 @@ public static class Map
     /// <summary>
     ///     Размер карты по y и по x (количество клеток)   
     /// </summary>
-    public static readonly Coordinates Size = new Coordinates(40, 80);
+    public static readonly Coordinates Size = new Coordinates(60, 120);
 
     /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте 
     /// </summary>
-    public static readonly float[] PercentObjects = { 0, 0.07f, 0.07f, 0.2f, 0.05f, 0, 0.1f, 0.1f, 0.1f, 0 };
+    public static readonly float[] PercentObjects = { 0, 0.08f, 0.08f, 0.1f, 0.08f, 0, 0.08f, 0.08f, 0.06f, 0 };
 
     /// <summary>
     ///     Общее количетсво клеток на карте
@@ -98,7 +98,7 @@ public static class Map
                     while (Data.CurrentCountObjects[i] < CountTypeObjects[i]
                            && CellLists[(int)Cell.TypeOfCell.Empty].Count > 0)
                     {
-                        checkCell = tryCount < 50 ? FindEmptyCell(checkCell.Coordinate) : FindEmptyCell();
+                        checkCell = tryCount < 1 ? FindEmptyCell(checkCell.Coordinate) : FindEmptyCell();
 
                         if (checkCell != null)
                         {
