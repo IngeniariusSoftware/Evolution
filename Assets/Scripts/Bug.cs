@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using UnityEngine;
@@ -10,7 +11,7 @@ public class Bug
     /// <summary>
     /// Количество жизней, с которым появляется жук
     /// </summary>
-    public const int StartBugHealth = 100;
+    public const int StartBugHealth = 50;
 
     /// <summary>
     /// Максимальное количество жизней у жука
@@ -20,22 +21,22 @@ public class Bug
     /// <summary>
     /// Количество жизней, на которое уменьшается жизнь жука-родителя при генерации нового жука
     /// </summary>
-    public const int MuptiplyCost = 30;
+    public const int MuptiplyCost = 10;
 
     /// <summary>
     /// Количество жизней, которое получаает жук, съедая минеральную ягоду
     /// </summary>
-    public const int MineralBerryValue = 80;
+    public const int MineralBerryValue = 40;
 
     /// <summary>
     /// Количество жизней, которое получаает жук, съедая обычную ягоду
     /// </summary>
-    public const int BerryValue = 40;
+    public const int BerryValue = 30;
 
     /// <summary>
     /// Максимальное количество шагов, которое жук может прожить
     /// </summary>
-    public const int MaxLifeTime = 1024;
+    public const int MaxLifeTime = 512;
 
     #endregion
 
@@ -430,10 +431,21 @@ public class Bug
     {
         bug.Health -= MuptiplyCost;
         bool isBorn = false;
-        for (int i = 0; i < 8 && !isBorn; i++)
+
+        // Вместо обхода по часовой стрелки вокруг клетки, будем использовать рандомные сдвиги с запоминанием
+        List<byte> randomShifts = new List<byte>(8);
+        for (byte i = 0; i < randomShifts.Capacity; i++)
         {
-            Coordinates birthCoordinate = bug.CurrentPosition + Coordinates.CoordinateShift[i];
-            if (Data.WorldMap[birthCoordinate.Y, birthCoordinate.X].CellType == Cell.TypeOfCell.Empty)
+            randomShifts.Add(i);
+        }
+
+        // Ищем свободную клетку до тех пор, пока не проверим все 8 позиций вокруг клетки, либо найдем пустую
+        while (randomShifts.Count > 0 && !isBorn)
+        {
+            byte shift = (byte)Data.Rnd.Next(0, randomShifts.Count);
+            Coordinates birthCoordinate = bug.CurrentPosition + Coordinates.CoordinateShift[randomShifts[shift]];
+            if (Data.WorldMap[birthCoordinate.Y, birthCoordinate.X].CellType
+                == Cell.TypeOfCell.Empty)
             {
                 Bug childBug = new Bug(
                     bug.color,
@@ -441,8 +453,10 @@ public class Bug
                     birthCoordinate);
                 ControlScript.childs.Add(childBug);
                 isBorn = true;
-                childBug.Health = bug.Health;
+                childBug.Health = Math.Min(MuptiplyCost, bug.Health);
             }
+
+            randomShifts.Remove(randomShifts[shift]);
         }
 
         bug.Gene.CurrentGenePosition++;
@@ -531,9 +545,9 @@ public class Bug
                 {
                     if (DestinationCell.LinkedBug != null)
                     {
+                        bug.Health += 10;
                         bug.color = new Color(bug.color.r + 0.01f, bug.color.g, bug.color.b);
                         DestinationCell.LinkedBug.Health = 0;
-                        bug.Health += 10;
                     }
 
                     break;
@@ -638,10 +652,10 @@ public class Bug
         CheckCell(bug);
         if (DestinationCell.CellType == Cell.TypeOfCell.Sun)
         {
-            bug.Health += 2;
+            bug.Health += 3;
             bug.color = new Color(bug.color.r + 0.001f, bug.color.g + 0.001f, bug.color.b);
             //Определённый шанс, что жук сломает солнце
-            if (Data.Rnd.Next(0, 100) == 0)
+            if (Data.Rnd.Next(0, 200) == 0)
             {
                 DestinationCell.CellType = Cell.TypeOfCell.Empty;
             }
