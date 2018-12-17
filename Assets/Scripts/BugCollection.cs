@@ -94,8 +94,8 @@ public class BugCollection
             {
                 Bugs.Remove(bug);
                 CountBugs--;
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = Cell.TypeOfCell.Empty;
-                Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+                Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).CellType = Cell.TypeOfCell.Empty;
+                Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).LinkedBug = null;
                 Data.NumberDeadBugs++;
             }
         }
@@ -120,8 +120,8 @@ public class BugCollection
         foreach (var bug in Bugs)
         {
             Data.NumberDeadBugs++;
-            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = Cell.TypeOfCell.Empty;
-            Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
+            Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).CellType = Cell.TypeOfCell.Empty;
+            Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).LinkedBug = null;
             for (int i = 0; i < 10 && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0; i++)
             {
                 bugs.Add(new Bug(bug.color, new Genome(bug.Gene, bug.LifeTime + bug.Health)));

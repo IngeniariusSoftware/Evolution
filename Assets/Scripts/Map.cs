@@ -12,6 +12,23 @@ public static class Map
     public static readonly Coordinates Size = new Coordinates(50, 100);
 
     /// <summary>
+    ///     Карта мира, состоящая из клеток
+    /// </summary>
+    public static Cell[] worldMap = new Cell[Size.Y * Size.X];
+
+
+    /// <summary>
+    /// Возвращает клетку карты по заданным координатам 
+    /// </summary>
+    /// <param name="y"> Координата по x </param>
+    /// <param name="x"> Координата по y </param>
+    /// <returns> Клетка карты </returns>
+    public static Cell GetMapCell(int y, int x)
+    {
+        return worldMap[(Size.X * y) + x];
+    }
+
+    /// <summary>
     ///     Процент от общего числа клеток различных объектов на карте 
     /// </summary>
     public static readonly float[] PercentObjects = { 0, 0.08f, 0.08f, 0.1f, 0.08f, 0, 0.08f, 0.08f, 0.06f, 0 };
@@ -56,7 +73,7 @@ public static class Map
         if (Data.CurrentCountObjects[itemIndex] > CountTypeObjects[itemIndex])
         {
             var countItemsToDelete = Data.CurrentCountObjects[itemIndex] - CountTypeObjects[itemIndex];
-            foreach (var cell in Data.WorldMap)
+            foreach (var cell in worldMap)
             {
                 if ((int) cell.CellType == itemIndex)
                     cell.CellType = Cell.TypeOfCell.Empty;
@@ -85,7 +102,7 @@ public static class Map
                     if (CellLists[i].Count > 0)
                     {
                         Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
-                        checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
+                        checkCell = GetMapCell(anotherCell.Y, anotherCell.X);
 
                     }
                     else
@@ -109,7 +126,7 @@ public static class Map
                         {
                             tryCount++;
                             Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
-                            checkCell = Data.WorldMap[anotherCell.Y, anotherCell.X];
+                            checkCell = GetMapCell(anotherCell.Y, anotherCell.X);
                         }
                     }
                 }
@@ -151,7 +168,7 @@ public static class Map
         for (int i = 0; i < 8; i++)
         {
             Coordinates checkCoordinate = cell.Coordinate + Coordinates.CoordinateShift[i];
-            if (Data.WorldMap[checkCoordinate.Y, checkCoordinate.X].CellType == cellType)
+            if (GetMapCell(checkCoordinate.Y, checkCoordinate.X).CellType == cellType)
             {
                 return true;
             }
@@ -169,7 +186,7 @@ public static class Map
         Coordinates randomCoordinate = CellLists[(int)Cell.TypeOfCell.Empty][Data.Rnd.Next(
             0,
             CellLists[(int)Cell.TypeOfCell.Empty].Count)];
-        return Data.WorldMap[randomCoordinate.Y, randomCoordinate.X];
+        return GetMapCell(randomCoordinate.Y, randomCoordinate.X);
     }
 
     /// <summary>
@@ -192,10 +209,10 @@ public static class Map
             byte shift = (byte)Data.Rnd.Next(0, randomShifts.Count);
             var checkCoordinate = coordinate + Coordinates.CoordinateShift[randomShifts[shift]];
             if (checkCoordinate.Y > -1 && checkCoordinate.Y < Size.Y && checkCoordinate.X > -1
-                && checkCoordinate.X < Size.X && Data.WorldMap[checkCoordinate.Y, checkCoordinate.X].CellType
+                && checkCoordinate.X < Size.X && GetMapCell(checkCoordinate.Y, checkCoordinate.X).CellType
                 == Cell.TypeOfCell.Empty)
             {
-                return Data.WorldMap[checkCoordinate.Y, checkCoordinate.X];
+                return GetMapCell(checkCoordinate.Y, checkCoordinate.X);
             }
 
             randomShifts.Remove(randomShifts[shift]);
@@ -211,17 +228,18 @@ public static class Map
     public static void CreateMap()
     {
         InitializeCellLists();
-        for (int x = 0; x < Size.X; x++)
+
+        for (int y = 0; y < Size.Y; y++)
         {
-            for (int y = 0; y < Size.Y; y++)
+            for (int x = 0; x < Size.X; x++)
             {
                 if (x == 0 || x == Size.X - 1 || y == 0 || y == Size.Y - 1)
                 {
-                    Data.WorldMap[y, x] = new Cell(new Coordinates(y, x), Cell.TypeOfCell.Wall);
+                    worldMap[(y * Size.X) + x] = new Cell(new Coordinates(y, x), Cell.TypeOfCell.Wall);
                 }
                 else
                 {
-                    Data.WorldMap[y, x] = new Cell(new Coordinates(y, x), Cell.TypeOfCell.Empty);
+                    worldMap[(y * Size.X) + x] = new Cell(new Coordinates(y, x), Cell.TypeOfCell.Empty);
                 }
             }
         }
@@ -236,7 +254,7 @@ public static class Map
     {
         for (int i = 0; i < CountTypeObjects.Length; i++)
         {
-            CellLists.Add(new System.Collections.Generic.List<Coordinates>());
+            CellLists.Add(new List<Coordinates>());
         }   
     }
 

@@ -24,11 +24,6 @@ public static class Data
     public static int CountFillCell = 0;
 
     /// <summary>
-    ///     Карта мира, состоящая из клеток
-    /// </summary>
-    public static Cell[,] WorldMap = new Cell[Map.Size.Y, Map.Size.X];
-
-    /// <summary>
     ///     Текущее количество различных объектов на карте
     /// </summary>
     public static readonly int[] CurrentCountObjects = new int[Map.CountTypeObjects.Length];

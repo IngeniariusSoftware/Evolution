@@ -56,7 +56,7 @@ public class Bug
         }
 
         CurrentPosition = currentPosition;
-        Data.WorldMap[currentPosition.Y, currentPosition.X].CellType = Cell.TypeOfCell.Bug;
+        Map.GetMapCell(currentPosition.Y, currentPosition.X).CellType = Cell.TypeOfCell.Bug;
         if (genome == null)
         {
             Gene = new Genome();
@@ -70,7 +70,7 @@ public class Bug
         Gene.CurrentGenePosition = 0;
         Direction = Data.Rnd.Next(0, 8);
         color = bugColor;
-        Data.WorldMap[currentPosition.Y, currentPosition.X].LinkedBug = this;
+        Map.GetMapCell(currentPosition.Y, currentPosition.X).LinkedBug = this;
     }
 
 
@@ -236,7 +236,7 @@ public class Bug
     {
         Coordinates destination =
             Coordinates.CoordinateShift[bug.CalculateShift()] + bug.CurrentPosition;
-        DestinationCell = Data.WorldMap[destination.Y, destination.X];
+        DestinationCell = Map.GetMapCell(destination.Y, destination.X);
 
         // Если данному номеру генома присвоена команда, тогда необходимо её выполнить
         if (MasBugCommands.Length > bug.Gene.genome[bug.Gene.CurrentGenePosition])
@@ -287,8 +287,8 @@ public class Bug
         {
             case Cell.TypeOfCell.Empty:
                 {
-                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = Cell.TypeOfCell.Empty;
+                    Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).LinkedBug = null;
+                    Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).CellType = Cell.TypeOfCell.Empty;
                     bug.CurrentPosition = DestinationCell.Coordinate;
                     DestinationCell.CellType = Cell.TypeOfCell.Bug;
                     DestinationCell.LinkedBug = bug;
@@ -297,8 +297,8 @@ public class Bug
 
             case Cell.TypeOfCell.Berry:
                 {
-                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = Cell.TypeOfCell.Empty;
+                    Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).LinkedBug = null;
+                    Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).CellType = Cell.TypeOfCell.Empty;
                     bug.CurrentPosition = DestinationCell.Coordinate;
                     DestinationCell.CellType = Cell.TypeOfCell.Bug;
                     DestinationCell.LinkedBug = bug;
@@ -309,8 +309,8 @@ public class Bug
 
             case Cell.TypeOfCell.MineralBerry:
                 {
-                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].LinkedBug = null;
-                    Data.WorldMap[bug.CurrentPosition.Y, bug.CurrentPosition.X].CellType = Cell.TypeOfCell.Empty;
+                    Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).LinkedBug = null;
+                    Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).CellType = Cell.TypeOfCell.Empty;
                     bug.CurrentPosition = DestinationCell.Coordinate;
                     DestinationCell.CellType = Cell.TypeOfCell.Bug;
                     DestinationCell.LinkedBug = bug;
@@ -444,7 +444,7 @@ public class Bug
         {
             byte shift = (byte)Data.Rnd.Next(0, randomShifts.Count);
             Coordinates birthCoordinate = bug.CurrentPosition + Coordinates.CoordinateShift[randomShifts[shift]];
-            if (Data.WorldMap[birthCoordinate.Y, birthCoordinate.X].CellType
+            if (Map.GetMapCell(birthCoordinate.Y, birthCoordinate.X).CellType
                 == Cell.TypeOfCell.Empty)
             {
                 Bug childBug = new Bug(
@@ -488,7 +488,7 @@ public class Bug
                 var pushDestination =
                     Coordinates.CoordinateShift[(bug.Direction + bug.Gene.genome[bug.Gene.NextGenePosition()]) % 8]
                     + DestinationCell.Coordinate;
-                var pushDestinationCell = Data.WorldMap[pushDestination.Y, pushDestination.X];
+                var pushDestinationCell = Map.GetMapCell(pushDestination.Y, pushDestination.X);
                 if (pushDestinationCell.CellType == Cell.TypeOfCell.Empty)
                 {
                     pushDestinationCell.CellType = DestinationCell.CellType;
