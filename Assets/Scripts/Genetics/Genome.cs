@@ -1,47 +1,17 @@
-﻿/// <summary>
-/// Класс для работы с генетическими алгоритмами
-/// </summary>
-namespace Genetics
+﻿namespace Genetics
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Random = UnityEngine.Random;
-
-    /// <summary>
-    /// Класс для работы с популяцией решений
-    /// </summary>
-    public class Population
-    {
-        /// <summary>
-        /// Текущая популяция особей
-        /// </summary>
-        public List<Genome> Creatures { get; }
-
-        /// <summary>
-        /// Текущее размер популяции
-        /// </summary>
-        public int Count => Creatures.Count;
-
-        /// <summary>
-        /// Количество особей для дальнейшего отбора
-        /// </summary>
-        public int Length { get; }
-
-        /// <summary>
-        /// Количество детей у особи
-        /// </summary>
-        public int ChildrenCount { get; }
-    }
 
     /// <summary>
     /// Класс, реализующий геном решения
     /// </summary>
     public class Genome
     {
+        /// <summary>
+        /// Поле для получения случайного числа
+        /// </summary>
+        private static readonly Random RandomValue = new Random();
+
         /// <summary>
         /// Хромосомы решения, каждая содержит параметр для оптимизации решения
         /// </summary>
@@ -75,7 +45,7 @@ namespace Genetics
             Fitness = 0;
             for (int i = 0; i < length; i++)
             {
-                Chromosomes[i] = (int)Random.Range(minValue, maxValue);
+                Chromosomes[i] = (int)RandomValue.Next(minValue, maxValue + 1);
             }
         }
 
@@ -89,13 +59,5 @@ namespace Genetics
             ValueRange = genome.ValueRange;
             Fitness = 0;
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Mutator
-    {
-
     }
 }
