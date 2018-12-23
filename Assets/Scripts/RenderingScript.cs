@@ -97,8 +97,13 @@ public class RenderingScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Скрыть все объекты
+    /// </summary>
     public static void HideObjects()
     {
+
+        // Можно оптимизировать одним экраном, а не скрыванием каждого объекта отдельно
         Capacity = (float)(MaxStepsRendering - CurrentStepsRendering) / MaxStepsRendering;
         foreach (Transform mapObjects in MapObjects)
         {
@@ -159,6 +164,7 @@ public class RenderingScript : MonoBehaviour
                 }
                 else
                 {
+
                     RenderingObjects.Add(
                         Instantiate(
                             Object,
