@@ -8,25 +8,87 @@ public class Cell
 {
     public enum TypeOfCell
     {
+        /// <summary>
+        /// Пустая клетка, основа карты
+        /// </summary>
         Empty = 0,
 
+        /// <summary>
+        /// Обычная ягода, основная еда
+        /// </summary>
         Berry = 1,
 
-        Poison,
+        /// <summary>
+        /// Яд, если жук съедает, то умирает, но может превратить в еду
+        /// </summary>
+        Poison = 2,
 
-        Wall,
+        /// <summary>
+        /// Непроходимое препятствие
+        /// </summary>
+        Wall = 3,
 
-        Mineral,
 
-        MineralBerry,
+        /// <summary>
+        /// Кристалл из которого выпадает минеральная года при разрушении
+        /// </summary>
+        Mineral = 4,
 
-        Bamboo,
+        /// <summary>
+        /// Кристальная ягода, очень питательная, но добывается только из кристаллов
+        /// </summary>
+        MineralBerry = 5,
 
-        Sun,
 
-        Prickle,
+        /// <summary>
+        /// Заросли бамбука, которые можно разрушить и оттуда выпадет либо яд, либо еда
+        /// </summary>
+        Bamboo = 6,
 
-        Bug
+        /// <summary>
+        /// Солнце, источник большого количества энергии
+        /// </summary>
+        Sun = 7,
+
+        /// <summary>
+        /// Колючка, препятствие, которое лучше не трогать
+        /// </summary>
+        Pricle = 8,
+
+        /// <summary>
+        /// Клетка с морем, можно плавать
+        /// </summary>
+        //Sea = 9,
+
+        /// <summary>
+        /// Пустынная поверность
+        /// </summary>
+        //Desert = 10,
+
+        /// <summary>
+        /// Грунтовая поверхность
+        /// </summary>
+        //Ground = 11,
+
+        /// <summary>
+        /// Поверхность, покрытая травой
+        /// </summary>
+        //Grass = 12,
+
+        /// <summary>
+        /// Поверхность, заросшая джунглями
+        /// </summary>
+        //Jungle = 13,
+
+        /// <summary>
+        /// Базальтовая поверхность
+        /// </summary>
+        //Basalt = 14,
+
+        /// <summary>
+        /// Жук, пытается выжить в этом мире
+        /// </summary>
+        Bug = 9
     }
 
     public static TypeOfCell GetCellType(int number)
