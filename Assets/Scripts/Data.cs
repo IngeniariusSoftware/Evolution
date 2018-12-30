@@ -16,7 +16,7 @@ public static class Data
     /// <summary>
     ///     Начальное количество жуков на карте
     /// </summary>
-    public static readonly int BugCount = 10;
+    public static readonly int BugCount = 20;
 
     /// <summary>
     ///     Количество заполненных клеток

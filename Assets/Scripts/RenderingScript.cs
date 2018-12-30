@@ -76,7 +76,7 @@ public class RenderingScript : MonoBehaviour
         for (int i = 0; i < Map.CountTypeObjects.Length; i++)
         {
             Sprites.Add(
-                Resources.Load<Sprite>("Sprites/" + Cell.GetCellType(i).ToString().Replace("TypeOfCell.", "")));
+                Resources.Load<Sprite>("Sprites/" + ((Cell.TypeOfCell)i).ToString().Replace("TypeOfCell.", "")));
         }
     }
 

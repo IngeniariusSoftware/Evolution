@@ -6,6 +6,9 @@
 [Serializable]
 public class Cell
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum TypeOfCell
     {
         /// <summary>
@@ -53,7 +56,7 @@ public class Cell
         /// <summary>
         /// Колючка, препятствие, которое лучше не трогать
         /// </summary>
-        Pricle = 8,
+        Prickle = 8,
 
         /// <summary>
         /// Клетка с морем, можно плавать
@@ -91,6 +94,11 @@ public class Cell
         Bug = 9
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="number"></param>
+    /// <returns></returns>
     public static TypeOfCell GetCellType(int number)
     {
         return (TypeOfCell)number;
@@ -115,7 +123,7 @@ public class Cell
     /// <summary>
     /// Тип клетки
     /// </summary>
-    private TypeOfCell cellType;
+    private TypeOfCell cellType { get; set; }
 
     #endregion
 

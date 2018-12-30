@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using UnityEngine;
+
 [DataContract]
 public class Bug
 {
@@ -16,22 +17,22 @@ public class Bug
     /// <summary>
     /// Максимальное количество жизней у жука
     /// </summary>
-    public const int MaxBugHealth = 512;
+    public const int MaxBugHealth = 256;
 
     /// <summary>
     /// Количество жизней, на которое уменьшается жизнь жука-родителя при генерации нового жука
     /// </summary>
-    public const int MuptiplyCost = 10;
+    public const int MuptiplyCost = 50;
 
     /// <summary>
     /// Количество жизней, которое получаает жук, съедая минеральную ягоду
     /// </summary>
-    public const int MineralBerryValue = 40;
+    public const int MineralBerryValue = 50;
 
     /// <summary>
     /// Количество жизней, которое получаает жук, съедая обычную ягоду
     /// </summary>
-    public const int BerryValue = 30;
+    public const int BerryValue = 100;
 
     /// <summary>
     /// Максимальное количество шагов, которое жук может прожить
@@ -172,7 +173,10 @@ public class Bug
     [DataMember]
     public int Health
     {
-        get { return _health; }
+        get
+        {
+            return _health;
+        }
 
         set
         {
@@ -222,10 +226,10 @@ public class Bug
         }
 
         // Убить жука, если он превысил допустимое количество команд за один ход
-        if (countSteps == BugCollection.MaxStepsBug && !isEnd)
-        {
-            Health = 0;
-        }
+        //if (countSteps == BugCollection.MaxStepsBug && !isEnd)
+        //{
+        //    Health = 0;
+        //}
     }
 
     /// <summary>
@@ -234,20 +238,25 @@ public class Bug
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     public static bool DoCommand(Bug bug)
     {
-        Coordinates destination =
-            Coordinates.CoordinateShift[bug.CalculateShift()] + bug.CurrentPosition;
+        Coordinates destination = Coordinates.CoordinateShift[bug.CalculateShift()] + bug.CurrentPosition;
         DestinationCell = Map.GetMapCell(destination.Y, destination.X);
-
-        // Если данному номеру генома присвоена команда, тогда необходимо её выполнить
-        if (MasBugCommands.Length > bug.Gene.genome[bug.Gene.CurrentGenePosition])
+        if (Math.Abs(bug.Health - MaxBugHealth) < 10)
         {
-            return MasBugCommands[bug.Gene.genome[bug.Gene.CurrentGenePosition]].Invoke(bug);
+            return Multiply(bug);
         }
         else
         {
-            // Иначе сделать переход по геному
-            bug.Gene.CurrentGenePosition++;
-            return GenomJump(bug);
+            // Если данному номеру генома присвоена команда, тогда необходимо её выполнить
+            if (MasBugCommands.Length > bug.Gene.genome[bug.Gene.CurrentGenePosition])
+            {
+                return MasBugCommands[bug.Gene.genome[bug.Gene.CurrentGenePosition]].Invoke(bug);
+            }
+            else
+            {
+                // Иначе сделать переход по геному
+                bug.Gene.CurrentGenePosition++;
+                return GenomJump(bug);
+            }
         }
     }
 
@@ -261,7 +270,8 @@ public class Bug
     /// </summary>
     public static BugCommand[] MasBugCommands =
         {
-            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Photosynthesize, CheckHealthNeighbor, Attack, Share
+            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Photosynthesize, CheckHealthNeighbor, Attack,
+            Share
         };
 
     /// <summary>
@@ -444,19 +454,20 @@ public class Bug
         {
             byte shift = (byte)Data.Rnd.Next(0, randomShifts.Count);
             Coordinates birthCoordinate = bug.CurrentPosition + Coordinates.CoordinateShift[randomShifts[shift]];
-            if (Map.GetMapCell(birthCoordinate.Y, birthCoordinate.X).CellType
-                == Cell.TypeOfCell.Empty)
+            if (Map.GetMapCell(birthCoordinate.Y, birthCoordinate.X).CellType == Cell.TypeOfCell.Empty)
             {
-                Bug childBug = new Bug(
-                    bug.color,
-                    new Genome(bug.Gene, bug.LifeTime),
-                    birthCoordinate);
+                Bug childBug = new Bug(bug.color, new Genome(bug.Gene, bug.LifeTime), birthCoordinate);
                 ControlScript.childs.Add(childBug);
                 isBorn = true;
                 childBug.Health = Math.Min(MuptiplyCost, bug.Health);
             }
 
             randomShifts.Remove(randomShifts[shift]);
+        }
+
+        if (!isBorn)
+        {
+            bug.Health = 0;
         }
 
         bug.Gene.CurrentGenePosition++;
@@ -545,9 +556,9 @@ public class Bug
                 {
                     if (DestinationCell.LinkedBug != null)
                     {
-                        bug.Health += 10;
-                        bug.color = new Color(bug.color.r + 0.01f, bug.color.g, bug.color.b);
-                        DestinationCell.LinkedBug.Health = 0;
+                        bug.Health += 5;
+                        bug.color = new Color(bug.color.r + 0.001f, bug.color.g, bug.color.b);
+                        DestinationCell.LinkedBug.Health -= 5;
                     }
 
                     break;
@@ -603,7 +614,7 @@ public class Bug
     }
 
     /// <summary>
-    /// Жук пытается поделиться едой с содержимым определённой клетки рядом с собой
+    /// Жук пытается сравнить свою жизнь, с жизнью соседнего жука
     /// </summary>
     /// <param name="bug"> Жук, который сейчас ходит  </param>
     private static bool CheckHealthNeighbor(Bug bug)
@@ -652,14 +663,14 @@ public class Bug
         CheckCell(bug);
         if (DestinationCell.CellType == Cell.TypeOfCell.Sun)
         {
-            bug.Health += 3;
+            bug.Health += 6;
             bug.color = new Color(bug.color.r + 0.001f, bug.color.g + 0.001f, bug.color.b);
             //Определённый шанс, что жук сломает солнце
             if (Data.Rnd.Next(0, 200) == 0)
             {
                 DestinationCell.CellType = Cell.TypeOfCell.Empty;
             }
-        } 
+        }
 
         return true;
     }

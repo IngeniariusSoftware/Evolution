@@ -16,7 +16,7 @@ public class BugCollection
     /// <summary>
     ///     Максимальное количество команд, которое может выполнить жук за один ход  
     /// </summary>
-    public static readonly int MaxStepsBug = 64;
+    public static readonly int MaxStepsBug = 32;
 
     /// <summary>
     /// Количество всех родившихся жуков      

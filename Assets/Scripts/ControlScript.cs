@@ -29,7 +29,7 @@ public class ControlScript : MonoBehaviour
     {
         Data.CurrentGameStep = 0;
         RenderingScript.ClearRenderingObjects();
-        foreach (Cell cell in Map.worldMap)
+        foreach (Cell cell in Map.WorldMap)
         {
             if (cell.LinkedBug != null)
             {
@@ -125,7 +125,7 @@ public class ControlScript : MonoBehaviour
                 }
 
                 RenderingScript.RenderingMode = RenderModeManager.RenderingMode;
-                foreach (Cell cell in Map.worldMap)
+                foreach (Cell cell in Map.WorldMap)
                 {
                     RenderingScript.UpdateTypeCell(cell);
                 }
