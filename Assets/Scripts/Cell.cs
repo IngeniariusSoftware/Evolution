@@ -7,7 +7,7 @@
 public class Cell
 {
     /// <summary>
-    /// 
+    /// Типы всех клеток
     /// </summary>
     public enum TypeOfCell
     {
@@ -24,90 +24,84 @@ public class Cell
         /// <summary>
         /// Яд, если жук съедает, то умирает, но может превратить в еду
         /// </summary>
-        Poison = 2,
+        Poison,
 
         /// <summary>
         /// Непроходимое препятствие
         /// </summary>
-        Wall = 3,
+        Wall,
 
 
         /// <summary>
         /// Кристалл из которого выпадает минеральная года при разрушении
         /// </summary>
-        Mineral = 4,
+        Mineral,
 
         /// <summary>
         /// Кристальная ягода, очень питательная, но добывается только из кристаллов
         /// </summary>
-        MineralBerry = 5,
-
+        MineralBerry,
 
         /// <summary>
         /// Заросли бамбука, которые можно разрушить и оттуда выпадет либо яд, либо еда
         /// </summary>
-        Bamboo = 6,
+        Bamboo,
 
         /// <summary>
         /// Солнце, источник большого количества энергии
         /// </summary>
-        Sun = 7,
+        Sun,
+
+        /// <summary>
+        /// Водоросли, съедобная сущность, появляющаяся в море
+        /// </summary>
+        Seaweed,
 
         /// <summary>
         /// Колючка, препятствие, которое лучше не трогать
         /// </summary>
-        Prickle = 8,
+        Prickle,
 
         /// <summary>
         /// Клетка с морем, можно плавать
         /// </summary>
-        //Sea = 9,
+        Sea,
 
         /// <summary>
         /// Пустынная поверность
         /// </summary>
-        //Desert = 10,
+        Desert,
 
         /// <summary>
         /// Грунтовая поверхность
         /// </summary>
-        //Ground = 11,
+        Ground,
 
         /// <summary>
         /// Поверхность, покрытая травой
         /// </summary>
-        //Grass = 12,
+        Grass,
 
         /// <summary>
         /// Поверхность, заросшая джунглями
         /// </summary>
-        //Jungle = 13,
+        Jungle,
 
         /// <summary>
         /// Базальтовая поверхность
         /// </summary>
-        //Basalt = 14,
+        Basalt,
 
         /// <summary>
         /// Жук, пытается выжить в этом мире
         /// </summary>
-        Bug = 9
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="number"></param>
-    /// <returns></returns>
-    public static TypeOfCell GetCellType(int number)
-    {
-        return (TypeOfCell)number;
+        Bug
     }
 
     #region Constants
 
     /// <summary>
-    ///     Размер клетки по абсциссе для корректного отображения спрайта
+    /// Размер клетки по абсциссе для корректного отображения спрайта
     /// </summary>
     public const float SizeX = 2.56f;
 
@@ -121,9 +115,14 @@ public class Cell
     #region Fields
 
     /// <summary>
-    /// Тип клетки
+    /// Содержимое клетки
     /// </summary>
-    private TypeOfCell cellType { get; set; }
+    private TypeOfCell content;
+
+    /// <summary>
+    /// Поверхность клетки
+    /// </summary>
+    private TypeOfCell surface;
 
     #endregion
 
@@ -136,20 +135,82 @@ public class Cell
     {
         Coordinate = null;
         LinkedBug = null;
-        CellType = TypeOfCell.Empty;
+        Content = TypeOfCell.Empty;
+        Surface = TypeOfCell.Sea;
+    }
+
+    /// <summary>
+    /// Проверка совместимости сущности и почвы
+    /// </summary>
+    /// <returns></returns>
+    public static bool IsFriendlyGround(TypeOfCell surface, TypeOfCell content)
+    {
+        switch (content)
+        {
+            case TypeOfCell.Mineral:
+                {
+                    return surface == TypeOfCell.Basalt;
+                }
+
+            case TypeOfCell.Berry:
+                {
+                    return surface == TypeOfCell.Grass || surface == TypeOfCell.Ground;
+                }
+
+            case TypeOfCell.Poison:
+                {
+                    return surface == TypeOfCell.Desert || surface == TypeOfCell.Ground;
+                }
+
+            case TypeOfCell.Sun:
+                {
+                    return surface == TypeOfCell.Grass;
+                }
+
+            case TypeOfCell.Bamboo:
+                {
+                    return surface == TypeOfCell.Jungle;
+                }
+
+            case TypeOfCell.Wall:
+                {
+                    return surface == TypeOfCell.Jungle;
+                }
+
+            case TypeOfCell.Prickle:
+                {
+                    return surface == TypeOfCell.Desert;
+                }
+
+            case TypeOfCell.Seaweed:
+                {
+                    return surface == TypeOfCell.Sea;
+                }
+
+            case TypeOfCell.Bug:
+                {
+                    return surface != TypeOfCell.Sea;
+                }
+
+            default:
+                {
+                    return true;
+                }
+        }
     }
 
     /// <summary>
     /// Создание клетки с указанными параметрами
     /// </summary>
     /// <param name="coordinate"> Координаты клетки на карте </param>
-    /// <param name="cellType"> Тип клетки </param>
+    /// <param name="content"> Тип клетки </param>
     /// <param name="bug"> Жук, находящийся в клетке, если есть </param>
-    public Cell(Coordinates coordinate, TypeOfCell cellType, Bug bug = null)
+    public Cell(Coordinates coordinate, TypeOfCell surface, TypeOfCell content, Bug bug = null)
     {
         Coordinate = coordinate;
         LinkedBug = bug;
-        CellType = cellType;
+        Surface = surface;
+        Content = content;
     }
 
     #endregion
@@ -167,47 +228,31 @@ public class Cell
     public Bug LinkedBug { get; set; }
 
     /// <summary>
-    /// Учет всех клеток на карте во время измения типа клетки
+    /// Содержимое клеток
     /// </summary>
-    public TypeOfCell CellType
+    public TypeOfCell Content
     {
-        get
-        {
-            return cellType;
-        }
+        get => content;
 
         set
         {
-            if (cellType == TypeOfCell.Empty)
-            {
-                if (value != TypeOfCell.Empty)
-                {
-                    Data.CountFillCell++;
-                }
-            }
-            else
-            {
-                if (value == TypeOfCell.Empty)
-                {
-                    Data.CountFillCell--;
-                }
-
-                if (cellType != TypeOfCell.Bug)
-                {
-                    Data.CurrentCountObjects[(int)cellType]--;
-                }
-            }
-
-            if (value != TypeOfCell.Empty)
-            {
-                if (value != TypeOfCell.Bug)
-                {
-                    Data.CurrentCountObjects[(int)value]++;
-                }
-            }
-
             Map.UpdateCellList(this, value);
-            cellType = value;
+            content = value;
+        }
+    }
+
+    /// <summary>
+    /// Поврехность клеток
+    /// </summary>
+    public TypeOfCell Surface
+    {
+        get => surface;
+
+
+        set
+        {
+            Map.UpdateCellList(this, value);
+            surface = value;
         }
     }
 
