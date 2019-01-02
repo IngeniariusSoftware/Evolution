@@ -19,9 +19,8 @@ public class ControlScript : MonoBehaviour
 
     public static void StartGame()
     {
-        // очистка рендера и карты
-        RenderingScript.InitializeObjects();
         Map.CreateMap();
+        RenderingScript.InitializeObjects();
         bugs = new BugCollection(Data.BugCount);
     }
 
@@ -34,7 +33,7 @@ public class ControlScript : MonoBehaviour
             if (cell.LinkedBug != null)
             {
                 cell.LinkedBug = null;
-                cell.CellType = Cell.TypeOfCell.Empty;
+                cell.Content = Cell.TypeOfCell.Empty;
             }
         }
 
@@ -43,9 +42,9 @@ public class ControlScript : MonoBehaviour
         {
             bug.Health = 50;
             bug.LastPosition = null;
-            Cell emptyCell = Map.FindEmptyCell();
+            Cell emptyCell = Map.FindEmptyCell(Cell.TypeOfCell.Bug);
             emptyCell.LinkedBug = bug;
-            emptyCell.CellType = Cell.TypeOfCell.Bug;
+            emptyCell.Content = Cell.TypeOfCell.Bug;
             bug.CurrentPosition = emptyCell.Coordinate;
         }
 
@@ -57,7 +56,7 @@ public class ControlScript : MonoBehaviour
         if (RenderingScript.RenderingMode != RenderModeEnum.RenderingType.Rewind)
         {
             Data.CurrentGameStep++;
-            Map.RefreshMap();
+            Map.RegionRefreshMap();
             bugs.StartExecution();
             bugs.AddBug(childs);
             bugs.DeleteBugs();
@@ -73,7 +72,7 @@ public class ControlScript : MonoBehaviour
             while (bugs.GenerationNumber == currentGeneration)
             {
                 Data.CurrentGameStep++;
-                Map.RefreshMap();
+                Map.RegionRefreshMap();
                 bugs.StartExecution();
                 bugs.AddBug(childs);
                 bugs.DeleteBugs();
