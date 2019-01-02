@@ -7,14 +7,11 @@ namespace Assets.Scripts
 {
     public class FoodScript : MonoBehaviour
     {
-        public int BERRY_INT = (int)Cell.TypeOfCell.Berry;
-
         public void ChangeItemCount()
         {
             var berryPercent = (int)gameObject.GetComponent<Slider>().value;
-            Map.PercentObjects[BERRY_INT] = (float)(berryPercent / 100.0);
-            Map.RecalculateSingleTypeObject(BERRY_INT);
-            Map.CleanMap(BERRY_INT);
+            Map.CountTypeObjects[(int)Cell.TypeOfCell.Berry] = (int)(Map.AllCellCount * berryPercent / 100.0f);
+            Map.CleanMap((int)Cell.TypeOfCell.Berry);
         }
     }
 }
