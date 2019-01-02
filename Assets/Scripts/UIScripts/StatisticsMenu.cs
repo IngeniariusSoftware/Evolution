@@ -18,15 +18,16 @@ public class StatisticsMenu : MonoBehaviour
     /// </summary>
     void Update()
     {
+
         StatisticsText[0].text = "Поколение: " + ControlScript.bugs.GenerationNumber;
         StatisticsText[1].text = "Шаг: " + Data.CurrentGameStep;
         StatisticsText[2].text = "Жуков: " + ControlScript.bugs.CountBugs;
         StatisticsText[3].text = "Мёртв. жуков: " + Data.NumberDeadBugs;
-        StatisticsText[4].text = "Обыч. ягод: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Berry];
-        StatisticsText[5].text = "Яда: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Poison];
-        StatisticsText[6].text = "Стен: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Wall];
-        StatisticsText[7].text = "Минералов: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Mineral];
-        StatisticsText[8].text = "Минер. ягод: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.MineralBerry];
-        StatisticsText[9].text = "Бамбука: " + Data.CurrentCountObjects[(int)Cell.TypeOfCell.Bamboo];
+        StatisticsText[4].text = "Обыч. ягод: " + Map.CellLists[(int)Cell.TypeOfCell.Berry].Count;
+        StatisticsText[5].text = "Яда: " + Map.CellLists[(int)Cell.TypeOfCell.Poison].Count;
+        StatisticsText[6].text = "Стен: " + Map.CellLists[(int)Cell.TypeOfCell.Wall].Count;
+        StatisticsText[7].text = "Минералов: " + Map.CellLists[(int)Cell.TypeOfCell.Mineral].Count;
+        StatisticsText[8].text = "Минер. ягод: " + Map.CellLists[(int)Cell.TypeOfCell.MineralBerry].Count;
+        StatisticsText[9].text = "Бамбука: " + Map.CellLists[(int)Cell.TypeOfCell.Bamboo].Count;
     }
 }
