@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 public static class Map
 {
     #region Constants
 
     /// <summary>
-    ///     Размер карты по y и по x (количество клеток)   
+    /// Размер карты по y и по x (количество клеток)   
     /// </summary>
-    public static readonly Coordinates Size = new Coordinates(50, 100);
+    public static readonly Coordinates Size = new Coordinates(60, 120);
 
     /// <summary>
-    ///     Карта мира, состоящая из клеток
+    /// Карта мира, состоящая из клеток
     /// </summary>
     public static Cell[] WorldMap = new Cell[Size.Y * Size.X];
 
@@ -27,54 +28,31 @@ public static class Map
     }
 
     /// <summary>
-    ///     Процент от общего числа клеток различных объектов на карте 
-    /// </summary>
-    public static readonly float[] PercentObjects = { 0, 0.08f, 0.08f, 0.1f, 0.08f, 0, 0.08f, 0.08f, 0.06f, 0 };
-
-    /// <summary>
-    ///     Общее количетсво клеток на карте
+    /// Общее количетсво клеток на карте
     /// </summary>
     public static readonly int AllCellCount = Size.X * Size.Y;
 
     /// <summary>
-    ///     Количество типов объектов на карте
+    /// Количество типов объектов на карте
     /// </summary>
     public static int[] CountTypeObjects =
         {
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Empty]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Berry]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Poison]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Wall]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Mineral]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.MineralBerry]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Bamboo]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Sun]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Prickle]),
-            (int)(AllCellCount * PercentObjects[(int)Cell.TypeOfCell.Bug])
+            (int)(AllCellCount * 0), (int)(AllCellCount * 0.015), (int)(AllCellCount * 0.015), (int)(AllCellCount * 0),
+            (int)(AllCellCount * 0.015), (int)(AllCellCount * 0), (int)(AllCellCount * 0.015), (int)(AllCellCount * 0.015),
+            (int)(AllCellCount * 0.05), (int)(AllCellCount * 0.015), (int)(AllCellCount * 0), (int)(AllCellCount * 0.05),
+            (int)(AllCellCount * 0.05), (int)(AllCellCount * 0.05), (int)(AllCellCount * 0.05), (int)(AllCellCount * 0.05),
+            (int)(AllCellCount * 0)
         };
-
-    public static void RecalculateAllCountTypeObjects()
-    {
-        for (int i = 0; i < CountTypeObjects.Length; i++)
-        {
-            CountTypeObjects[i] = (int)(AllCellCount * PercentObjects[i]);
-        }
-    }
-
-    public static void RecalculateSingleTypeObject(int i)
-    {
-        CountTypeObjects[i] = (int)(AllCellCount * PercentObjects[i]);
-    }
 
     public static void CleanMap(int itemIndex)
     {
-        if (Data.CurrentCountObjects[itemIndex] > CountTypeObjects[itemIndex])
+        if (CellLists[itemIndex].Count > CountTypeObjects[itemIndex])
         {
-            var countItemsToDelete = Data.CurrentCountObjects[itemIndex] - CountTypeObjects[itemIndex];
-            foreach (var cell in WorldMap)
+            var countItemsToDelete = CellLists[itemIndex].Count - CountTypeObjects[itemIndex];
+            for (int i = 0; i < countItemsToDelete; i++)
             {
-                if ((int)cell.CellType == itemIndex)
-                    cell.CellType = Cell.TypeOfCell.Empty;
+                var randomCoordinate = CellLists[itemIndex][Data.Rnd.Next(0, CellLists[itemIndex].Count)];
+                GetMapCell(randomCoordinate.Y, randomCoordinate.X).Content = Cell.TypeOfCell.Empty;
             }
         }
     }
@@ -84,77 +62,112 @@ public static class Map
     #endregion
 
     /// <summary>
-    /// Поддержание уровня еды, яда, стен и минералов на карте
+    /// Создание поверхности
     /// </summary>
-    public static void RefreshMap()
+    public static void CreateGround()
     {
-        if (true) // Режим генерации карты
+        for (byte i = (byte)Cell.TypeOfCell.Desert; i < (byte)Cell.TypeOfCell.Basalt + 1; i++)
         {
-
-            for (byte i = 1; i < CountTypeObjects.Length; i++)
+            if (CellLists[i].Count < CountTypeObjects[i] && CellLists[(byte)Cell.TypeOfCell.Sea].Count > 0)
             {
-                if (Data.CurrentCountObjects[i] < CountTypeObjects[i]
-                    && CellLists[(byte)Cell.TypeOfCell.Empty].Count > 0)
+                Cell checkCell;
+                if (CellLists[i].Count > 0)
                 {
-                    Cell checkCell;
-                    if (CellLists[i].Count > 0)
-                    {
-                        Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
-                        checkCell = GetMapCell(anotherCell.Y, anotherCell.X);
+                    Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
+                    checkCell = GetMapCell(anotherCell.Y, anotherCell.X);
+                }
+                else
+                {
+                    checkCell = FindSeaCell();
+                    checkCell.Surface = (Cell.TypeOfCell)i;
+                }
 
+                int tryCount = 10;
+                while (CellLists[i].Count < CountTypeObjects[i] && CellLists[(int)Cell.TypeOfCell.Sea].Count > 0 && tryCount > 0)
+                {
+                    if (FindSeaCell(checkCell.Coordinate) != null)
+                    {
+                        checkCell = FindSeaCell(checkCell.Coordinate);
+                        checkCell.Surface = (Cell.TypeOfCell)i;
+                        tryCount = 10;
                     }
                     else
                     {
-                        checkCell = FindEmptyCell();
-                        checkCell.CellType = (Cell.TypeOfCell)i;
-                    }
-
-                    byte tryCount = 0;
-                    while (Data.CurrentCountObjects[i] < CountTypeObjects[i]
-                           && CellLists[(int)Cell.TypeOfCell.Empty].Count > 0)
-                    {
-                        checkCell = tryCount < 1 ? FindEmptyCell(checkCell.Coordinate) : FindEmptyCell();
-
-                        if (checkCell != null)
-                        {
-                            checkCell.CellType = (Cell.TypeOfCell)i;
-                            tryCount = 0;
-                        }
-                        else
-                        {
-                            tryCount++;
-                            Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
-                            checkCell = GetMapCell(anotherCell.Y, anotherCell.X);
-                        }
+                        Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
+                        checkCell = GetMapCell(anotherCell.Y, anotherCell.X);
+                        tryCount--;
                     }
                 }
             }
         }
-        else
+    }
+
+    /// <summary>
+    /// Поддержание уровня еды, яда, стен и минералов на карте, случаное распределение
+    /// </summary>
+    public static void RandomRefreshMap()
+    {
+        for (int i = 1; i < (byte)Cell.TypeOfCell.Prickle + 1; i++)
         {
-            for (int i = 0; i < CountTypeObjects.Length; i++)
+            int tryCount = 10;
+            while (CellLists[(int)Cell.TypeOfCell.Empty].Count > 0 && CellLists[i].Count < CountTypeObjects[i]
+                                                                   && tryCount > 0)
             {
-                while (CellLists[(int)Cell.TypeOfCell.Empty].Count > 0
-                       && Data.CurrentCountObjects[i] < CountTypeObjects[i])
+                Cell newCell = FindEmptyCell((Cell.TypeOfCell)i);
+                if (newCell != null)
                 {
-                    if (i == (int)Cell.TypeOfCell.Bamboo)
+                    newCell.Content = (Cell.TypeOfCell)i;
+                }
+                else
+                {
+                    tryCount--;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Поддержание уровня еды, яда, стен и минералов на карте, распределение регионами
+    /// </summary>
+    public static void RegionRefreshMap()
+    {
+        for (byte i = 1; i < (byte)Cell.TypeOfCell.Prickle + 1; i++)
+        {
+            if (CellLists[i].Count < CountTypeObjects[i] && CellLists[(byte)Cell.TypeOfCell.Empty].Count > 0)
+            {
+                Cell checkCell;
+                if (CellLists[i].Count > 0)
+                {
+                    Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
+                    checkCell = GetMapCell(anotherCell.Y, anotherCell.X);
+
+                }
+                else
+                {
+                    checkCell = FindEmptyCell((Cell.TypeOfCell)i);
+                    if (checkCell != null)
                     {
-                        Cell checkCell = FindEmptyCell();
-                        checkCell.CellType = Cell.TypeOfCell.Bamboo;
-                        while (Data.Rnd.Next(0, 50) != 0 && CellLists[(int)Cell.TypeOfCell.Empty].Count > 0
-                                                         && Data.CurrentCountObjects[i] < CountTypeObjects[i]
-                                                         && checkCell != null)
-                        {
-                            checkCell = FindEmptyCell(checkCell.Coordinate);
-                            if (checkCell != null)
-                            {
-                                checkCell.CellType = Cell.TypeOfCell.Bamboo;
-                            }
-                        }
+                        checkCell.Content = (Cell.TypeOfCell)i;
+                    }
+                }
+
+                byte tryCount = 0;
+                while (CellLists[i].Count > 0 && CellLists[i].Count < CountTypeObjects[i]
+                                              && CellLists[(int)Cell.TypeOfCell.Empty].Count > 0
+                                              && tryCount < 5)
+                {
+                    checkCell = tryCount < 1 ? FindEmptyCell(checkCell) : FindEmptyCell((Cell.TypeOfCell)i);
+
+                    if (checkCell != null)
+                    {
+                        checkCell.Content = (Cell.TypeOfCell)i;
+                        tryCount = 0;
                     }
                     else
                     {
-                        FindEmptyCell().CellType = (Cell.TypeOfCell)i;
+                        tryCount++;
+                        Coordinates anotherCell = CellLists[i][Data.Rnd.Next(0, CellLists[i].Count)];
+                        checkCell = GetMapCell(anotherCell.Y, anotherCell.X);
                     }
                 }
             }
@@ -166,7 +179,7 @@ public static class Map
         for (int i = 0; i < 8; i++)
         {
             Coordinates checkCoordinate = cell.Coordinate + Coordinates.CoordinateShift[i];
-            if (GetMapCell(checkCoordinate.Y, checkCoordinate.X).CellType == cellType)
+            if (GetMapCell(checkCoordinate.Y, checkCoordinate.X).Content == cellType)
             {
                 return true;
             }
@@ -176,22 +189,80 @@ public static class Map
     }
 
     /// <summary>
-    /// Ищет свободную пустую клетку по листу пустых клеток
+    /// Ищет свободную пустую клетку
     /// </summary>
     /// <returns></returns>
-    public static Cell FindEmptyCell()
+    public static Cell FindEmptyCell(Cell.TypeOfCell content)
     {
-        Coordinates randomCoordinate =
-            CellLists[(int)Cell.TypeOfCell.Empty][Data.Rnd.Next(0, CellLists[(int)Cell.TypeOfCell.Empty].Count)];
-        return GetMapCell(randomCoordinate.Y, randomCoordinate.X);
+        int tryCount = 20;
+        while (tryCount > 0)
+        {
+            Coordinates randomCoordinate =
+                CellLists[(int)Cell.TypeOfCell.Empty][Data.Rnd.Next(0, CellLists[(int)Cell.TypeOfCell.Empty].Count)];
+            if (Cell.IsFriendlyGround(GetMapCell(randomCoordinate.Y, randomCoordinate.X).Surface, content))
+            {
+                return GetMapCell(randomCoordinate.Y, randomCoordinate.X);
+            }
+            else
+            {
+                tryCount--;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
     /// Ищет свободную клетку вокруг клетки, с указанными координатами
     /// </summary>
+    /// <param name="cell"> Клетка, вокруг которой нужно искать </param>
+    /// <returns></returns>
+    public static Cell FindEmptyCell(Cell cell)
+    {
+        // Вместо обхода по часовой стрелки вокруг клетки, будем использовать рандомные сдвиги с запоминанием
+        List<byte> randomShifts = new List<byte>(8);
+        for (byte i = 0; i < randomShifts.Capacity; i++)
+        {
+            randomShifts.Add(i);
+        }
+
+        // Ищем свободную клетку до тех пор, пока не проверим все 8 позиций вокруг клетки, либо найдем пустую
+        while (randomShifts.Count > 0)
+        {
+            byte shift = (byte)Data.Rnd.Next(0, randomShifts.Count);
+            var checkCoordinate = cell.Coordinate + Coordinates.CoordinateShift[randomShifts[shift]];
+            if (checkCoordinate.Y > -1 && checkCoordinate.Y < Size.Y && checkCoordinate.X > -1
+                && checkCoordinate.X < Size.X
+                && GetMapCell(checkCoordinate.Y, checkCoordinate.X).Content == Cell.TypeOfCell.Empty
+                && Cell.IsFriendlyGround(GetMapCell(checkCoordinate.Y, checkCoordinate.X).Surface, cell.Content))
+            {
+                return GetMapCell(checkCoordinate.Y, checkCoordinate.X);
+            }
+
+            randomShifts.Remove(randomShifts[shift]);
+        }
+
+        // Если не нашли ни одной пустой клетки, вернем null
+        return null;
+    }
+
+    /// <summary>
+    /// Ищет свободную клетку моря
+    /// </summary>
+    /// <returns></returns>
+    public static Cell FindSeaCell()
+    {
+        Coordinates randomCoordinate =
+            CellLists[(int)Cell.TypeOfCell.Sea][Data.Rnd.Next(0, CellLists[(int)Cell.TypeOfCell.Sea].Count)];
+        return GetMapCell(randomCoordinate.Y, randomCoordinate.X);
+    }
+
+    /// <summary>
+    /// Ищет свободную клетку моря вокруг клетки, с указанными координатами
+    /// </summary>
     /// <param name="coordinate"> Координаты клетки, вокруг которой нужно искать </param>
     /// <returns></returns>
-    public static Cell FindEmptyCell(Coordinates coordinate)
+    public static Cell FindSeaCell(Coordinates coordinate)
     {
         // Вместо обхода по часовой стрелки вокруг клетки, будем использовать рандомные сдвиги с запоминанием
         List<byte> randomShifts = new List<byte>(8);
@@ -207,7 +278,8 @@ public static class Map
             var checkCoordinate = coordinate + Coordinates.CoordinateShift[randomShifts[shift]];
             if (checkCoordinate.Y > -1 && checkCoordinate.Y < Size.Y && checkCoordinate.X > -1
                 && checkCoordinate.X < Size.X
-                && GetMapCell(checkCoordinate.Y, checkCoordinate.X).CellType == Cell.TypeOfCell.Empty)
+                && GetMapCell(checkCoordinate.Y, checkCoordinate.X).Surface == Cell.TypeOfCell.Sea
+                && GetMapCell(checkCoordinate.Y, checkCoordinate.X).Content == Cell.TypeOfCell.Empty)
             {
                 return GetMapCell(checkCoordinate.Y, checkCoordinate.X);
             }
@@ -232,16 +304,23 @@ public static class Map
             {
                 if (x == 0 || x == Size.X - 1 || y == 0 || y == Size.Y - 1)
                 {
-                    WorldMap[(y * Size.X) + x] = new Cell(new Coordinates(y, x), Cell.TypeOfCell.Wall);
+                    WorldMap[(y * Size.X) + x] = new Cell(
+                        new Coordinates(y, x),
+                        Cell.TypeOfCell.Empty,
+                        Cell.TypeOfCell.Wall);
                 }
                 else
                 {
-                    WorldMap[(y * Size.X) + x] = new Cell(new Coordinates(y, x), Cell.TypeOfCell.Empty);
+                    WorldMap[(y * Size.X) + x] = new Cell(
+                        new Coordinates(y, x),
+                        Cell.TypeOfCell.Sea,
+                        Cell.TypeOfCell.Empty);
                 }
             }
         }
 
-        RefreshMap();
+        CreateGround();
+        RandomRefreshMap();
     }
 
     /// <summary>
@@ -262,8 +341,26 @@ public static class Map
     /// <param name="newType"> Новый тип этой клетки </param>
     public static void UpdateCellList(Cell cell, Cell.TypeOfCell newType)
     {
-        CellLists[(int)cell.CellType].Remove(cell.Coordinate);
-        CellLists[(int)newType].Add(cell.Coordinate);
-        RenderingScript.UpdateTypeCell(cell);
+        if (cell.Surface != Cell.TypeOfCell.Empty)
+        {
+            if ((int)newType < (int)Cell.TypeOfCell.Sea || (int)newType > (int)Cell.TypeOfCell.Basalt)
+            {
+                CellLists[(int)cell.Content].Remove(cell.Coordinate);
+            }
+            else
+            {
+                CellLists[(int)cell.Surface].Remove(cell.Coordinate);
+            }
+        }
+
+        if (cell.Surface != Cell.TypeOfCell.Empty || newType != Cell.TypeOfCell.Empty)
+        {
+            CellLists[(int)newType].Add(cell.Coordinate);
+        }
+
+        if ((int)newType < (int)Cell.TypeOfCell.Sea || (int)newType > (int)Cell.TypeOfCell.Basalt)
+        {
+            RenderingScript.UpdateTypeCell(cell);
+        }
     }
 }
