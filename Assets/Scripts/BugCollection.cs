@@ -94,7 +94,7 @@ public class BugCollection
             {
                 Bugs.Remove(bug);
                 CountBugs--;
-                Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).CellType = Cell.TypeOfCell.Empty;
+                Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).Content = Cell.TypeOfCell.Empty;
                 Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).LinkedBug = null;
                 Data.NumberDeadBugs++;
             }
@@ -120,7 +120,7 @@ public class BugCollection
         foreach (var bug in Bugs)
         {
             Data.NumberDeadBugs++;
-            Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).CellType = Cell.TypeOfCell.Empty;
+            Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).Content = Cell.TypeOfCell.Empty;
             Map.GetMapCell(bug.CurrentPosition.Y, bug.CurrentPosition.X).LinkedBug = null;
             for (int i = 0; i < 10 && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0; i++)
             {
