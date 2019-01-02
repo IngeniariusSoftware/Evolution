@@ -242,7 +242,7 @@ public class Cell
     }
 
     /// <summary>
-    /// Поврехность клеток
+    /// Поверхность клеток
     /// </summary>
     public TypeOfCell Surface
     {
