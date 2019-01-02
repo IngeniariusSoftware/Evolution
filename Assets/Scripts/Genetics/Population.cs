@@ -1,6 +1,7 @@
 ﻿namespace Genetics
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Класс для работы с популяцией решений
@@ -45,6 +46,15 @@
                     Creatures.Add(new Genome(genome.Length, genome.ValueRange.min, genome.ValueRange.max));
                 }
             }
+        }
+
+        /// <summary>
+        /// Возвращает лучшее решение в текущей популяции
+        /// </summary>
+        /// <returns></returns>
+        public Genome GetBestGenome()
+        {
+            return Creatures.Find(x => x.Fitness == Creatures.Max(y => y.Fitness));
         }
     }
 }
