@@ -9,15 +9,11 @@ namespace Assets.Scripts
 {
     public class PoisonScript:MonoBehaviour
     {
-
-        public int POISON_INT = (int)CellEnum.TypeOfCell.Poison;
-
         public void ChangeItemCount()
         {
-            var poisonPercent = (int)gameObject.GetComponent<Slider>().value;
-            Map.PercentObjects[POISON_INT] = (float)(poisonPercent / 100.0);
-            Map.RecalculateSingleTypeObject(POISON_INT);
-            Map.CleanMap(POISON_INT);
+            var berryPercent = (int)gameObject.GetComponent<Slider>().value;
+            Map.CountTypeObjects[(int)Cell.TypeOfCell.Poison] = (int)(Map.AllCellCount * berryPercent / 100.0f);
+            Map.CleanMap((int)Cell.TypeOfCell.Poison);
         }
     }
 }

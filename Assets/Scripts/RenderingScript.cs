@@ -18,12 +18,12 @@ public class RenderingScript : MonoBehaviour
     #endregion
 
     /// <summary>
-    ///     Текущий шаг отрисовки
+    /// Текущий шаг отрисовки
     /// </summary>
     public static int CurrentStepsRendering;
 
     /// <summary>
-    ///     Режим отрисовки
+    /// Режим отрисовки
     /// </summary>
     public static RenderModeEnum.RenderingType RenderingMode = RenderModeEnum.RenderingType.Normal;
 
@@ -33,42 +33,42 @@ public class RenderingScript : MonoBehaviour
     public static float Capacity = 0;
 
     /// <summary>
-    ///     Лист всех клеток на отрисовку
+    /// Лист всех клеток на отрисовку
     /// </summary>
     public static List<Cell> RendredCells = new List<Cell>();
 
     /// <summary>
-    ///     Лист жуков, которых необходимо отрисовать
+    /// Лист жуков, которых необходимо отрисовать
     /// </summary>
     public static List<Bug> RendredCellsBug = new List<Bug>();
 
     /// <summary>
-    ///     Лист жуков-объектов для отрисовки на карте
+    /// Лист жуков-объектов для отрисовки на карте
     /// </summary>
     public static List<GameObject> RenderingBugs = new List<GameObject>();
 
     /// <summary>
-    ///     Лист всех объектов для отрисовки на карте
+    /// Лист всех объектов для отрисовки на карте
     /// </summary>
     public static List<GameObject> RenderingObjects = new List<GameObject>();
 
     /// <summary>
-    ///     Лист всех используемых изображений
+    /// Лист всех используемых изображений
     /// </summary>
     public static List<Sprite> Sprites = new List<Sprite>();
 
     /// <summary>
-    ///     Объект карты, на который вешаются изображения
+    /// Объект карты, на который вешаются изображения
     /// </summary>
     public static GameObject Object;
 
     /// <summary>
-    ///     Массив всех объектов Unity на карте
+    /// Массив всех объектов Unity на карте
     /// </summary>
     private static Transform[,] MapObjects = new Transform[Map.Size.Y, Map.Size.X];
 
     /// <summary>
-    ///     Инициализация стандартного объекта карты, загрузка всех необходимых изображений
+    /// Инициализация стандартного объекта карты, загрузка всех необходимых изображений
     /// </summary>
     void Awake()
     {
@@ -76,12 +76,12 @@ public class RenderingScript : MonoBehaviour
         for (int i = 0; i < Map.CountTypeObjects.Length; i++)
         {
             Sprites.Add(
-                Resources.Load<Sprite>("Sprites/" + CellEnum.GetCellType(i).ToString().Replace("TypeOfCell.", "")));
+                Resources.Load<Sprite>("Sprites/" + ((Cell.TypeOfCell)i).ToString().Replace("TypeOfCell.", "")));
         }
     }
 
     /// <summary>
-    ///     Сгенировать все объекты на карте
+    /// Сгенировать все объекты на карте
     /// </summary>
     public static void InitializeObjects()
     {
@@ -89,6 +89,13 @@ public class RenderingScript : MonoBehaviour
         {
             for (int x = 0; x < Map.Size.X; x++)
             {
+                var ground = Instantiate(
+                    Object.transform,
+                    new Vector3((x - Map.Size.X / 2) * Cell.SizeX, (-y + Map.Size.Y / 2) * Cell.SizeY, 1),
+                    new Quaternion(0, 0, 0, 0));
+
+                ground.GetComponent<SpriteRenderer>().sprite = Sprites[(int)Map.GetMapCell(y, x).Surface];
+
                 MapObjects[y, x] = Instantiate(
                     Object.transform,
                     new Vector3((x - Map.Size.X / 2) * Cell.SizeX, (-y + Map.Size.Y / 2) * Cell.SizeY),
@@ -97,8 +104,12 @@ public class RenderingScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Скрыть все объекты
+    /// </summary>
     public static void HideObjects()
     {
+        // Можно оптимизировать одним экраном, а не скрыванием каждого объекта отдельно
         Capacity = (float)(MaxStepsRendering - CurrentStepsRendering) / MaxStepsRendering;
         foreach (Transform mapObjects in MapObjects)
         {
@@ -131,7 +142,7 @@ public class RenderingScript : MonoBehaviour
                                 -3),
                             new Quaternion(0, 0, 0, 0)));
                     RenderingBugs.Last().GetComponent<SpriteRenderer>().sprite =
-                        Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        Sprites[(int)Cell.TypeOfCell.Bug];
                     if (RenderingMode == RenderModeEnum.RenderingType.Normal)
                     {
                         RenderingBugs.Last().GetComponent<SpriteRenderer>().color = rendredCell.LinkedBug.color;
@@ -146,19 +157,20 @@ public class RenderingScript : MonoBehaviour
                     }
 
                     MapObjects[rendredCell.LinkedBug.LastPosition.Y, rendredCell.LinkedBug.LastPosition.X]
-                        .GetComponent<SpriteRenderer>().sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
+                        .GetComponent<SpriteRenderer>().sprite = Sprites[(int)Cell.TypeOfCell.Empty];
                     RendredCellsBug.Add(rendredCell.LinkedBug);
                     MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X]
                         .GetComponent<SpriteRenderer>().color = Color.white;
                     if (MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                            .sprite == Sprites[(int)CellEnum.TypeOfCell.Bug])
+                            .sprite == Sprites[(int)Cell.TypeOfCell.Bug])
                     {
                         MapObjects[rendredCell.Coordinate.Y, rendredCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                            .sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
+                            .sprite = Sprites[(int)Cell.TypeOfCell.Empty];
                     }
                 }
                 else
                 {
+
                     RenderingObjects.Add(
                         Instantiate(
                             Object,
@@ -168,7 +180,7 @@ public class RenderingScript : MonoBehaviour
                                 -2),
                             new Quaternion(0, 0, 0, 0)));
                     RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
-                        Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        Sprites[(int)Cell.TypeOfCell.Bug];
                     Color color = RenderingObjects.Last().GetComponent<SpriteRenderer>().color;
                     if (RenderingMode == RenderModeEnum.RenderingType.Normal)
                     {
@@ -200,12 +212,12 @@ public class RenderingScript : MonoBehaviour
                 if (RenderingMode == RenderModeEnum.RenderingType.Normal)
                 {
                     RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
-                        Sprites[(int)rendredCell.CellType];
+                        Sprites[(int)rendredCell.Content];
                 }
                 else
                 {
                     RenderingObjects.Last().GetComponent<SpriteRenderer>().sprite =
-                        Sprites[(int)CellEnum.TypeOfCell.Empty];
+                        Sprites[(int)Cell.TypeOfCell.Empty];
                 }
 
                 Color color = RenderingObjects.Last().GetComponent<SpriteRenderer>().color;
@@ -216,7 +228,7 @@ public class RenderingScript : MonoBehaviour
     }
 
     /// <summary>
-    ///     Сгенировать объекты для отрисовки, каждый шаг обновлять их положение и прозрачность
+    /// Сгенировать объекты для отрисовки, каждый шаг обновлять их положение и прозрачность
     /// </summary>
     public static void UpdateObjects()
     {
@@ -250,7 +262,7 @@ public class RenderingScript : MonoBehaviour
     }
 
     /// <summary>
-    ///     Занести объект в лист для дальнейшей отрисовки
+    /// Занести объект в лист для дальнейшей отрисовки
     /// </summary>
     /// <param name="cell"> Клетка, в которой изменилось значение, и её необходимо отрисовать </param>
     public static void UpdateTypeCell(Cell cell)
@@ -274,14 +286,14 @@ public class RenderingScript : MonoBehaviour
                 if (renderedCell.LinkedBug != null)
                 {
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        .sprite = Sprites[(int)Cell.TypeOfCell.Bug];
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
                         .color = renderedCell.LinkedBug.color;
                 }
                 else
                 {
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                        .sprite = Sprites[(int)renderedCell.CellType];
+                        .sprite = Sprites[(int)renderedCell.Content];
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
                         .color = Color.white;
                 }
@@ -297,12 +309,12 @@ public class RenderingScript : MonoBehaviour
                         (float)(Bug.MaxBugHealth - renderedCell.LinkedBug.Health) / Bug.MaxBugHealth,
                         1);
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Bug];
+                        .sprite = Sprites[(int)Cell.TypeOfCell.Bug];
                 }
                 else
                 {
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
-                        .sprite = Sprites[(int)CellEnum.TypeOfCell.Empty];
+                        .sprite = Sprites[(int)Cell.TypeOfCell.Empty];
                     MapObjects[renderedCell.Coordinate.Y, renderedCell.Coordinate.X].GetComponent<SpriteRenderer>()
                         .color = Color.white;
                 }

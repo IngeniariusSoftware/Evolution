@@ -19,9 +19,8 @@ public class ControlScript : MonoBehaviour
 
     public static void StartGame()
     {
-        // очистка рендера и карты
-        RenderingScript.InitializeObjects();
         Map.CreateMap();
+        RenderingScript.InitializeObjects();
         bugs = new BugCollection(Data.BugCount);
     }
 
@@ -29,12 +28,12 @@ public class ControlScript : MonoBehaviour
     {
         Data.CurrentGameStep = 0;
         RenderingScript.ClearRenderingObjects();
-        foreach (Cell cell in Data.WorldMap)
+        foreach (Cell cell in Map.WorldMap)
         {
             if (cell.LinkedBug != null)
             {
                 cell.LinkedBug = null;
-                cell.CellType = CellEnum.TypeOfCell.Empty;
+                cell.Content = Cell.TypeOfCell.Empty;
             }
         }
 
@@ -43,9 +42,9 @@ public class ControlScript : MonoBehaviour
         {
             bug.Health = 50;
             bug.LastPosition = null;
-            Cell emptyCell = Map.FindEmptyCell();
+            Cell emptyCell = Map.FindEmptyCell(Cell.TypeOfCell.Bug);
             emptyCell.LinkedBug = bug;
-            emptyCell.CellType = CellEnum.TypeOfCell.Bug;
+            emptyCell.Content = Cell.TypeOfCell.Bug;
             bug.CurrentPosition = emptyCell.Coordinate;
         }
 
@@ -57,11 +56,11 @@ public class ControlScript : MonoBehaviour
         if (RenderingScript.RenderingMode != RenderModeEnum.RenderingType.Rewind)
         {
             Data.CurrentGameStep++;
-            Map.RefreshMap();
+            Map.RegionRefreshMap();
             bugs.StartExecution();
             bugs.AddBug(childs);
             bugs.DeleteBugs();
-            if (bugs.CountBugs <= Data.BugCount)
+            if (bugs.CountBugs <= Data.BugCount && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0)
             {
                 bugs.NewGeneration();
                 Data.CurrentGameStep = 0;
@@ -69,16 +68,15 @@ public class ControlScript : MonoBehaviour
         }
         else
         {
-            var startTime = System.Diagnostics.Stopwatch.StartNew();
             int currentGeneration = bugs.GenerationNumber;
             while (bugs.GenerationNumber == currentGeneration)
             {
                 Data.CurrentGameStep++;
-                Map.RefreshMap();
+                Map.RegionRefreshMap();
                 bugs.StartExecution();
                 bugs.AddBug(childs);
                 bugs.DeleteBugs();
-                if (bugs.CountBugs <= Data.BugCount)
+                if (bugs.CountBugs <= Data.BugCount && Map.CellLists[(int)Cell.TypeOfCell.Empty].Count > 0)
                 {
                     bugs.NewGeneration();
                     Data.CurrentGameStep = 0;
@@ -126,7 +124,7 @@ public class ControlScript : MonoBehaviour
                 }
 
                 RenderingScript.RenderingMode = RenderModeManager.RenderingMode;
-                foreach (Cell cell in Data.WorldMap)
+                foreach (Cell cell in Map.WorldMap)
                 {
                     RenderingScript.UpdateTypeCell(cell);
                 }
