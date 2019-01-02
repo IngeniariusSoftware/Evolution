@@ -280,7 +280,7 @@ public class Bug
     /// </summary>
     public static BugCommand[] MasBugCommands =
         {
-            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, Photosynthesize, CheckHealthNeighbor, Attack,
+            Move, Rotate, CheckCell, Take, Multiply, Push, CheckHealth, CheckHealthNeighbor, Attack,
             Share, Swim
         };
 
@@ -413,6 +413,19 @@ public class Bug
                     bug.color = new Color(bug.color.r, bug.color.g, bug.color.b + 0.05f);
                     break;
                 }
+
+            case Cell.TypeOfCell.Sun:
+            {
+                bug.Health += 5;
+                bug.color = new Color(bug.color.r + 0.001f, bug.color.g + 0.001f, bug.color.b);
+                //Определённый шанс, что жук сломает солнце
+                if (Data.Rnd.Next(0, 100) == 0)
+                {
+                    DestinationCell.Content = Cell.TypeOfCell.Empty;
+                }
+
+                break;
+            }
         }
 
         return true;
